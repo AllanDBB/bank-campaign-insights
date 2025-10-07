@@ -9,7 +9,7 @@ function PlusButton({height, width, action}){
         justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
-        border: 'none',
+        border: '3px solid var(--primaryLightShade)', 
         padding: '1rem',
         width: width,
         height: height

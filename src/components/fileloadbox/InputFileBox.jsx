@@ -8,12 +8,13 @@ function InputFileBox({width, height}){
     const inputBoxRef = useRef();
 
     const handleFileBoxChg = (evt) => {
-        let newFile = evt.target.file[0];
+        let newFile = evt.target.files[0];
         setFile(newFile)
     }
-    const handleDragDrop = (evt) =>{
+    const handleDrag = (evt) => {evt.preventDefault()}
+    const handleDrop = (evt) =>{
         evt.preventDefault();
-        let newFile = evt.dataTransfer.file[0];
+        let newFile = evt.dataTransfer.files[0];
         setFile(newFile)
     }
     const handlePickFile = () => inputBoxRef.current.click();
@@ -25,10 +26,10 @@ function InputFileBox({width, height}){
             <div className={styles.card}>
                 <h2>Ingrese su CSV</h2>
                 <div className={styles.dropZone}
-                onDrop={handleDragDrop}
+                onDrop={handleDrop}
+                onDragOver={handleDrag}
                 onClick={handlePickFile}>
-                    <PlusButton width={"5rem"} height={"5rem"} action={null}></PlusButton>
-                    {file && <p>{file.name}</p>}
+                    {file?<p>{file.name}</p>:<PlusButton width={"5rem"} height={"5rem"} action={null}></PlusButton>}
                 </div>
                 <input
                 type="file"
