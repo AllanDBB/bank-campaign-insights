@@ -1,6 +1,7 @@
 :root {
   --primaryDark: #0D4A6B;
   --primaryLight: #44A1B4;
+  --blackBackground: #000101;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
