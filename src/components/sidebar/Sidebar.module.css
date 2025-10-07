@@ -1,0 +1,51 @@
+.sidebar {
+    --bodyColor: #181819;
+    --fontColor: #fff;
+    --font: 'Century Gothic';
+
+    background-color: var(--bodyColor);
+    color: var(--fontColor);
+    height: 100vh;
+    max-width: 20vw;
+    text-align: center;
+    padding: 0;
+}
+
+.mainTitle{
+    --fontColor: #fff;
+    --font: 'Arial';
+
+    width: 75%;
+    justify-self: center;
+    color: var(--fontColor);
+    font-family: var(--font);
+    font-size: 24px;
+    padding: .5rem;
+}
+
+.tabElement{
+    display: block;
+    color: var(--fontColor);
+    width: 100%;
+    text-decoration: none;
+    padding: 1rem 0;
+}
+
+.activeTabElement{
+    background-color: var(--primaryDark);
+}
+
+.tabBar li {width: 100%;}
+
+.tabBar{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    height: 50%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;    
+}
+
+
