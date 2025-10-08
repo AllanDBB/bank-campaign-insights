@@ -10,9 +10,9 @@ function App() {
       <Sidebar />
       <div style={{ flex: 1, padding: 0, backgroundColor: '#060606'}}>
         <Routes>
-          <Route path="/table" element={<Table/>}/>
-          <Route path="/dashboard" element={<Dashboard/>}/>
-          <Route path="/usedFilters" element={<UsedFilters/>}/>
+          <Route path="table" element={<Table/>}/>
+          <Route path="dashboard" element={<Dashboard/>}/>
+          <Route path="usedFilters" element={<UsedFilters/>}/>
         </Routes>
       </div>
     </div>

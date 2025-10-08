@@ -9,13 +9,13 @@ export default function Sidebar() {
             <ul className={styles.tabBar}>
                 <li><NavLink 
                     className={({isActive})=> isActive ? `${styles.tabElement} ${styles.activeTabElement}`: styles.tabElement}
-                    to="/table">Tabla</NavLink></li>
+                    to="/app/table">Tabla</NavLink></li>
                 <li><NavLink 
                     className={({isActive})=> isActive ? `${styles.tabElement} ${styles.activeTabElement}`: styles.tabElement}
-                    to="/dashboard">Dashboard</NavLink></li>
+                    to="/app/dashboard">Dashboard</NavLink></li>
                 <li><NavLink 
                     className={({isActive})=> isActive ? `${styles.tabElement} ${styles.activeTabElement}`: styles.tabElement}
-                    to="/usedFilters">Historial</NavLink></li>
+                    to="/app/usedFilters">Historial</NavLink></li>
             </ul>
             <div>
                 <h5>Filtros Activos</h5>

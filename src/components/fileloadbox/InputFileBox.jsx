@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import styles from "./InputFileBox.module.css"
 import PlusButton from "../plusButton/PlusButton";
 
-function InputFileBox({width, height}){
+function InputFileBox({width, height, btnText, action}){
 
     const [file, setFile] = useState(null);
     const inputBoxRef = useRef();
@@ -29,7 +29,7 @@ function InputFileBox({width, height}){
                 onDrop={handleDrop}
                 onDragOver={handleDrag}
                 onClick={handlePickFile}>
-                    {file?<p>{file.name}</p>:<PlusButton width={"5rem"} height={"5rem"} action={null}></PlusButton>}
+                    {file?<p>📄{file.name}</p>:<PlusButton width={"5rem"} height={"5rem"} action={null}></PlusButton>}
                 </div>
                 <input
                 type="file"
@@ -37,7 +37,7 @@ function InputFileBox({width, height}){
                 onChange={handleFileBoxChg}
                 style={{display:"none"}}
                 accept=".csv"/>
-                <button className={styles.loadButton}>Cargar Datos</button>
+                <button className={styles.loadButton} onClick={action}>{btnText}</button>
             </div>
         </div>
     )
