@@ -1,6 +1,6 @@
 import React from "react";
 
-function Table() {
+function AdvancedAnalytics() {
     return(
         <div style={{
             backgroundColor: "#060606", 
@@ -9,12 +9,12 @@ function Table() {
             padding: "2rem",
             boxSizing: "border-box"
         }}>
-            <h1 style={{color: "white"}}>Tabla</h1>
+            <h1 style={{color: "white"}}>Analítica Avanzada</h1>
             <div style={{color: "white"}}>
-                Contenido de la tabla...
+                Contenido de analítica avanzada...
             </div>
         </div>
     );
 }
 
-export default Table
+export default AdvancedAnalytics;
