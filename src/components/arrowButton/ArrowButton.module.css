@@ -1,0 +1,16 @@
+.roundButton {
+    border: 3px solid var(--primaryLightShade);
+    border-radius: 50%;
+    background-color: var(--primaryLight);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    font-size: 60px;
+    margin: 4px;
+}
+

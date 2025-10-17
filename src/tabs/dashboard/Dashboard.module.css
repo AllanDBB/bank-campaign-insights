@@ -1,0 +1,28 @@
+.container{
+    width: 100%;
+    height: 100%;
+    background-color: var(--blackBackground);
+    display: grid;
+    grid-template-rows: .1fr .05fr .85fr;
+}
+
+.headTitleDiv{
+    grid-row: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.exportDiv{
+    background-color: pink;
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+}
+.contentDiv{
+    background-color: fuchsia;
+    grid-row: 3;
+    width: 100%;
+    height: 100%;
+}
