@@ -1,0 +1,69 @@
+{
+  "info": {
+    "name": "Bank Campaign Insights API",
+    "description": "API collection for banking campaign insights dashboard",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        },
+        "description": "Check server health and database connectivity status"
+      },
+      "response": []
+    },
+    {
+      "name": "Upload CSV Document",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": [],
+              "description": "CSV file to upload (bank-additional-full.csv)"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/documents/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "documents", "upload"]
+        },
+        "description": "Upload CSV file with banking campaign data. The file will be parsed, validated, and inserted into the database in batches."
+      },
+      "response": []
+    },
+    {
+      "name": "Delete All Documents",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/documents",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "documents"]
+        },
+        "description": "Delete all documents from the database. Use this before uploading new data to avoid duplicates."
+      },
+      "response": []
+    }
+  ]
+}
