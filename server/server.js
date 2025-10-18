@@ -3,16 +3,14 @@ import cors from 'cors';
 import config from './src/config/environment.js';
 import connectDatabase from './src/config/database.js';
 import errorHandler from './src/middleware/errorHandler.js';
-import healthRouter from './src/routes/health.js';
-import uploadRouter from './src/routes/upload.js';
+import routes from './src/routes/index.js';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/api', healthRouter);
-app.use('/api/documents', uploadRouter);
+app.use('/api', routes);
 
 app.use(errorHandler);
 
@@ -31,8 +29,7 @@ const startServer = async () => {
 
     const server = app.listen(config.server.port, () => {
       console.log(`Server running on port ${config.server.port} in ${config.server.nodeEnv} mode`);
-      console.log(`API available at: http://localhost:${config.server.port}/api/health`);
-      console.log(`Upload endpoint: http://localhost:${config.server.port}/api/documents/upload`);
+      console.log(`Health check: http://localhost:${config.server.port}/api/health`);
     });
 
     const gracefulShutdown = () => {
