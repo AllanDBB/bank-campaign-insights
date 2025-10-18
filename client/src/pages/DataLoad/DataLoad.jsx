@@ -47,11 +47,12 @@ function DataLoad() {
         if (step === 'fileload') {
             return (
                 <InputFileBox
-                    width={'50%'}
+                    width={'90%'}
                     height={'60%'}
                     btnText={'Cargar Datos'}
                     action={handleDataLoad}
                     onFileSelect={handleFileSelect}
+                    style={{maxWidth: '600px'}}
                 />
             );
         }
@@ -62,10 +63,10 @@ function DataLoad() {
                     <Typography variant="h6" sx={{ mt: 3, color: 'white' }}>
                         Procesando archivo...
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#aaa', mt: 1 }}>
+                    <Typography variant="body2" sx={{ color: '#aaa', mt: 1, textAlign: 'center', px: 2 }}>
                         Por favor espere mientras validamos e insertamos los datos
                     </Typography>
-                    <Box sx={{ width: '60%', mt: 3 }}>
+                    <Box sx={{ width: '90%', maxWidth: '500px', mt: 3 }}>
                         <LinearProgress
                             variant="determinate"
                             value={uploadProgress}
@@ -105,11 +106,11 @@ function DataLoad() {
                         </Typography>
                     </Box>
 
-                    <Typography variant="h4" sx={{ color: 'white', mb: 1, fontWeight: 'bold' }}>
+                    <Typography variant="h4" sx={{ color: 'white', mb: 1, fontWeight: 'bold', textAlign: 'center', px: 2, fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' } }}>
                         ¡Archivo cargado exitosamente!
                     </Typography>
 
-                    <Typography variant="body1" sx={{ color: '#aaa', mb: 2 }}>
+                    <Typography variant="body1" sx={{ color: '#aaa', mb: 2, textAlign: 'center', px: 2 }}>
                         Los datos han sido procesados y están listos para su análisis
                     </Typography>
 
@@ -175,7 +176,7 @@ function DataLoad() {
         else if (step === 'error') {
             return (
                 <Box className={styles.resultContainer}>
-                    <Alert severity="error" sx={{ mb: 3, width: '60%' }}>
+                    <Alert severity="error" sx={{ mb: 3, width: '90%', maxWidth: '500px' }}>
                         {error || 'Error al cargar el archivo'}
                     </Alert>
                     <button
@@ -191,7 +192,7 @@ function DataLoad() {
 
     return (
         <div className={styles.mainContainer}>
-            <TitleCard text={'Archivo de Origen'} width={'50%'}/>
+            <TitleCard text={'Archivo de Origen'} width={'90%'} style={{maxWidth: '600px'}}/>
             {stepContent()}
         </div>
     );
