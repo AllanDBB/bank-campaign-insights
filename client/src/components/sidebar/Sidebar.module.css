@@ -1,0 +1,139 @@
+.sidebar {
+    background-color: #1a1a1a;
+    color: #fff;
+    height: 100vh;
+    width: 250px;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Header Section */
+.header {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mainTitle {
+    color: #fff;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* Navigation Section */
+.navigation {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 2rem;
+}
+
+.tabBar {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tabBar li {
+    width: 100%;
+}
+
+.tabElement {
+    display: block;
+    color: #fff;
+    width: 100%;
+    text-decoration: none;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 400;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.tabElement:hover {
+    background-color: rgba(74, 155, 155, 0.2);
+}
+
+.activeTabElement {
+    background-color: #0D4A6B;
+}
+
+/* Filter Section */
+.filterSection {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+}
+
+.filterTitle {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 1rem 0;
+}
+
+.filterBadge {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #4A9B9B;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 auto 1.5rem;
+}
+
+.configButton {
+    background-color: #0D4A6B;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.configButton:hover {
+    background-color: #155a82;
+}
+
+.configButton:active {
+    transform: scale(0.98);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+        min-width: 200px;
+    }
+
+    .mainTitle {
+        font-size: 1.2rem;
+    }
+
+    .tabElement {
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
+    }
+}
+
+

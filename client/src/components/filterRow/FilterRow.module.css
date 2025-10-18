@@ -1,0 +1,209 @@
+.filterRow {
+    display: grid;
+    grid-template-columns: 100px 1fr 2fr;
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.filterRow:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.filterRow.highlighted {
+    background-color: rgba(74, 155, 155, 0.25);
+    border-color: #4A9B9B;
+}
+
+.checkboxContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.checkbox {
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    accent-color: #4A9B9B;
+}
+
+.fieldName {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.valuesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+/* Range Inputs */
+.rangeInputs {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.rangeGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rangeGroup label {
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    min-width: 40px;
+}
+
+.rangeInput {
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.95rem;
+    width: 100px;
+    outline: none;
+    color: #000;
+}
+
+.rangeInput:focus {
+    box-shadow: 0 0 0 2px #4A9B9B;
+}
+
+/* Multiple Values */
+.multipleValues {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.addValueContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.addValueContainer label {
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    min-width: 60px;
+}
+
+.addInput {
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.95rem;
+    flex: 1;
+    max-width: 250px;
+    outline: none;
+    color: #000;
+}
+
+.addInput:focus {
+    box-shadow: 0 0 0 2px #4A9B9B;
+}
+
+.addButton {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.addButton:hover {
+    transform: scale(1.1);
+}
+
+.addButton:active {
+    transform: scale(0.95);
+}
+
+.tagList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.tag {
+    background-color: rgba(74, 155, 155, 0.3);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(74, 155, 155, 0.5);
+}
+
+.removeTag {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.removeTag:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filterRow {
+        grid-template-columns: 60px 1fr;
+        gap: 0.8rem;
+    }
+
+    .valuesContainer {
+        grid-column: 1 / -1;
+    }
+
+    .rangeInputs {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .rangeGroup {
+        width: 100%;
+    }
+
+    .rangeInput {
+        flex: 1;
+    }
+
+    .addValueContainer {
+        flex-wrap: wrap;
+    }
+
+    .addInput {
+        max-width: 100%;
+    }
+}
