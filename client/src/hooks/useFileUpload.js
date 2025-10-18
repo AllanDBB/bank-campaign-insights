@@ -11,7 +11,7 @@ export const useFileUpload = () => {
     return new Promise((resolve) => {
       let progress = 0;
       const interval = setInterval(() => {
-        progress += Math.random() * 2; 
+        progress += Math.random() * 10; 
         if (progress >= 90) {
           clearInterval(interval);
           setUploadProgress(90);

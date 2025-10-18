@@ -131,6 +131,10 @@ class UploadService {
     let failedInserts = 0;
     const batchErrors = [];
 
+    // Deleting all existing records before inserting new ones
+    console.log('Clearing existing documents in the database');
+    await this.documentDAO.deleteAll();
+    
     for (let i = 0; i < records.length; i += this.batchSize) {
       batches.push(records.slice(i, i + this.batchSize));
     }
