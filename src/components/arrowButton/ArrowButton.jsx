@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './ArrowButton.module.css';
 import arrowSvg from "../../assets/arrow.svg";
 
-function RoundButton({direction = 'left', onClick, size}){
+function RoundButton({ direction = 'left', onClick, size }) {
     const directions = {
         "left": 0,
         "up": 90,
@@ -12,18 +12,19 @@ function RoundButton({direction = 'left', onClick, size}){
     const rotate = directions[direction];
 
     return (
-        <button className={styles.roundButton} onClick={onClick} style={{width: size, height: size}}>
-            <svg 
-                width="60%" 
-                height="60%" 
-                viewBox="0 0 20 20" 
-                fill="currentColor"
-                style={{ transform: `rotate(${rotate}deg)` }}
-            >
-            <path d="M5 5L15 10L5 15" stroke="currentColor" strokeWidth="2" fill="none"/>
-        </svg>
+        <button className={styles.roundButton} onClick={onClick} style={{ width: size, height: size }}>
+            <img 
+                src={arrowSvg} 
+                alt={`${direction} arrow`}
+                style={{ 
+                    width: '60%', 
+                    height: '60%',
+                    transform: `rotate(${rotate}deg)`,
+                    transition: 'transform 0.2s ease'
+                }}
+            />
         </button>
     );
 };
 
-export default RoundButton
+export default RoundButton;

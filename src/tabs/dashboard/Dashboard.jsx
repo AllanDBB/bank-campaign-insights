@@ -9,8 +9,10 @@ function Dashboard() {
             <div className= {styles.headTitleDiv}>
                 <ArrowButton direction={'left'} onClick={null} size={'60px'}></ArrowButton>
                 <TitleCard text={'Dashboard'} width={'50%'}></TitleCard>
+                <ArrowButton direction={'right'} onClick={null} size={'60px'}></ArrowButton>
             </div>
             <div className={styles.exportDiv}>
+                <button className={styles.exportButton}>Exportar</button>
             </div>
             <div className={styles.contentDiv}>
             </div>
