@@ -3,7 +3,7 @@ import { getDatabaseStatus } from '../config/database.js';
 
 const router = express.Router();
 
-router.get('/health', (req, res) => {
+router.get('/', (req, res) => {
   const dbStatus = getDatabaseStatus();
   const isHealthy = dbStatus === 'connected';
 
