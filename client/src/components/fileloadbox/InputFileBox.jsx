@@ -2,20 +2,26 @@ import React, { useRef, useState } from "react";
 import styles from "./InputFileBox.module.css"
 import PlusButton from "../plusButton/PlusButton";
 
-function InputFileBox({width, height, btnText, action}){
+function InputFileBox({width, height, btnText, action, onFileSelect}){
 
     const [file, setFile] = useState(null);
     const inputBoxRef = useRef();
 
     const handleFileBoxChg = (evt) => {
         let newFile = evt.target.files[0];
-        setFile(newFile)
+        setFile(newFile);
+        if (onFileSelect) {
+            onFileSelect(newFile);
+        }
     }
     const handleDrag = (evt) => {evt.preventDefault()}
     const handleDrop = (evt) =>{
         evt.preventDefault();
         let newFile = evt.dataTransfer.files[0];
-        setFile(newFile)
+        setFile(newFile);
+        if (onFileSelect) {
+            onFileSelect(newFile);
+        }
     }
     const handlePickFile = () => inputBoxRef.current.click();
 
