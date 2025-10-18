@@ -7,6 +7,22 @@ export const useFileUpload = () => {
   const [uploadResult, setUploadResult] = useState(null);
   const [error, setError] = useState(null);
 
+  const simulateProgress = () => {
+    return new Promise((resolve) => {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 2; 
+        if (progress >= 90) {
+          clearInterval(interval);
+          setUploadProgress(90);
+          resolve();
+        } else {
+          setUploadProgress(Math.min(progress, 90));
+        }
+      }, 1500); // Más lento (1500ms vs 800ms)
+    });
+  };
+
   const upload = async (file) => {
     if (!file) {
       setError('No file selected');
@@ -24,9 +40,15 @@ export const useFileUpload = () => {
     setUploadResult(null);
 
     try {
-      const result = await uploadDocument(file, (progress) => {
-        setUploadProgress(progress);
-      });
+      const progressSimulation = simulateProgress();
+
+      const result = await uploadDocument(file);
+
+      await progressSimulation;
+
+      setUploadProgress(100);
+
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       setUploadResult(result);
       setIsUploading(false);
@@ -35,6 +57,7 @@ export const useFileUpload = () => {
       const errorMessage = err.response?.data?.message || err.message || 'Upload failed';
       setError(errorMessage);
       setIsUploading(false);
+      setUploadProgress(0);
       throw err;
     }
   };
