@@ -7,9 +7,7 @@ import DocumentDAO from '../daos/DocumentDAO.js';
 
 class UploadService {
   constructor() {
-    this.structureValidator = new StructureValidator();
-    this.dataQualityValidator = new DataQualityValidator();
-    this.businessRulesValidator = new BusinessRulesValidator();
+    this.validators = [];
     this.documentDAO = new DocumentDAO();
     this.batchSize = 1000;
 
@@ -49,67 +47,17 @@ class UploadService {
       'euriborThreeMonthRate',
       'numberOfEmployees'
     ];
+
+    this.addValidator(new StructureValidator());
+    this.addValidator(new DataQualityValidator());
+    this.addValidator(new BusinessRulesValidator());
   }
 
-  normalizeFieldNames(csvRecord) {
-    const normalizedRecord = {};
-
-    for (const csvFieldName in csvRecord) {
-      const dbFieldName = this.fieldMapping[csvFieldName];
-      if (dbFieldName) {
-        normalizedRecord[dbFieldName] = csvRecord[csvFieldName];
-      } else {
-        normalizedRecord[csvFieldName] = csvRecord[csvFieldName];
-      }
-    }
-
-    return normalizedRecord;
+  addValidator(validator) {
+    this.validators.push(validator);
   }
 
-  transformTypes(record) {
-    const transformedRecord = { ...record };
-
-    for (const field of this.numericFields) {
-      if (transformedRecord[field] !== undefined && transformedRecord[field] !== null && transformedRecord[field] !== '') {
-        const value = transformedRecord[field];
-
-        if (typeof value === 'string') {
-          const numericValue = parseFloat(value);
-          if (!isNaN(numericValue)) {
-            transformedRecord[field] = numericValue;
-          }
-        }
-      }
-    }
-
-    return transformedRecord;
-  }
-
-  validateDocument(document) {
-    const allErrors = [];
-
-    const structureValidation = this.structureValidator.validate(document);
-    if (!structureValidation.isValid) {
-      allErrors.push(...structureValidation.errors);
-    }
-
-    const qualityValidation = this.dataQualityValidator.validate(document);
-    if (!qualityValidation.isValid) {
-      allErrors.push(...qualityValidation.errors);
-    }
-
-    const businessValidation = this.businessRulesValidator.validate(document);
-    if (!businessValidation.isValid) {
-      allErrors.push(...businessValidation.errors);
-    }
-
-    return {
-      isValid: allErrors.length === 0,
-      errors: allErrors
-    };
-  }
-
-  async parseCSV(fileBuffer) {
+  async normalizeData(fileBuffer) {
     return new Promise((resolve, reject) => {
       const records = [];
       const errors = [];
@@ -119,19 +67,47 @@ class UploadService {
 
       stream
         .pipe(csv({ separator: ';' }))
-        .on('data', (data) => {
+        .on('data', (csvRecord) => {
           rowNumber++;
 
-          const normalizedRecord = this.normalizeFieldNames(data);
-          const transformedRecord = this.transformTypes(normalizedRecord);
-          const validationResult = this.validateDocument(transformedRecord);
+          const normalizedRecord = {};
 
-          if (validationResult.isValid) {
-            records.push(transformedRecord);
+          for (const csvFieldName in csvRecord) {
+            const dbFieldName = this.fieldMapping[csvFieldName];
+            if (dbFieldName) {
+              normalizedRecord[dbFieldName] = csvRecord[csvFieldName];
+            } else {
+              normalizedRecord[csvFieldName] = csvRecord[csvFieldName];
+            }
+          }
+
+          for (const field of this.numericFields) {
+            if (normalizedRecord[field] !== undefined && normalizedRecord[field] !== null && normalizedRecord[field] !== '') {
+              const value = normalizedRecord[field];
+
+              if (typeof value === 'string') {
+                const numericValue = parseFloat(value);
+                if (!isNaN(numericValue)) {
+                  normalizedRecord[field] = numericValue;
+                }
+              }
+            }
+          }
+
+          const allErrors = [];
+          for (const validator of this.validators) {
+            const validationResult = validator.validate(normalizedRecord);
+            if (!validationResult.isValid) {
+              allErrors.push(...validationResult.errors);
+            }
+          }
+
+          if (allErrors.length === 0) {
+            records.push(normalizedRecord);
           } else {
             errors.push({
               row: rowNumber,
-              errors: validationResult.errors
+              errors: allErrors
             });
           }
         })
@@ -149,7 +125,7 @@ class UploadService {
     });
   }
 
-  async batchInsert(records) {
+  async record(records) {
     const batches = [];
     let successfulInserts = 0;
     let failedInserts = 0;
@@ -189,11 +165,11 @@ class UploadService {
     };
   }
 
-  async processUpload(fileBuffer) {
+  async validateFile(fileBuffer) {
     console.log('Starting document upload process');
     console.log(`File size: ${fileBuffer.length} bytes`);
 
-    const parseResult = await this.parseCSV(fileBuffer);
+    const parseResult = await this.normalizeData(fileBuffer);
 
     const totalRecords = parseResult.records.length + parseResult.errors.length;
     console.log(`Total records in CSV: ${totalRecords}`);
@@ -205,21 +181,27 @@ class UploadService {
         totalRecords: totalRecords,
         successfulInserts: 0,
         failedInserts: totalRecords,
+        successPercentage: 0,
         validationErrors: parseResult.errors,
         insertErrors: []
       };
     }
 
-    const insertResult = await this.batchInsert(parseResult.records);
+    const insertResult = await this.record(parseResult.records);
+
+    const successfulInserts = insertResult.successfulInserts;
+    const failedInserts = parseResult.errors.length + insertResult.failedInserts;
+    const successPercentage = ((successfulInserts / totalRecords) * 100).toFixed(2);
 
     console.log(`Upload process completed`);
-    console.log(`Successfully inserted: ${insertResult.successfulInserts} records`);
-    console.log(`Failed to insert: ${insertResult.failedInserts} records`);
+    console.log(`Successfully inserted: ${successfulInserts} records (${successPercentage}%)`);
+    console.log(`Failed to insert: ${failedInserts} records`);
 
     return {
       totalRecords: totalRecords,
-      successfulInserts: insertResult.successfulInserts,
-      failedInserts: parseResult.errors.length + insertResult.failedInserts,
+      successfulInserts: successfulInserts,
+      failedInserts: failedInserts,
+      successPercentage: parseFloat(successPercentage),
       validationErrors: parseResult.errors,
       insertErrors: insertResult.errors
     };
