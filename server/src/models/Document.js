@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 
 const documentSchema = new mongoose.Schema({
+  // User Reference
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
+  },
+
   // Client Information
   age: {
     type: Number,

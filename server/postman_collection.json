@@ -30,7 +30,13 @@
       "name": "Upload CSV Document",
       "request": {
         "method": "POST",
-        "header": [],
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "",
+            "description": "User ID (ObjectId) - Required"
+          }
+        ],
         "body": {
           "mode": "formdata",
           "formdata": [
@@ -48,6 +54,50 @@
           "path": ["api", "documents", "upload"]
         },
         "description": "Upload CSV file with banking campaign data. The file will be parsed, validated, and inserted into the database in batches."
+      },
+      "response": []
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John\",\n  \"username\": \"johndoe\",\n  \"lastname\": \"Doe\",\n  \"password\": \"securePassword123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/users",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users"]
+        },
+        "description": "Create a new user with name, username, lastname and password"
+      },
+      "response": []
+    },
+    {
+      "name": "Get User",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/users/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "",
+              "description": "User ID"
+            }
+          ]
+        },
+        "description": "Get user by ID"
       },
       "response": []
     }

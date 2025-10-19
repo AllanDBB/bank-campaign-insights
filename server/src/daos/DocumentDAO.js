@@ -34,9 +34,9 @@ class DocumentDAO {
     }
   }
 
-  async deleteAll() {
+  async deleteByUserId(userId) {
     try {
-      const result = await Document.deleteMany({});
+      const result = await Document.deleteMany({ userId });
       return {
         success: true,
         deletedCount: result.deletedCount
