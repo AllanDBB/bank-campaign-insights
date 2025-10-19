@@ -1,6 +1,6 @@
 .mainContainer{
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     background-color: var(--blackBackground);
     margin: 0;
     padding: 1rem;
@@ -94,4 +94,55 @@
 
 .retryButton:hover{
     background-color: var(--primaryLightShade);
+}
+
+@media (max-width: 768px) {
+    .mainContainer{
+        gap: 2rem;
+        padding: 0.5rem;
+    }
+
+    .progressContainer{
+        padding: 1rem;
+    }
+
+    .resultContainer{
+        padding: 0.5rem;
+        max-width: 100%;
+    }
+
+    .statsContainer{
+        padding: 1rem;
+    }
+
+    .statsGrid{
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .statCard{
+        padding: 0.75rem;
+    }
+
+    .statLabel{
+        font-size: 0.7rem;
+    }
+
+    .statValue{
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .mainContainer{
+        gap: 1.5rem;
+    }
+
+    .statsContainer{
+        padding: 0.75rem;
+    }
+
+    .statValue{
+        font-size: 1rem;
+    }
 }

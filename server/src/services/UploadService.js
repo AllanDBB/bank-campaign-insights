@@ -125,18 +125,23 @@ class UploadService {
     });
   }
 
-  async record(records) {
+  async record(records, userId) {
     const batches = [];
     let successfulInserts = 0;
     let failedInserts = 0;
     const batchErrors = [];
 
-    // Deleting all existing records before inserting new ones
-    console.log('Clearing existing documents in the database');
-    await this.documentDAO.deleteAll();
-    
-    for (let i = 0; i < records.length; i += this.batchSize) {
-      batches.push(records.slice(i, i + this.batchSize));
+    // Deleting all existing records for this user before inserting new ones
+    await this.documentDAO.deleteByUserId(userId);
+
+    // Add userId to each record
+    const recordsWithUserId = records.map(record => ({
+      ...record,
+      userId
+    }));
+
+    for (let i = 0; i < recordsWithUserId.length; i += this.batchSize) {
+      batches.push(recordsWithUserId.slice(i, i + this.batchSize));
     }
 
     console.log(`Processing ${batches.length} batches of up to ${this.batchSize} records each`);
@@ -169,7 +174,7 @@ class UploadService {
     };
   }
 
-  async validateFile(fileBuffer) {
+  async validateFile(fileBuffer, userId) {
     console.log('Starting document upload process');
     console.log(`File size: ${fileBuffer.length} bytes`);
 
@@ -191,7 +196,7 @@ class UploadService {
       };
     }
 
-    const insertResult = await this.record(parseResult.records);
+    const insertResult = await this.record(parseResult.records, userId);
 
     const successfulInserts = insertResult.successfulInserts;
     const failedInserts = parseResult.errors.length + insertResult.failedInserts;

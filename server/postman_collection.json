@@ -30,7 +30,13 @@
       "name": "Upload CSV Document",
       "request": {
         "method": "POST",
-        "header": [],
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "",
+            "description": "User ID (ObjectId) - Required"
+          }
+        ],
         "body": {
           "mode": "formdata",
           "formdata": [
@@ -52,16 +58,46 @@
       "response": []
     },
     {
-      "name": "Delete All Documents",
+      "name": "Create User",
       "request": {
-        "method": "DELETE",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Default\",\n  \"username\": \"default\",\n  \"lastname\": \"user\",\n  \"password\": \"default1234\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/users",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users"]
+        },
+        "description": "Create a new user with name, username, lastname and password"
+      },
+      "response": []
+    },
+    {
+      "name": "Get User",
+      "request": {
+        "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/documents",
+          "raw": "{{baseUrl}}/api/users/:id",
           "host": ["{{baseUrl}}"],
-          "path": ["api", "documents"]
+          "path": ["api", "users", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "",
+              "description": "User ID"
+            }
+          ]
         },
-        "description": "Delete all documents from the database. Use this before uploading new data to avoid duplicates."
+        "description": "Get user by ID"
       },
       "response": []
     }

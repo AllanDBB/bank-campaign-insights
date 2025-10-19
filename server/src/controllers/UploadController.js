@@ -14,10 +14,11 @@ class UploadController {
         });
       }
 
+      const userId = req.userId;
       const file = req.file;
       console.log(`Received file upload: ${file.originalname}, size: ${file.size} bytes`);
 
-      const result = await this.uploadService.validateFile(file.buffer);
+      const result = await this.uploadService.validateFile(file.buffer, userId);
 
       const response = {
         success: true,

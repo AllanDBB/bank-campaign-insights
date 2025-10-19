@@ -1,11 +1,28 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styles from "./InputFileBox.module.css"
 import PlusButton from "../plusButton/PlusButton";
 
 function InputFileBox({width, height, btnText, action, onFileSelect}){
 
     const [file, setFile] = useState(null);
+    const [buttonSize, setButtonSize] = useState('7rem');
     const inputBoxRef = useRef();
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 480) {
+                setButtonSize('4rem');
+            } else if (window.innerWidth <= 768) {
+                setButtonSize('5.5rem');
+            } else {
+                setButtonSize('7rem');
+            }
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleFileBoxChg = (evt) => {
         let newFile = evt.target.files[0];
@@ -35,7 +52,7 @@ function InputFileBox({width, height, btnText, action, onFileSelect}){
                 onDrop={handleDrop}
                 onDragOver={handleDrag}
                 onClick={handlePickFile}>
-                    {file?<p>📄{file.name}</p>:<PlusButton width={"5rem"} height={"5rem"} action={null}></PlusButton>}
+                    {file?<p>📄{file.name}</p>:<PlusButton width={buttonSize} height={buttonSize} action={null}></PlusButton>}
                 </div>
                 <input
                 type="file"
