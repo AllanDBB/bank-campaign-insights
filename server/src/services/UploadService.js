@@ -132,7 +132,6 @@ class UploadService {
     const batchErrors = [];
 
     // Deleting all existing records for this user before inserting new ones
-    console.log(`Clearing existing documents for user: ${userId}`);
     await this.documentDAO.deleteByUserId(userId);
 
     // Add userId to each record

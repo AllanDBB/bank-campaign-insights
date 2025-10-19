@@ -54,7 +54,22 @@ export const useFileUpload = () => {
       setIsUploading(false);
       return result;
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || 'Upload failed';
+      let errorMessage = 'Upload failed';
+
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+
+      if (err.response?.status === 404 && errorMessage.includes('User not found')) {
+        errorMessage = 'User not registered. Please create a user account first.';
+      } else if (err.response?.status === 401 && errorMessage.includes('Missing x-user-id')) {
+        errorMessage = 'User ID not configured. Please set VITE_USER_ID in your .env file.';
+      } else if (err.response?.status === 404 && errorMessage.includes('Invalid user ID')) {
+        errorMessage = 'Invalid user ID. Please verify your VITE_USER_ID in .env file.';
+      }
+
       setError(errorMessage);
       setIsUploading(false);
       setUploadProgress(0);

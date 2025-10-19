@@ -4,6 +4,15 @@ import bcrypt from 'bcrypt';
 class UserDAO {
   async createUser(userData) {
     try {
+      const existingUser = await User.findOne({ username: userData.username });
+
+      if (existingUser) {
+        return {
+          success: false,
+          error: 'Username already exists'
+        };
+      }
+
       const hashedPassword = await bcrypt.hash(userData.password, 10);
 
       const user = new User({
@@ -26,6 +35,20 @@ class UserDAO {
 
   async getUserById(userId) {
     try {
+      if (!userId) {
+        return {
+          success: false,
+          error: 'User ID is required'
+        };
+      }
+
+      if (typeof userId !== 'string' || userId.length !== 24 || !/^[a-fA-F0-9]{24}$/.test(userId)) {
+        return {
+          success: false,
+          error: 'Invalid user ID format'
+        };
+      }
+
       const user = await User.findById(userId);
       if (!user) {
         return {

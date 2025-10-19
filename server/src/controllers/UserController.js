@@ -16,10 +16,39 @@ class UserController {
         });
       }
 
+      // Basic validations
+      if (name.trim().length < 2) {
+        return res.status(400).json({
+          success: false,
+          message: 'Name must be at least 2 characters long'
+        });
+      }
+
+      if (lastname.trim().length < 2) {
+        return res.status(400).json({
+          success: false,
+          message: 'Last name must be at least 2 characters long'
+        });
+      }
+
+      if (username.trim().length < 3) {
+        return res.status(400).json({
+          success: false,
+          message: 'Username must be at least 3 characters long'
+        });
+      }
+
+      if (password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: 'Password must be at least 6 characters long'
+        });
+      }
+
       const result = await this.userDAO.createUser({
-        name,
-        username,
-        lastname,
+        name: name.trim(),
+        username: username.trim(),
+        lastname: lastname.trim(),
         password
       });
 
