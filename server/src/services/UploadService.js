@@ -177,7 +177,6 @@ class UploadService {
   async validateFile(fileBuffer, userId) {
     console.log('Starting document upload process');
     console.log(`File size: ${fileBuffer.length} bytes`);
-    console.log(`User ID: ${userId}`);
 
     const parseResult = await this.normalizeData(fileBuffer);
 

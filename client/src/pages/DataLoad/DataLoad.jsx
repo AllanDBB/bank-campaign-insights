@@ -48,7 +48,7 @@ function DataLoad() {
             return (
                 <InputFileBox
                     width={'90%'}
-                    height={'60%'}
+                    height={'70%'}
                     btnText={'Cargar Datos'}
                     action={handleDataLoad}
                     onFileSelect={handleFileSelect}
