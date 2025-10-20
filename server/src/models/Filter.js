@@ -30,10 +30,11 @@ const filterItemSchema = new mongoose.Schema({
 }, { _id: false });
 
 const filterSchema = new mongoose.Schema({
-  id: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
-    unique: true
+    index: true
   },
   filterName: {
     type: String,
@@ -48,8 +49,7 @@ const filterSchema = new mongoose.Schema({
   timestamps: true
 });
 
-filterSchema.index({ id: 1 });
-filterSchema.index({ filterName: 1 });
+filterSchema.index({ userId: 1, filterName: 1 });
 
 const Filter = mongoose.model('Filter', filterSchema);
 

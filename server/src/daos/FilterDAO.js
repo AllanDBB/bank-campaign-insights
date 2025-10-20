@@ -1,33 +1,32 @@
 import Filter from '../models/Filter.js';
 
 class FilterDAO {
-  async getFilters() {
+  async getFilters(userId, queryParams = {}) {
     try {
-      const filters = await Filter.find({}).sort({ createdAt: -1 });
-      return {
-        success: true,
-        filters: filters
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
+      const { id, filterName } = queryParams;
+      let query = { userId };
 
-  async getFilterById(filterId) {
-    try {
-      const filter = await Filter.findOne({ id: filterId });
-      if (!filter) {
+      if (id) {
+        query._id = id;
+      }
+
+      if (filterName) {
+        query.filterName = new RegExp(filterName, 'i');
+      }
+
+      const filters = await Filter.find(query).sort({ createdAt: -1 });
+
+      if (id && filters.length === 0) {
         return {
           success: false,
           error: 'Filter not found'
         };
       }
+
       return {
         success: true,
-        filter: filter
+        filters: filters,
+        count: filters.length
       };
     } catch (error) {
       return {
@@ -37,41 +36,11 @@ class FilterDAO {
     }
   }
 
-  async createFilter(filterData) {
-    try {
-      const existingFilter = await Filter.findOne({ filterName: filterData.filterName });
-      if (existingFilter) {
-        return {
-          success: false,
-          error: 'A filter with this name already exists'
-        };
-      }
-
-      const filter = new Filter(filterData);
-      const savedFilter = await filter.save();
-      return {
-        success: true,
-        filter: savedFilter
-      };
-    } catch (error) {
-      if (error.code === 11000) {
-        return {
-          success: false,
-          error: 'A filter with this name or ID already exists'
-        };
-      }
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
-  async updateFilter(filterId, filterData) {
+  async createFilter(userId, filterData) {
     try {
       const existingFilter = await Filter.findOne({
-        filterName: filterData.filterName,
-        id: { $ne: filterId }
+        userId,
+        filterName: filterData.filterName
       });
 
       if (existingFilter) {
@@ -81,12 +50,57 @@ class FilterDAO {
         };
       }
 
-      const updatedFilter = await Filter.findOneAndUpdate(
-        { id: filterId },
-        {
+      const filter = new Filter({
+        userId,
+        ...filterData
+      });
+      const savedFilter = await filter.save();
+      return {
+        success: true,
+        filter: savedFilter
+      };
+    } catch (error) {
+      if (error.code === 11000) {
+        return {
+          success: false,
+          error: 'A filter with this name already exists'
+        };
+      }
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  async updateFilter(userId, filterId, filterData) {
+    try {
+      if (filterData.filterName) {
+        const existingFilter = await Filter.findOne({
+          userId,
           filterName: filterData.filterName,
-          filters: filterData.filters
-        },
+          _id: { $ne: filterId }
+        });
+
+        if (existingFilter) {
+          return {
+            success: false,
+            error: 'A filter with this name already exists'
+          };
+        }
+      }
+
+      const updateFields = {};
+      if (filterData.filterName !== undefined) {
+        updateFields.filterName = filterData.filterName;
+      }
+      if (filterData.filters !== undefined) {
+        updateFields.filters = filterData.filters;
+      }
+
+      const updatedFilter = await Filter.findOneAndUpdate(
+        { _id: filterId, userId },
+        { $set: updateFields },
         {
           new: true,
           runValidators: true
@@ -118,9 +132,12 @@ class FilterDAO {
     }
   }
 
-  async deleteFilter(filterId) {
+  async deleteFilter(userId, filterId) {
     try {
-      const deletedFilter = await Filter.findOneAndDelete({ id: filterId });
+      const deletedFilter = await Filter.findOneAndDelete({
+        _id: filterId,
+        userId
+      });
 
       if (!deletedFilter) {
         return {

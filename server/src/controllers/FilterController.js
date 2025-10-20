@@ -7,37 +7,9 @@ class FilterController {
 
   async getFilters(req, res, next) {
     try {
-      const result = await this.filterDAO.getFilters();
+      const { id, filterName } = req.query;
 
-      if (!result.success) {
-        return res.status(500).json({
-          success: false,
-          message: result.error
-        });
-      }
-
-      return res.status(200).json({
-        success: true,
-        data: result.filters
-      });
-    } catch (error) {
-      console.error('Error in getFilters:', error);
-      next(error);
-    }
-  }
-
-  async getFilterById(req, res, next) {
-    try {
-      const { id } = req.params;
-
-      if (!id) {
-        return res.status(400).json({
-          success: false,
-          message: 'Filter ID is required'
-        });
-      }
-
-      const result = await this.filterDAO.getFilterById(id);
+      const result = await this.filterDAO.getFilters(req.userId, { id, filterName });
 
       if (!result.success) {
         return res.status(404).json({
@@ -48,27 +20,27 @@ class FilterController {
 
       return res.status(200).json({
         success: true,
-        data: result.filter
+        data: result.filters,
+        count: result.count
       });
     } catch (error) {
-      console.error('Error in getFilterById:', error);
+      console.error('Error in getFilters:', error);
       next(error);
     }
   }
 
   async createFilter(req, res, next) {
     try {
-      const { id, filterName, filters } = req.body;
+      const { filterName, filters } = req.body;
 
-      if (!id || !filterName || !filters) {
+      if (!filterName || !filters) {
         return res.status(400).json({
           success: false,
-          message: 'Filter ID, name and filters are required'
+          message: 'Filter name and filters are required'
         });
       }
 
-      const result = await this.filterDAO.createFilter({
-        id,
+      const result = await this.filterDAO.createFilter(req.userId, {
         filterName,
         filters
       });
@@ -103,17 +75,11 @@ class FilterController {
         });
       }
 
-      if (!filterName || !filters) {
-        return res.status(400).json({
-          success: false,
-          message: 'Filter name and filters are required'
-        });
-      }
+      const updateData = {};
+      if (filterName) updateData.filterName = filterName;
+      if (filters) updateData.filters = filters;
 
-      const result = await this.filterDAO.updateFilter(id, {
-        filterName,
-        filters
-      });
+      const result = await this.filterDAO.updateFilter(req.userId, id, updateData);
 
       if (!result.success) {
         return res.status(404).json({
@@ -144,7 +110,7 @@ class FilterController {
         });
       }
 
-      const result = await this.filterDAO.deleteFilter(id);
+      const result = await this.filterDAO.deleteFilter(req.userId, id);
 
       if (!result.success) {
         return res.status(404).json({
