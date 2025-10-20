@@ -6,6 +6,7 @@ import ToastContainer from "../../components/toast/ToastContainer";
 import filterService from "../../services/filterService";
 import { useFilterSchema } from "../../hooks/useFilterSchema";
 import { useToast } from "../../hooks/useToast";
+import { useActiveFilter } from "../../context/FilterContext";
 
 function ConfigureFilters({ onClose }) {
     const [mode, setMode] = useState("select");
@@ -15,6 +16,7 @@ function ConfigureFilters({ onClose }) {
     const [originalState, setOriginalState] = useState(null);
     const { fields: availableFields, loading: schemaLoading, error: schemaError } = useFilterSchema();
     const { toasts, removeToast, success, error, warning } = useToast();
+    const { applyFilter, clearFilter } = useActiveFilter();
 
     const handleSelectFilter = (filter) => {
         setCurrentFilterId(filter._id);
@@ -150,6 +152,29 @@ function ConfigureFilters({ onClose }) {
         return JSON.stringify(filters) !== JSON.stringify(originalState.filters);
     };
 
+    const buildQueryParams = () => {
+        const queryParams = new URLSearchParams();
+
+        filters.forEach(filter => {
+            if (filter.active) {
+                if (filter.type === "multiple") {
+                    filter.values.forEach(value => {
+                        queryParams.append(filter.fieldKey, value);
+                    });
+                } else if (filter.type === "range") {
+                    if (filter.values.min) {
+                        queryParams.append(`${filter.fieldKey}_min`, filter.values.min);
+                    }
+                    if (filter.values.max) {
+                        queryParams.append(`${filter.fieldKey}_max`, filter.values.max);
+                    }
+                }
+            }
+        });
+
+        return queryParams;
+    };
+
     const handleApply = async () => {
         if (hasChanges()) {
             const saveResult = await handleSave();
@@ -157,7 +182,10 @@ function ConfigureFilters({ onClose }) {
                 return;
             }
         }
-        console.log("Aplicando filtros:", filters.filter(f => f.active));
+
+        const queryParams = buildQueryParams();
+        applyFilter(currentFilterId, filterName, queryParams);
+
         onClose();
     };
 
@@ -400,6 +428,9 @@ function ConfigureFilters({ onClose }) {
                 <div className={styles.actionButtons}>
                     <button className={styles.cancelButton} onClick={handleCancel}>
                         {mode === "edit" ? "Volver" : "Cancelar"}
+                    </button>
+                    <button className={styles.clearFilterButton} onClick={clearFilter}>
+                        Limpiar Filtro
                     </button>
                     <button className={styles.applyButton} onClick={handleApply}>
                         Aplicar

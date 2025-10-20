@@ -280,6 +280,24 @@
     transform: translateY(-2px);
 }
 
+.clearFilterButton {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+    border: 2px solid rgba(231, 76, 60, 0.4);
+    padding: 12px 32px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clearFilterButton:hover {
+    background-color: rgba(231, 76, 60, 0.25);
+    border-color: #e74c3c;
+    transform: translateY(-2px);
+}
+
 .loadingContainer,
 .errorContainer {
     display: flex;

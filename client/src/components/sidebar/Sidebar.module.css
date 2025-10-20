@@ -93,15 +93,58 @@
     font-size: 0.95rem;
     font-weight: 500;
     margin: 0 0 1.5rem 0;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
     text-align: center;
     min-height: 50px;
+    max-height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
     line-height: 1.4;
+    overflow-y: auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.filterName::-webkit-scrollbar {
+    width: 4px;
+}
+
+.filterName::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.filterName::-webkit-scrollbar-thumb {
+    background: rgba(74, 155, 155, 0.5);
+    border-radius: 4px;
+}
+
+.filterName::-webkit-scrollbar-thumb:hover {
+    background: rgba(74, 155, 155, 0.7);
+}
+
+.clearButton {
+    background-color: rgba(231, 76, 60, 0.2);
+    border: 2px solid rgba(231, 76, 60, 0.4);
+    color: #e74c3c;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-bottom: 0.8rem;
+}
+
+.clearButton:hover {
+    background-color: rgba(231, 76, 60, 0.3);
+    border-color: #e74c3c;
+}
+
+.clearButton:active {
+    transform: scale(0.98);
 }
 
 .configButton {
