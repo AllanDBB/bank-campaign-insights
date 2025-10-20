@@ -156,12 +156,12 @@ export function DashboardDataProvider({children}){
             { name: "", value: 0},
         ],
         prevImpact: [
-            /*group -> Resultado
+            /*name -> Resultado
             Exito -> conversion condicionada a poutcome = success
             Fallido -> conversion condicionada a poutcome = failure
             Ninguno -> conversion condicionada a poutcome = nonexistant
             */
-            {group: "Resultado", Exito: 1, Fallido: 2, Ninguno: 0}
+            {name: "Resultado", Exito: 0, Fallido: 0, Ninguno: 0},
         ],
         campaignEfficiency: [
             /*date -> Iniciales minúsculas del mes, Ej: aug

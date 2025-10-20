@@ -115,7 +115,6 @@ const dataConversionMensual = [
     { date: "dic", campañaA: 0.105, campañaB: 0.06, campañaC: 0.05 , campañaD: 1},
 ];
 
-const { normalizedData, allKeys } = normalizeData(dataConversionMensual);
 
 const dataEjemploLinea = [
 { name: "A", lineValue: 30},
@@ -141,6 +140,7 @@ const dataEjemploHistograma = [
 
 function DashboardAdditional(){
     const {dashboardData, setDashboardData} = useContext(DashboardDataContext);
+    const { normalizedData, allKeys } = normalizeData(dashboardData.campaignEfficiency);
     return (
         <div className={styles.mainContainer}>
             <div className={`${styles.graphContainer} ${styles.cardContainerCR}`}>
@@ -203,7 +203,7 @@ function DashboardAdditional(){
             <div className={`${styles.graphContainer} ${styles.stackBar}`}>
                 <div className={styles.card}>
                     <StackedBarChart
-                    data={data}
+                    data={dashboardData.prevImpact}
                     series={["Exito", "Fallido", "Ninguno"]}
                     title="Impacto del historial previo"
                     yLabel="Tasa de Conversión"
@@ -214,7 +214,7 @@ function DashboardAdditional(){
             <div className={`${styles.graphContainer} ${styles.timeSer}`}>
                 <div className={styles.card}>
                     <TimeSeriesChart
-                    data={dashboardData.campaignEfficiency}
+                    data={normalizedData}
                     seriesKeys={allKeys}
                     title="Índice de eficiencia por campaña"
                     yLabel="Tasa de Conversión"
