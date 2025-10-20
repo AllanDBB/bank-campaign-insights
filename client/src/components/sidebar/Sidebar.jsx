@@ -47,9 +47,11 @@ export default function Sidebar() {
                 </nav>
 
                 <div className={styles.filterSection}>
-                    <h4 className={styles.filterTitle}>Filtros Activos</h4>
-                    <div className={styles.filterBadge}>0</div>
-                    <button 
+                    <h4 className={styles.filterTitle}>Filtro Activo</h4>
+                    <div className={styles.filterName}>
+                        Ninguno
+                    </div>
+                    <button
                         className={styles.configButton}
                         onClick={() => setShowConfigureFilters(true)}
                     >

@@ -1,22 +1,27 @@
 .filterRow {
     display: grid;
-    grid-template-columns: 100px 1fr 2fr;
+    grid-template-columns: 100px 1fr 2fr 80px;
     gap: 1rem;
     padding: 1.5rem;
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
     align-items: center;
     transition: all 0.3s ease;
+    position: relative;
+    overflow: visible;
 }
 
 .filterRow:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(74, 155, 155, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filterRow.highlighted {
-    background-color: rgba(74, 155, 155, 0.25);
-    border-color: #4A9B9B;
+    background: linear-gradient(135deg, rgba(74, 155, 155, 0.15) 0%, rgba(74, 155, 155, 0.08) 100%);
+    border-color: rgba(74, 155, 155, 0.5);
+    box-shadow: 0 2px 8px rgba(74, 155, 155, 0.15);
 }
 
 .checkboxContainer {
@@ -26,22 +31,230 @@
 }
 
 .checkbox {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
     accent-color: #4A9B9B;
+    border-radius: 6px;
 }
 
 .fieldName {
     color: white;
     font-size: 1.1rem;
     font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fieldSelect {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.95rem;
+    color: #1a1a1a;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    max-width: 280px;
+}
+
+.fieldSelect:focus {
+    background-color: white;
+    border-color: #4A9B9B;
+    box-shadow: 0 0 0 3px rgba(74, 155, 155, 0.15);
+}
+
+.fieldSelect option {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.selectInput {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.95rem;
+    flex: 1;
+    max-width: 280px;
+    outline: none;
+    color: #1a1a1a;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.selectInput:focus {
+    background-color: white;
+    border-color: #4A9B9B;
+    box-shadow: 0 0 0 3px rgba(74, 155, 155, 0.15);
+}
+
+.actionsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.removeButton {
+    background-color: rgba(231, 76, 60, 0.2);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    color: #e74c3c;
+    font-size: 1.5rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    line-height: 1;
+}
+
+.removeButton:hover {
+    background-color: rgba(231, 76, 60, 0.3);
+    border-color: #e74c3c;
+    transform: scale(1.1);
+}
+
+.addButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.addButton:disabled:hover {
+    transform: none;
+}
+
+.rangeWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.errorMessage {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #e74c3c;
+    font-size: 0.85rem;
+    font-weight: 500;
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+.rangeInput.error,
+.addInput.error {
+    border-color: #e74c3c;
+    background-color: rgba(231, 76, 60, 0.05);
+}
+
+.rangeInput.error:focus,
+.addInput.error:focus {
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15);
+}
+
+.autocompleteWrapper {
+    position: relative;
+    flex: 1;
+    max-width: 280px;
+}
+
+.suggestions {
+    min-width: 280px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+    border: 2px solid rgba(74, 155, 155, 0.4);
+    border-radius: 12px;
+    max-height: 240px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(74, 155, 155, 0.2);
+    backdrop-filter: blur(12px);
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.suggestions::-webkit-scrollbar {
+    width: 8px;
+}
+
+.suggestions::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    margin: 4px 0;
+}
+
+.suggestions::-webkit-scrollbar-thumb {
+    background: rgba(74, 155, 155, 0.5);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.suggestions::-webkit-scrollbar-thumb:hover {
+    background: rgba(74, 155, 155, 0.7);
+    background-clip: content-box;
+}
+
+.suggestionItem {
+    padding: 12px 16px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+}
+
+.suggestionItem:first-child {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.suggestionItem:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.suggestionItem:hover {
+    background: linear-gradient(90deg, rgba(74, 155, 155, 0.25) 0%, rgba(74, 155, 155, 0.15) 100%);
+    color: white;
+    padding-left: 20px;
+}
+
+.suggestionItem:active {
+    background: rgba(74, 155, 155, 0.35);
 }
 
 .valuesContainer {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
+    overflow: visible;
+    position: relative;
 }
 
 /* Range Inputs */
@@ -65,18 +278,22 @@
 }
 
 .rangeInput {
-    background-color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 0.5rem 0.8rem;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
     font-size: 0.95rem;
-    width: 100px;
+    width: 110px;
     outline: none;
-    color: #000;
+    color: #1a1a1a;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 .rangeInput:focus {
-    box-shadow: 0 0 0 2px #4A9B9B;
+    background-color: white;
+    border-color: #4A9B9B;
+    box-shadow: 0 0 0 3px rgba(74, 155, 155, 0.15);
 }
 
 /* Multiple Values */
@@ -84,35 +301,50 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    position: relative;
+    overflow: visible;
 }
 
 .addValueContainer {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    justify-content: center;
 }
 
 .addValueContainer label {
     color: white;
     font-size: 1rem;
     font-weight: 500;
-    min-width: 60px;
 }
 
 .addInput {
-    background-color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 0.5rem 0.8rem;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
     font-size: 0.95rem;
     flex: 1;
-    max-width: 250px;
+    max-width: 280px;
     outline: none;
-    color: #000;
+    color: #1a1a1a;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.addInput::placeholder {
+    color: rgba(26, 26, 26, 0.5);
+    font-weight: 400;
 }
 
 .addInput:focus {
-    box-shadow: 0 0 0 2px #4A9B9B;
+    background-color: white;
+    border-color: #4A9B9B;
+    box-shadow: 0 0 0 3px rgba(74, 155, 155, 0.15);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 .addButton {
@@ -174,20 +406,40 @@
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive Design */
+@media (max-width: 1024px) {
     .filterRow {
-        grid-template-columns: 60px 1fr;
-        gap: 0.8rem;
+        grid-template-columns: 90px 1fr 2fr 70px;
+        gap: 0.9rem;
+        padding: 1.3rem;
     }
 
-    .valuesContainer {
-        grid-column: 1 / -1;
+    .rangeInput,
+    .addInput,
+    .selectInput {
+        max-width: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .filterRow {
+        grid-template-columns: 70px 1fr 1.5fr 60px;
+        gap: 0.7rem;
+        padding: 1.2rem;
+    }
+
+    .fieldName {
+        font-size: 1rem;
+    }
+
+    .fieldSelect {
+        font-size: 0.95rem;
+        padding: 0.5rem;
     }
 
     .rangeInputs {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.8rem;
         align-items: flex-start;
     }
 
@@ -195,15 +447,98 @@
         width: 100%;
     }
 
+    .rangeGroup label {
+        font-size: 0.95rem;
+        min-width: 35px;
+    }
+
     .rangeInput {
         flex: 1;
+        width: 100%;
+        max-width: none;
     }
 
     .addValueContainer {
         flex-wrap: wrap;
     }
 
-    .addInput {
+    .addInput,
+    .selectInput {
         max-width: 100%;
+    }
+
+    .tag {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .removeButton {
+        width: 32px;
+        height: 32px;
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .filterRow {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .checkboxContainer,
+    .actionsContainer {
+        position: absolute;
+    }
+
+    .checkboxContainer {
+        top: 1rem;
+        left: 1rem;
+    }
+
+    .actionsContainer {
+        top: 1rem;
+        right: 1rem;
+    }
+
+    .fieldName {
+        padding-left: 40px;
+        padding-right: 40px;
+        font-size: 0.95rem;
+    }
+
+    .fieldSelect {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .valuesContainer {
+        margin-top: 0.5rem;
+    }
+
+    .rangeInputs {
+        gap: 0.7rem;
+    }
+
+    .rangeGroup label {
+        font-size: 0.9rem;
+    }
+
+    .rangeInput,
+    .addInput,
+    .selectInput {
+        font-size: 0.9rem;
+        padding: 0.55rem 0.8rem;
+    }
+
+    .addValueContainer label {
+        font-size: 0.9rem;
+        min-width: 55px;
+    }
+
+    .removeButton {
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
     }
 }
