@@ -5,14 +5,16 @@ import TitleCard from "../../components/titleCard/TitleCard";
 import ArrowButton from "../../components/arrowButton/ArrowButton";
 import DashboardGeneral from "./dashboardTabs/dashboardGeneral/DashboardGeneral"
 import DashbaordCall from "./dashboardTabs/dashboardCallDetails/DashboardCall";
+import DashboardAdditional from "./dashboardTabs/dashboardAdditional/DashboardAdditional";
+import DashboardKPI from "./dashboardTabs/dashboardKPI/DashboardKPI"
 
 function Dashboard() {
     const [page, setPage] = useState(0);
     const dashboards = [
         { id: 0, title: "Dashboard General", component: <DashboardGeneral/> },
         { id: 1, title: "Dashboard de Detalles de Llamadas", component: <DashbaordCall/> },
-        { id: 2, title: "Dashboard", component: <DashbaordCall/> },
-        { id: 3, title: "Dashboard", component: <DashbaordCall/> }
+        { id: 2, title: "Dashboard Adicional", component: <DashboardAdditional/> },
+        { id: 3, title: "Dashboard de KPIs", component: <DashboardKPI/> }
     ];
 
     const handleExport = () => {

@@ -17,6 +17,7 @@ const dataEjemploLlamadas = [
     {group: "Resultado", Aceptada: 600, Rechazada: 340},
 ];
 
+
 const dataEjemploHeatmap = [
     { name: "Mon", value: 30 },
     { name: "Tue", value: 45 },
@@ -110,12 +111,12 @@ function DashboardCall(){
                 <div className={styles.card}>
                     <Histogram 
                     data={dataEjemploLinea} 
-                    xLabel="Mes" 
+                    xLabel="Campaña" 
                     yLabel="Cantidad" 
                     title="Llamadas por Campaña" 
                     showBars={false}
                     showLine={true}
-                    lineColor= "#835eacff">
+                    lineColor= "#8f770dff">
                     </Histogram>
                 </div>
             </div>

@@ -23,13 +23,13 @@ import { Typography } from "@mui/material";
  * @param {boolean} [horizontal=false] - Si es true, el gráfico se renderiza horizontalmente
  */
 export default function MultiLineChart({
-  data,
-  lines = [],
-  colors = [],
-  title = "Gráfico de Líneas",
-  xLabel = "Eje X",
-  yLabel = "Eje Y",
-  horizontal = false,
+    data,
+    lines = [],
+    colors = [],
+    title = "Gráfico de Líneas",
+    xLabel = "Eje X",
+    yLabel = "Eje Y",
+    horizontal = false,
 }) {
     const defaultColors = [
         "#2563eb", 

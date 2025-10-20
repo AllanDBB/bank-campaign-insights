@@ -1,64 +1,80 @@
 import React from "react";
 import {
-    ResponsiveContainer,
-    ComposedChart,
-    XAxis,
-    YAxis,
-    Tooltip,
-    Rectangle,
-    CartesianGrid
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+  LabelList,
 } from "recharts";
 import { Typography } from "@mui/material";
 
-/**
- * Heatmap component
- * @param {Array} data - Array of rows, each row is { name: string, values: number[] }
- * @param {string[]} columns - Labels for columns
- * @param {string} title - Chart title
- * @param {function} colorScale - Function(value) => color
- */
 export default function Heatmap({ data, columns, title = "Heatmap", colorScale }) {
+  const defaultColorScale = (value) => {
+    const max = Math.max(...data.flatMap(d => d.values));
+    const intensity = Math.floor((value / max) * 255);
+    return `rgb(255, ${255 - intensity}, ${255 - intensity})`;
+  };
 
-    const defaultColorScale = (value) => {
-        const max = Math.max(...data.flatMap(d => d.values));
-        const intensity = Math.floor((value / max) * 255);
-        return `rgb(255, ${255 - intensity}, ${255 - intensity})`;
-    };
+  const scale = colorScale || defaultColorScale;
 
-    const scale = colorScale || defaultColorScale;
+  // Transformamos los datos para que cada columna sea una propiedad
+  const transformedData = data.map((row) =>
+    columns.reduce(
+      (acc, col, i) => ({ ...acc, [col]: row.values[i], name: row.name }),
+      {}
+    )
+  );
 
-    return (
+  return (
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
-    <Typography variant="body1" align="center" sx={{ mb: 1 }}>
+      <Typography variant="body1" align="center" sx={{ mb: 1 }}>
         {title}
-    </Typography>
-    <div style={{ flexGrow: 1 }}>
+      </Typography>
+      <div style={{ flexGrow: 1 }}>
         <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart
+          <BarChart
+            data={transformedData}
             layout="vertical"
-            data={data}
-            margin={{ top: 20, right: 20, bottom: 20, left: 60 }}
-        >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" />
+            margin={{ top: 20, right: 20, bottom: 60, left: 80 }}
+            barGap={2}          // separa columnas
+            barCategoryGap={0}  // evita espacio extra entre filas
+          >
+            {/* Ocultamos el eje X ya que vamos a poner labels manuales */}
+            <XAxis type="number" hide />
             <YAxis type="category" dataKey="name" />
             <Tooltip />
-            {columns.map((col, colIndex) =>
-            data.map((row, rowIndex) => (
-                <Rectangle
-                key={`${rowIndex}-${colIndex}`}
-                x={(colIndex / columns.length) * 100 + "%"}
-                y={rowIndex * (100 / data.length) + "%"}
-                width={100 / columns.length + "%"}
-                height={100 / data.length + "%"}
-                fill={scale(row.values[colIndex])}
-                stroke="#fff"
-                />
-            ))
-            )}
-        </ComposedChart>
+
+            {columns.map((col) => (
+              <Bar key={col} dataKey={col} stackId="a" barSize={30}>
+                {transformedData.map((row, i) => (
+                  <Cell key={i} fill={scale(row[col])} />
+                ))}
+                {/* Mostrar valor dentro de cada celda */}
+                <LabelList dataKey={col} position="inside" fill="#000" />
+              </Bar>
+            ))}
+          </BarChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* Labels de columnas debajo del heatmap */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${columns.length}, 1fr)`,
+          marginTop: "5px",
+          textAlign: "center",
+          fontSize: "12px",
+          fontWeight: "bold",
+        }}
+      >
+        {columns.map((col) => (
+          <div key={col}>{col}</div>
+        ))}
+      </div>
     </div>
-    </div>
-    );
+  );
 }

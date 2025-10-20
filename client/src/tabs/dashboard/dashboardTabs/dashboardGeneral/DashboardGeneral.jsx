@@ -35,29 +35,7 @@ const dataEjemploHistograma = [
 function DashboardGeneral(){
     return (
         <div className={styles.mainContainer}>
-            <div className={`${styles.graphContainer} ${styles.cardContainer}`}>
-                <div className={styles.card}>
-                    <Typography variant="body1" align="center">Total de Contactos</Typography>
-                    <Divider 
-                    orientation="horizontal" 
-                    variant="middle" 
-                    flexItem 
-                    sx={{ my: 2,backgroundColor: 'white',borderColor: 'white',}}/>
-                    <Typography variant="h4" align="center"> 45000 </Typography>
-                </div>
-            </div>
-            <div className={`${styles.graphContainer} ${styles.cardContainer}`}>
-                <div className={styles.card}>
-                    <Typography variant="body1" align="center">Duración media de las llamadas</Typography>
-                    <Divider 
-                    orientation="horizontal" 
-                    variant="middle" 
-                    flexItem 
-                    sx={{ my: 2,backgroundColor: 'white',borderColor: 'white',}}/>
-                    <Typography variant="h4" align="center"> 45000 </Typography>
-                </div>
-            </div>
-            <div className={`${styles.graphContainer} ${styles.cardContainer}`}>
+            <div className={`${styles.graphContainer} ${styles.cardContainerSuccess}`}>
                 <div className={styles.card}>
                     <Typography variant="body1" align="center">Llamadas Exitosas</Typography>
                     <Divider 
@@ -68,7 +46,7 @@ function DashboardGeneral(){
                     <Typography variant="h4" align="center"> 45000 </Typography>
                 </div>
             </div>
-            <div className={`${styles.graphContainer} ${styles.cardContainer}`}>
+            <div className={`${styles.graphContainer} ${styles.cardContainerFail}`}>
                 <div className={styles.card}>
                     <Typography variant="body1" align="center">Llamadas No Exitosas</Typography>
                     <Divider 
