@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Sidebar from "./components/sidebar/Sidebar";
 import Table from "./tabs/Table";
-import Dashboard from "./tabs/Dashboard";
+import Dashboard from "./tabs/dashboard/Dashboard";
 import UsedFilters from "./tabs/UsedFilters";
 import AdvancedAnalytics from "./tabs/AdvancedAnalytics";
 import { FilterProvider } from "./context/FilterContext";
