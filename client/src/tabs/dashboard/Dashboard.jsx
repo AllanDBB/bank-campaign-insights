@@ -10,7 +10,9 @@ function Dashboard() {
     const [page, setPage] = useState(0);
     const dashboards = [
         { id: 0, title: "Dashboard General", component: <DashboardGeneral/> },
-        { id: 1, title: "Dashboard Detallado", component: <DashbaordCall/> },
+        { id: 1, title: "Dashboard de Detalles de Llamadas", component: <DashbaordCall/> },
+        { id: 2, title: "Dashboard", component: <DashbaordCall/> },
+        { id: 3, title: "Dashboard", component: <DashbaordCall/> }
     ];
 
     const handleExport = () => {

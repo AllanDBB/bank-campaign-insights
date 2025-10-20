@@ -1,8 +1,6 @@
 import React from "react";
 import styles from "./DashboardCall.module.css"
-import {Typography, Divider} from "@mui/material"
 import Histogram from "../../../../components/histogram/Histogram"
-import CircularChart from "../../../../components/pieChart/CircularChart";
 import GroupedBarChart from "../../../../components/groupedBarChart/GroupedBarChart";
 import AreaChartComponent from "../../../../components/areaChart/AreaChart";
 import StackedBarChart from "../../../../components/stackedChart/stackedChart";
