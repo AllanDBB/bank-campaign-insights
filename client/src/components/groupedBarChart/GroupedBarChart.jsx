@@ -14,17 +14,18 @@ import { Typography } from "@mui/material";
  * GroupedBarChart component (horizontal or vertical)
  * @param {Object[]} data - Array de objetos con cada grupo y sus valores
  * @param {string[]} keys - Nombres de las categorías (ej. ["España", "Colombia", "México"])
- * @param {string[]} colors - Colores para cada categoría
+ * @param {string[]} [colors] - Colores opcionales para cada categoría
  * @param {string} title - Título del gráfico
  * @param {boolean} [horizontal=false] - Render horizontal or vertical
  */
 export default function GroupedBarChart({
     data,
     keys,
-    colors = ["#44A1B4", "#0D4A6B", "#710468"],
+    colors,
     title = "Gráfico de Barras Agrupadas",
     horizontal = false,
 }) {
+    const generatedColors = colors || keys.map((_, i) => `hsl(${(i * 360) / keys.length}, 70%, 50%)`);
     return (
         <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
             <Typography variant="body1" align="center" sx={{ mb: 1 }}>
@@ -51,7 +52,7 @@ export default function GroupedBarChart({
                         <Tooltip />
                         <Legend verticalAlign="top" height={36} />
                         {keys.map((key, index) => (
-                            <Bar key={key} dataKey={key} fill={colors[index % colors.length]} />
+                            <Bar key={key} dataKey={key} fill={generatedColors[index % generatedColors.length]} />
                         ))}
                     </BarChart>
                 </ResponsiveContainer>

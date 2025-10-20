@@ -36,11 +36,11 @@ const dataEjemploTimeSer = [
 ];
 
 const scatterData = [
-    { x: 4.2, y: 3.8, z: 2.5, name: "Punto 1" },
-    { x: 1.5, y: 4.7, z: 3.0, name: "Punto 2" },
-    { x: 3.3, y: 2.1, z: 1.5, name: "Punto 3" },
-    { x: 0.8, y: 1.9, z: 2.0, name: "Punto 4" },
-    { x: 2.7, y: 4.0, z: 3.5, name: "Punto 5" },
+    { x: 4.2, y: 3.8, name: "Point" },
+    { x: 1.5, y: 4.7, z: 3.0, name: "Punto 1" },
+    { x: 3.3, y: 2.1, z: 1.5, name: "Punto 1" },
+    { x: 0.8, y: 1.9, z: 2.0, name: "Punto 1" },
+    { x: 2.7, y: 4.0, z: 3.5, name: "Punto 1" },
     { x: 4.9, y: 0.5, z: 2.2, name: "Punto 6" },
     { x: 3.6, y: 3.3, z: 1.8, name: "Punto 7" },
     { x: 2.2, y: 4.5, z: 2.9, name: "Punto 8" },

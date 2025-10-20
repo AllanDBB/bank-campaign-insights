@@ -8,8 +8,24 @@ import ScatterPlot from "../../../../components/scatterPlot/ScatterPlot";
 import LineChart from "../../../../components/lineChart/LineChart";
 import TimeSeriesChart from "../../../../components/timeSeries/TimeSeriesChart";
 
+function normalizeData(data) {
+    const allKeys = Array.from(
+        new Set(
+        data.flatMap(item => Object.keys(item).filter(key => key !== "date"))
+        )
+    );
+    const normalizedData = data.map(item => {
+        const newItem = { ...item };
+        allKeys.forEach(key => {
+        if (!(key in newItem)) newItem[key] = 0;
+        });
+        return newItem;
+    });
+    return { normalizedData, allKeys };
+}
+
 const data = [
-    {group: "Contacto", Cellular: 40, Telephone: 60},
+    {group: "Contacto", Cellular: 40.3, Telephone: 60},
 ];
 
 const stackedBarChart = [
@@ -84,20 +100,21 @@ const dataEjemploBarras = [
 ];
 
 const dataConversionMensual = [
-    { date: "ene", campañaA: 0.05, campañaB: 0.03, campañaC: 0.02 },
-    { date: "feb", campañaA: 0.06, campañaB: 0.035, campañaC: 0.025 },
-    { date: "mar", campañaA: 0.07, campañaB: 0.04, campañaC: 0.03 },
-    { date: "abr", campañaA: 0.065, campañaB: 0.042, campañaC: 0.028 },
-    { date: "may", campañaA: 0.075, campañaB: 0.045, campañaC: 0.032 },
-    { date: "jun", campañaA: 0.08, campañaB: 0.048, campañaC: 0.035 },
-    { date: "jul", campañaA: 0.085, campañaB: 0.05, campañaC: 0.038 },
-    { date: "ago", campañaA: 0.09, campañaB: 0.052, campañaC: 0.04 },
-    { date: "sep", campañaA: 0.092, campañaB: 0.054, campañaC: 0.042 },
-    { date: "oct", campañaA: 0.095, campañaB: 0.056, campañaC: 0.045 },
-    { date: "nov", campañaA: 0.1, campañaB: 0.058, campañaC: 0.048 },
-    { date: "dic", campañaA: 0.105, campañaB: 0.06, campañaC: 0.05 },
+    { date: "ene", campañaA: 0.05, campañaB: 0.03, campañaC: 0.02},
+    { date: "feb", campañaA: 0.06, campañaB: 0.035, campañaC: 0.025, campañaD: 1 },
+    { date: "mar", campañaA: 0.07, campañaB: 0.04, campañaC: 0.03, campañaD: 1 },
+    { date: "abr", campañaA: 0.065, campañaB: 0.042, campañaC: 0.028, campañaD: 1 },
+    { date: "may", campañaA: 0.075, campañaB: 0.045, campañaC: 0.032, campañaD: 1 },
+    { date: "jun", campañaA: 0.08, campañaB: 0.048, campañaC: 0.035, campañaD: 1 },
+    { date: "jul", campañaA: 0.085, campañaB: 0.05, campañaC: 0.038, campañaD: 1 },
+    { date: "ago", campañaA: 0.09, campañaB: 0.052, campañaC: 0.04, campañaD: 1 },
+    { date: "sep", campañaA: 0.092, campañaB: 0.054, campañaC: 0.042, campañaD: 1 },
+    { date: "oct", campañaA: 0.095, campañaB: 0.056, campañaC: 0.045, campañaD: 1 },
+    { date: "nov", campañaA: 0.1, campañaB: 0.058, campañaC: 0.048, campañaD: 1 },
+    { date: "dic", campañaA: 0.105, campañaB: 0.06, campañaC: 0.05 , campañaD: 1},
 ];
 
+const { normalizedData, allKeys } = normalizeData(dataConversionMensual);
 
 const dataEjemploLinea = [
 { name: "A", lineValue: 30},
@@ -195,8 +212,8 @@ function DashboardAdditional(){
             <div className={`${styles.graphContainer} ${styles.timeSer}`}>
                 <div className={styles.card}>
                     <TimeSeriesChart
-                    data={dataConversionMensual}
-                    seriesKeys={["campañaA", "campañaB", "campañaC"]}
+                    data={normalizedData}
+                    seriesKeys={allKeys}
                     title="Índice de eficiencia por campaña"
                     yLabel="Tasa de Conversión"
                     />
