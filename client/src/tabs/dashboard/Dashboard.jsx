@@ -4,13 +4,13 @@ import styles from "./Dashboard.module.css"
 import TitleCard from "../../components/titleCard/TitleCard";
 import ArrowButton from "../../components/arrowButton/ArrowButton";
 import DashboardGeneral from "./dashboardTabs/dashboardGeneral/DashboardGeneral"
-import DashboardDetailed from "./dashboardTabs/DashboardDetailed";
+import DashbaordCall from "./dashboardTabs/dashboardCallDetails/DashboardCall";
 
 function Dashboard() {
     const [page, setPage] = useState(0);
     const dashboards = [
         { id: 0, title: "Dashboard General", component: <DashboardGeneral/> },
-        { id: 1, title: "Dashboard Detallado", component: <DashboardDetailed/> },
+        { id: 1, title: "Dashboard Detallado", component: <DashbaordCall/> },
     ];
 
     const handleExport = () => {
