@@ -116,8 +116,8 @@ const controlSort = (column) => {
 
 //mensajito para evitar confusion
 const sortMessage = sortColumn 
-  ? `Tabla ordenada: según columna "${sortColumn}", ${sortDirection === "asc" ? "ascendente" : "descendente"}`
-  : "Tabla sin ordenamiento";
+  ? `Orden: ${sortColumn} ${sortDirection === "asc" ? "↑" : "↓"}`
+  : "Sin orden";
 
 
 //control de cambio de paginas
@@ -195,17 +195,24 @@ return (
     </div>
 
 
-    
+
+    {/* Paginación + mensajito */}
+    <div style={{
+    position: "relative",      
+    display: "flex",
+    justifyContent: "center",    
+    alignItems: "center",
+    marginTop: "1.5rem",
+    padding: "0 4.5rem"          
+    }}>
     {/* Botones de cambio de página */}
     <div style={{
-      display: "flex",
-      justifyContent: "center",   
-      alignItems: "center",
-      gap: "1rem",                
-      marginTop: "1.5rem"
+        display: "flex",
+        alignItems: "center",
+        gap: "1rem",
+        paddingTop: "3.5rem"
     }}>
-      {/* Botón anterior */}
-      <button onClick={handlePrev} disabled={page === 1} style={{
+        <button onClick={handlePrev} disabled={page === 1} style={{
         padding: "0.5rem 1.5rem",
         fontSize: "1rem",
         backgroundColor: "#17749fff",
@@ -213,16 +220,13 @@ return (
         border: "none",
         borderRadius: "6px",
         cursor: "pointer",
-        opacity: page === 1 ? 0.5 : 1   //cuando es 1, 0.5. sino 1
-      }}>
-        Back
-      </button>
+        opacity: page === 1 ? 0.5 : 1
+        }}>Back</button>
 
-      {/* Número de página dentro de un círculo */}
-      <div style={{
+        <div style={{
         width: "2.5rem",
         height: "2.5rem",
-        borderRadius: "50%", // círculo
+        borderRadius: "50%",
         backgroundColor: "#44A1B4",
         color: "white",
         display: "flex",
@@ -230,15 +234,11 @@ return (
         justifyContent: "center",
         fontWeight: "bold",
         fontSize: "1rem"
-      }}>
-        {page}
-      </div>
+        }}>{page}</div>
 
-      {/* Total de páginas */}
-      <span style={{color: "white", fontSize: "1rem"}}>/ {totalPages}</span>
+        <span style={{color: "white", fontSize: "1rem"}}>/ {totalPages}</span>
 
-      {/* Botón siguiente */}
-      <button onClick={handleNext} disabled={page === totalPages} style={{
+        <button onClick={handleNext} disabled={page === totalPages} style={{
         padding: "0.5rem 1.5rem",
         fontSize: "1rem",
         backgroundColor: "#17749fff",
@@ -247,16 +247,34 @@ return (
         borderRadius: "6px",
         cursor: "pointer",
         opacity: page === totalPages ? 0.5 : 1
-      }}>
-        Next
-      </button>
+        }}>Next</button>
     </div>
-
 
     {/* Mensajito */}
-    <div style={{ margin: "1rem 0", textAlign: "center", color: "#44A1B4", fontStyle: "italic" }}>
-    {sortMessage}
+    <div style={{
+        position: "absolute",
+        right: 0,
+        display: "inline-block",
+        backgroundColor: "#1f1f1f",
+        color: "#44A1B4",
+        border: "1px solid #44A1B4",
+        borderRadius: "8px",
+        padding: "0.5rem 1rem",
+        textAlign: "center",
+        fontWeight: "bold",
+        marginRight: "4.8rem",
+    }}>
+        <div style={{ fontSize: "1.2rem", marginBottom: "0.2rem" }}>Orden</div>
+        <div style={{ fontSize: "1rem" }}>
+            {sortColumn ? (
+                <>
+                {sortColumn} <span style={{ fontSize: "1.5rem" }}>{sortDirection === "asc" ? "↑" : "↓"}</span>
+                </> ) : ( "Ninguno" )}
+        </div>
+        </div>
     </div>
+
+
 
     {/* La tabla */}
     <div style={{
@@ -281,7 +299,7 @@ return (
             {/* Mientras haya documentos, devuelve un array con los titulos (keys) de las columnas */}
             {/* Por cada columna (key) genera una <th> (columna)*/}
             {documents[0] && Object.keys(documents[0]).map((key) => (
-              <th key={key} style={{border: "1px white", padding: "0.75rem 1.5rem", fontWeight: "500", minWidth: "110px"}}>
+              <th onClick={() => controlSort(key)} key={key} style={{border: "1px white", padding: "0.75rem 1.5rem", fontWeight: "500", minWidth: "110px", cursor: "pointer"}}>
                 {key}
               </th>
             ))}
@@ -291,7 +309,7 @@ return (
         {/* Filas */}
         <tbody>
           {/* Recorre los documentos completos obtenidos del backend */}
-          {documents.map((doc, index) => (
+          {sortedDocuments.map((doc, index) => (
             <tr key={doc._id} style={{ backgroundColor: index % 2 === 0 ? "#0c4d63ff" : "#6a6a6aff" }}> {/* filas alternadas */}
               {Object.keys(doc).map((key) => ( 
                 <td key={key} style={{border: "none", padding: "1rem", textAlign: "center", verticalAlign: "middle"}}>  {/* Para cada columna del doc genera <td> (celda) */}
