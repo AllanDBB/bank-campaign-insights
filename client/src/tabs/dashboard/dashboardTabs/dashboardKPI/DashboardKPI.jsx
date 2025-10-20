@@ -4,9 +4,10 @@ import GroupedBarChart from "../../../../components/groupedBarChart/GroupedBarCh
 import StackedBarChart from "../../../../components/stackedChart/stackedChart";
 import { Typography, Divider } from "@mui/material";
 import Histogram from "../../../../components/histogram/Histogram";
-import ScatterPlot from "../../../../components/scatterPlot/ScatterPlot";
-import LineChart from "../../../../components/lineChart/LineChart";
 import TimeSeriesChart from "../../../../components/timeSeries/TimeSeriesChart";
+import { useContext } from "react";
+import { DashboardDataContext } from "../../../../context/DashboardDataContext";
+
 
 function normalizeData(data) {
     const allKeys = Array.from(
@@ -139,6 +140,7 @@ const dataEjemploHistograma = [
 ];
 
 function DashboardAdditional(){
+    const {dashboardData, setDashboardData} = useContext(DashboardDataContext);
     return (
         <div className={styles.mainContainer}>
             <div className={`${styles.graphContainer} ${styles.cardContainerCR}`}>
@@ -149,7 +151,7 @@ function DashboardAdditional(){
                     variant="middle" 
                     flexItem 
                     sx={{ my: 2,backgroundColor: 'white',borderColor: 'white',}}/>
-                    <Typography variant="h4" align="center"> 45000 </Typography>
+                    <Typography variant="h4" align="center"> {dashboardData.cr} </Typography>
                 </div>
             </div>
             <div className={`${styles.graphContainer} ${styles.cardContainerTotal}`}>
@@ -160,7 +162,7 @@ function DashboardAdditional(){
                     variant="middle" 
                     flexItem 
                     sx={{ my: 2,backgroundColor: 'white',borderColor: 'white',}}/>
-                    <Typography variant="h4" align="center"> 45000 </Typography>
+                    <Typography variant="h4" align="center"> {dashboardData.totalCalls} </Typography>
                 </div>
             </div>
             <div className={`${styles.graphContainer} ${styles.cardContainerMedian}`}>
@@ -171,14 +173,14 @@ function DashboardAdditional(){
                     variant="middle" 
                     flexItem 
                     sx={{ my: 2,backgroundColor: 'white',borderColor: 'white',}}/>
-                    <Typography variant="h4" align="center"> 45000 </Typography>
+                    <Typography variant="h4" align="center"> {dashboardData.callAvg} </Typography>
                 </div>
             </div>
             <div className={`${styles.graphContainer} ${styles.groupedBar}`}>
                 <div className={styles.card}>
                     <GroupedBarChart
-                    data={data}
-                    keys={["Cellular", "Telephone"]}
+                    data={dashboardData.contactSuccess}
+                    keys={["Celular", "Telefono"]}
                     colors={["#791070ff", "#9c851fff"]}
                     title="Tasa de éxito por Canal"
                     horizontal={false}
@@ -188,7 +190,7 @@ function DashboardAdditional(){
             <div className={`${styles.graphContainer} ${styles.ageBar}`}>
                 <div className={styles.card}>
                     <Histogram 
-                    data={dataEjemploBarras} 
+                    data={dashboardData.ageConversionRate} 
                     xLabel="Tasa de Conversión" 
                     yLabel="Rango de edad" 
                     title="Conversión por segmento de edad" 
@@ -201,8 +203,8 @@ function DashboardAdditional(){
             <div className={`${styles.graphContainer} ${styles.stackBar}`}>
                 <div className={styles.card}>
                     <StackedBarChart
-                    data={stackedBarChart}
-                    series={["nonexistant", "success", "failed"]}
+                    data={data}
+                    series={["Exito", "Fallido", "Ninguno"]}
                     title="Impacto del historial previo"
                     yLabel="Tasa de Conversión"
                     colors={["#1b1079ff", "#1f8d9cff" , "#1f9c57ff"]}
@@ -212,7 +214,7 @@ function DashboardAdditional(){
             <div className={`${styles.graphContainer} ${styles.timeSer}`}>
                 <div className={styles.card}>
                     <TimeSeriesChart
-                    data={normalizedData}
+                    data={dashboardData.campaignEfficiency}
                     seriesKeys={allKeys}
                     title="Índice de eficiencia por campaña"
                     yLabel="Tasa de Conversión"

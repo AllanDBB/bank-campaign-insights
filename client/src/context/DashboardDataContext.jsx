@@ -3,7 +3,8 @@ import React, {createContext, useState, useContext} from "react";
 const DashboardDataContext = createContext();
 
 export function DashboardDataProvider({children}){
-    const [dashboardData, setDashboardData] = useState({
+    const [dashboardData, setDashboardData] = useState(
+{
         // DASHBOARD GENERAL
         unsuccessfulCalls: 0, // poutcome != success
         successfulCalls: 0, // poutcome = success
@@ -45,24 +46,24 @@ export function DashboardDataProvider({children}){
                 Desconocido -> tasa de conversión de registros donde education = uknown
             */
             {group: "Educación", 
-                Primaria4to: 40, 
-                Primaria6to: 60, 
-                Primaria9no: 70,
-                Colegio: 23,
-                CursoProfesional: 42,
-                GradoUniversitario: 45,
-                Desconocido: 6000
+                Primaria4to: 0, 
+                Primaria6to: 0, 
+                Primaria9no: 0,
+                Colegio: 0,
+                CursoProfesional: 0,
+                GradoUniversitario: 0,
+                Desconocido: 0
                 },
         ],
         //DASHBOARD DE LLAMADAS
         contactType: [
             /* group -> Contacto
-            Cellular -> Cantidad de registros con contact = celular
-            Telephone -> Cantidad de registros con contact = telephone
+            Celular -> Cantidad de registros con contact = celular
+            Telefono -> Cantidad de registros con contact = telephone
              */
             {group: "Contacto", 
-                Cellular: 0, 
-                Telephone: 0}
+                Celular: 0, 
+                Telefono: 0}
         ],
         callsPerMonth: [
             /* name -> Mes, Ej: Dic
@@ -122,17 +123,19 @@ export function DashboardDataProvider({children}){
             value -> Cantidad de registros en ese número de días previos
             lineValue -> Tasa de conversión en ese número de días previos
             */
+            {name: "", value: 0, lineValue: 0}
         ],
         callSubscription: [
             /* name -> suscrito o no (Si/No)
             value -> cantidad de registros suscritos (y = yes/no)*/
-            { name: "Si", value: 30},
-            { name: "No", value: 70}
+            { name: "Si", value: 0},
+            { name: "No", value: 0}
         ],
         monthlyEur: [
             /* date -> iniciales del mes en minúscula, Ej: feb
             euribor -> euribor promedio en el mes
             */
+            {date: "", euribor: 0}
         ],
         // DASHBOARD KPIs
         // VER ANEXO C de SRS PARA ESPECIFICACION DE KPIs
@@ -144,8 +147,8 @@ export function DashboardDataProvider({children}){
             Celular -> tasa de exito para celular 
             Telephone -> tasa de exito para teléfono*/
             {group: "Contacto", 
-                Cellular: 0, 
-                Telephone: 0},
+                Celular: 0, 
+                Telefono: 0},
         ],
         ageConversionRate: [
             /*name -> Rango de edad 
@@ -158,6 +161,7 @@ export function DashboardDataProvider({children}){
             Fallido -> conversion condicionada a poutcome = failure
             Ninguno -> conversion condicionada a poutcome = nonexistant
             */
+            {group: "Resultado", Exito: 1, Fallido: 2, Ninguno: 0}
         ],
         campaignEfficiency: [
             /*date -> Iniciales minúsculas del mes, Ej: aug
@@ -166,7 +170,8 @@ export function DashboardDataProvider({children}){
                     { date: "feb", C1: 0.06, C2: 0.035, C3: 0.025, ...},
             */
         ]
-    });
+    }
+);
     return (
         <DashboardDataContext.Provider value={{ dashboardData, setDashboardData }}>
             {children}

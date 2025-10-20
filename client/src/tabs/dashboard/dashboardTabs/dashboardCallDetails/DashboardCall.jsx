@@ -4,68 +4,19 @@ import Histogram from "../../../../components/histogram/Histogram"
 import GroupedBarChart from "../../../../components/groupedBarChart/GroupedBarChart";
 import AreaChartComponent from "../../../../components/areaChart/AreaChart";
 import StackedBarChart from "../../../../components/stackedChart/stackedChart";
+import { useContext } from "react";
+import { DashboardDataContext } from "../../../../context/DashboardDataContext";
 
-const data = [
-    {group: "Contact", Cellular: 40, Telephone: 60},
-];
-
-const stackedBarChart = [
-    {name: "Resultado", nonexistant: 4000, success: 3325, failed:2190}
-]
-
-const dataEjemploLlamadas = [
-    {group: "Resultado", Aceptada: 600, Rechazada: 340},
-];
-
-
-const dataEjemploHeatmap = [
-    { name: "Mon", value: 30 },
-    { name: "Tue", value: 45 },
-    { name: "Wed", value: 60 },
-    { name: "Thu", value: 50 },
-    { name: "Fri", value: 70 },
-];
-
-const dataEjemploBarras = [
-{ name: "A", value: 30},
-{ name: "B", value: 70},
-{ name: "C", value: 80},
-{ name: "D", value: 20},
-{ name: "E", value: 50},
-{ name: "F", value: 20},
-{ name: "G", value: 20},
-];
-
-const dataEjemploLinea = [
-{ name: "A", lineValue: 30},
-{ name: "B", lineValue: 70},
-{ name: "C", lineValue: 80},
-{ name: "D", lineValue: 20},
-{ name: "E", lineValue: 50},
-{ name: "F", lineValue: 20},
-{ name: "G", lineValue: 20},
-];
-
-const dataEjemploHistograma = [
-{ name: "A", value: 30, lineValue: 10 },
-{ name: "B", value: 50, lineValue: 25 },
-{ name: "C", value: 80, lineValue: 60 },
-{ name: "D", value: 20, lineValue: 75 },
-{ name: "E", value: 20, lineValue: 75 },
-{ name: "F", value: 20, lineValue: 75 },
-{ name: "G", value: 20, lineValue: 75 },
-{ name: "H", value: 20, lineValue: 75 },
-{ name: "I", value: 20, lineValue: 75 },
-];
 
 function DashboardCall(){
+    const {dashboardData, setDashboardData} = useContext(DashboardDataContext);
     return (
         <div className={styles.mainContainer}>
             <div className={`${styles.graphContainer} ${styles.groupedBarContainer}`}>
                 <div className={styles.card}>
                     <GroupedBarChart
-                    data={data}
-                    keys={["Cellular", "Telephone"]}
+                    data={dashboardData.contactType}
+                    keys={["Celular", "Telefono"]}
                     title="Tipo de Contacto"
                     horizontal={true}
                     />
@@ -74,7 +25,7 @@ function DashboardCall(){
             <div className={`${styles.graphContainer} ${styles.lineContainer}`}>
                 <div className={styles.card}>
                     <Histogram 
-                    data={dataEjemploLinea} 
+                    data={dashboardData.callsPerMonth} 
                     xLabel="Mes" 
                     yLabel="Cantidad" 
                     title="Llamadas por Mes" 
@@ -87,7 +38,7 @@ function DashboardCall(){
             <div className={`${styles.graphContainer} ${styles.areaChartContainer}`}>
                 <div className={styles.card}>
                     <AreaChartComponent
-                    data={dataEjemploHeatmap}
+                    data={dashboardData.weekDayCR}
                     title="Tasa de conversión por día de la semana"
                     xLabel="Día"
                     yLabel="Tasa de Conversión"
@@ -99,8 +50,8 @@ function DashboardCall(){
             <div className={`${styles.graphContainer} ${styles.groupedDurationContainer}`}>
                 <div className={styles.card}>
                     <GroupedBarChart
-                    data={dataEjemploLlamadas}
-                    keys={["Aceptada", "Rechazada"]}
+                    data={dashboardData.callAvgDuration}
+                    keys={["Aceptadas", "Rechazadas"]}
                     colors={["#19a385ff", "#6b0d63ff"]}
                     title="Duración promedio de llamadas en segundos"
                     horizontal={true}
@@ -110,7 +61,7 @@ function DashboardCall(){
             <div className={`${styles.graphContainer} ${styles.capaingHist}`}>
                 <div className={styles.card}>
                     <Histogram 
-                    data={dataEjemploLinea} 
+                    data={dashboardData.campaignCalls} 
                     xLabel="Campaña" 
                     yLabel="Cantidad" 
                     title="Llamadas por Campaña" 
@@ -123,8 +74,8 @@ function DashboardCall(){
             <div className={`${styles.graphContainer} ${styles.stackedChart}`}>
                 <div className={styles.card}>
                     <StackedBarChart
-                    data={stackedBarChart}
-                    series={["nonexistant", "success", "failed"]}
+                    data={dashboardData.callOutcome}
+                    series={["Exito", "Ninguno", "Fallida"]}
                     title="Resultado de las llamadas"
                     yLabel="Cantidad"
                     />
