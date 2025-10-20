@@ -16,7 +16,7 @@ function ConfigureFilters({ onClose }) {
     const [originalState, setOriginalState] = useState(null);
     const { fields: availableFields, loading: schemaLoading, error: schemaError } = useFilterSchema();
     const { toasts, removeToast, success, error, warning } = useToast();
-    const { applyFilter, clearFilter } = useActiveFilter();
+    const { applyFilter } = useActiveFilter();
 
     const handleSelectFilter = (filter) => {
         setCurrentFilterId(filter._id);
@@ -106,6 +106,13 @@ function ConfigureFilters({ onClose }) {
         const fieldConfig = availableFields.find(f => f.key === newFieldKey);
         if (!fieldConfig) return;
 
+        // Check if this field is already being used by another filter
+        const isFieldUsed = filters.some(f => f.id !== id && f.fieldKey === newFieldKey);
+        if (isFieldUsed) {
+            warning("Este campo ya está siendo utilizado en otro filtro");
+            return;
+        }
+
         setFilters(filters.map(filter => {
             if (filter.id === id) {
                 return {
@@ -124,17 +131,26 @@ function ConfigureFilters({ onClose }) {
     const handleAddFilterRow = () => {
         if (availableFields.length === 0) return;
 
+        // Find fields that haven't been added yet
+        const usedFieldKeys = filters.map(f => f.fieldKey);
+        const availableFieldsToAdd = availableFields.filter(field => !usedFieldKeys.includes(field.key));
+
+        if (availableFieldsToAdd.length === 0) {
+            warning("Todos los campos ya han sido agregados como filtros");
+            return;
+        }
+
         const newId = filters.length > 0 ? Math.max(...filters.map(f => f.id)) + 1 : 1;
-        const firstField = availableFields[0];
+        const firstAvailableField = availableFieldsToAdd[0];
 
         setFilters([...filters, {
             id: newId,
             active: true,
-            fieldKey: firstField.key,
-            field: firstField.label,
-            type: firstField.type,
-            values: firstField.type === "range" ? { min: "", max: "" } : [],
-            options: firstField.options
+            fieldKey: firstAvailableField.key,
+            field: firstAvailableField.label,
+            type: firstAvailableField.type,
+            values: firstAvailableField.type === "range" ? { min: "", max: "" } : [],
+            options: firstAvailableField.options
         }]);
     };
 
@@ -428,9 +444,6 @@ function ConfigureFilters({ onClose }) {
                 <div className={styles.actionButtons}>
                     <button className={styles.cancelButton} onClick={handleCancel}>
                         {mode === "edit" ? "Volver" : "Cancelar"}
-                    </button>
-                    <button className={styles.clearFilterButton} onClick={clearFilter}>
-                        Limpiar Filtro
                     </button>
                     <button className={styles.applyButton} onClick={handleApply}>
                         Aplicar

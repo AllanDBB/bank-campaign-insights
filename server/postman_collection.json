@@ -182,6 +182,26 @@
       "response": []
     },
     {
+      "name": "Get Available Filter Fields",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "",
+            "description": "User ID (ObjectId) - Required"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/schema/documents",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "schema", "documents"]
+        },
+        "description": "Get metadata about all fields available for filtering (age, job, education, etc.). Returns field type (range/multiple), display label, and available options for dropdown fields."
+      },
+      "response": []
+    },
+    {
       "name": "Get All Filters",
       "request": {
         "method": "GET",

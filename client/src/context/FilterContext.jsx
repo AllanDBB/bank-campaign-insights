@@ -9,7 +9,10 @@ const FilterContext = createContext();
 //
 // const { activeFilter } = useActiveFilter();
 // const queryString = activeFilter.queryParams?.toString() || '';
-// const response = await apiClient.get(`/documents?${queryString}`, {
+// const url = queryString
+//   ? `/documents?${queryString}&page=1&limit=100&sortBy=createdAt&order=desc`
+//   : `/documents?page=1&limit=100&sortBy=createdAt&order=desc`;
+// const response = await apiClient.get(url, {
 //   headers: { 'x-user-id': import.meta.env.VITE_USER_ID }
 // });
 export const useActiveFilter = () => {
@@ -34,8 +37,12 @@ export const FilterProvider = ({ children }) => {
       queryParams: queryParams
     });
 
-    // Log for debugging
-    const url = `/documents${queryParams ? `?${queryParams.toString()}` : ''}`;
+    // Log for debugging with pagination
+    const queryString = queryParams ? queryParams.toString() : '';
+    const url = queryString
+      ? `/documents?${queryString}&page=1&limit=100&sortBy=createdAt&order=desc`
+      : `/documents?page=1&limit=100&sortBy=createdAt&order=desc`;
+
     console.log(`Filter Applied: "${filterName}" | URL: ${url}`);
 
 
