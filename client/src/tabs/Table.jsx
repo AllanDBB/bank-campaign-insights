@@ -120,11 +120,26 @@ const controlSort = (column) => {
 
 
 
+//convertir a csv (solo agregar comas y dar formato)
+const exportToCSV = () => {
+  if (!sortedDocuments || sortedDocuments.length === 0) return;
+  const headers = Object.keys(sortedDocuments[0]); // Obtener titulos (columnas)
+  const rows = sortedDocuments.map(doc =>
+    headers.map(header => `"${doc[header]}"`).join(",") // Construir filas, agregando comas entre elementos en el orden de titulos
+  );
+  const csvContent = [headers.join(","), ...rows].join("\n");   // Crear el contenido, primero titulos, cambio de linea, luego filas
 
-//mensajito para evitar confusion
-const sortMessage = sortColumn 
-  ? `Orden: ${sortColumn} ${sortDirection === "asc" ? "↑" : "↓"}`
-  : "Sin orden";
+  // Crear un enlace para descargar el archivo
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" }); //archivo "virtual" en memoria con Blob en formato csv
+  const url = URL.createObjectURL(blob);  //se genera un link temporal
+  //lo descarga
+  const link = document.createElement("a");
+  link.href = url; //referencia es la nueva url creada del blob
+  link.setAttribute("download", "tabla_ordenada.csv"); //nombre
+  document.body.appendChild(link);  //para evitar errores de navegador
+  link.click(); //simula que el usuario le dio click para simular que lo mando a guardar en el disco
+  document.body.removeChild(link);  //limpia navegador
+};
 
 
 //control de cambio de paginas
@@ -171,7 +186,8 @@ return (
       padding: "0 4.5rem"
     }}>
       {/* Boton exportar */}
-      <button style={{
+      <button onClick={exportToCSV} 
+      style={{
         padding: "0.75rem 1.5rem", 
         fontSize: "1.1rem",        
         backgroundColor: "#0D4A6B",
