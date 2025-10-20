@@ -102,6 +102,86 @@
       "response": []
     },
     {
+      "name": "Get Documents",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "",
+            "description": "User ID (ObjectId) - Required"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/documents?page=1&limit=100",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "documents"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Page number (default: 1)"
+            },
+            {
+              "key": "limit",
+              "value": "100",
+              "description": "Items per page (default: 100)"
+            },
+            {
+              "key": "sortBy",
+              "value": "createdAt",
+              "description": "Field to sort by (default: createdAt)",
+              "disabled": true
+            },
+            {
+              "key": "order",
+              "value": "desc",
+              "description": "Sort order: asc or desc (default: desc)",
+              "disabled": true
+            },
+            {
+              "key": "age_min",
+              "value": "30",
+              "description": "Minimum age filter",
+              "disabled": true
+            },
+            {
+              "key": "age_max",
+              "value": "50",
+              "description": "Maximum age filter",
+              "disabled": true
+            },
+            {
+              "key": "job",
+              "value": "admin,management",
+              "description": "Job filter (comma-separated values)",
+              "disabled": true
+            },
+            {
+              "key": "marital",
+              "value": "married",
+              "description": "Marital status filter",
+              "disabled": true
+            },
+            {
+              "key": "education",
+              "value": "university.degree",
+              "description": "Education filter",
+              "disabled": true
+            },
+            {
+              "key": "subscribedTermDeposit",
+              "value": "yes",
+              "description": "Subscription filter",
+              "disabled": true
+            }
+          ]
+        },
+        "description": "Get documents for the user with optional filters. Supports range filters (field_min, field_max) and multiple choice filters (comma-separated values). Includes pagination."
+      },
+      "response": []
+    },
+    {
       "name": "Get All Filters",
       "request": {
         "method": "GET",
