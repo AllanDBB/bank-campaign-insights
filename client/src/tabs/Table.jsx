@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react"; //controlan cambios y recarg
 function Table() {
 
   //estado actual
-  const [documents, setDocuments] = useState([]);   // guarda los datos que vienen de mongodb y los actualiza
   const [page, setPage] = useState(1);  //determina la pagina actual y la cambia
   const [totalPages, setTotalPages] = useState(1); //numero de paginas calculada a partir de la cantidad de documentos
   const [totalDocuments, setTotalDocuments] = useState(1);
@@ -16,50 +15,25 @@ function Table() {
   
 
 useEffect(() => {
-  // Creamos 50 documentos de prueba
-    const mockDocs = Array.from({ length: 102 }, (_, i) => ({
-      _id: i + 1,
-      age: 20 + (i % 102),
-      job: i % 2 === 0 ? "housemaid" : "technician",
-      marital: i % 3 === 0 ? "married" : "single",
-      education: "basic.4y",
-      default: "no",
-      housing: "no",
-      loan: "no",
-      contact: "telephone",
-      month: "may",
-      day_of_week: "mon",
-      duration: 100 + i,
-      campaign: 1,
-      pdays: 999,
-      previous: 0,
-      poutcome: "nonexistent",
-      "emp.var.rate": 1.1,
-      "cons.price.idx": 93.994,
-      "cons.conf.idx": -36.4,
-      euribor3m: 4.857,
-      "nr.employed": 5191,
-      y: "no"
-    }));
-    setTodosDocuments(mockDocs);
-    setTotalDocuments(mockDocs.length);
-    setTotalPages(Math.ceil(mockDocs.length / limit));
+  fetchAllDocuments();
 }, []);
 
 
 
 
 //se extraen los datos del backend
-const fetchDocuments = async (page) => {  
+const fetchAllDocuments = async () => {
   try {
-    const res = await fetch(  //hacemos fetch al backend
-      `/documents?page=${page}&limit=${limit}`,  //se le pasa page y limit para paginacion
-      { headers: { "Content-Type": "application/json" } }
-    );
+    // Traemos todos los documentos para poder ordenarlos localmente
+    const res = await fetch(`/documents?limit=100000`, { 
+      headers: { "Content-Type": "application/json" } 
+    });
     const data = await res.json();
+
     if (data.success) {
-      setDocuments(data.data);  //guarda los documentos recibidos
-      setTotalPages(Math.ceil(data.pagination.total / limit)); //calcula total de paginas
+      setTodosDocuments(data.data);                       // guardar documentos
+      setTotalDocuments(data.pagination.total);           // total de documentos
+      setTotalPages(Math.ceil(data.pagination.total / limit)); // total páginas
     } else {
       console.error("Error fetching documents:", data.message);
     }
@@ -69,29 +43,51 @@ const fetchDocuments = async (page) => {
 };
 
 
-// ordenar documentos segun columna seleccionada
-const sortedDocuments = React.useMemo(() => {  //recuerda Valorores para no recalcular al cambiar pagina
-  if (!sortColumn) return todosDocuments;  //si no hay una columna seleccionada, sigue igual
 
-  return [...todosDocuments].sort((a, b) => {   //copia los documents con ... y les hace sort
-    const aValor = a[sortColumn]; //recupera valores de columna seleccionada
+// ordenar documentos segun columna seleccionada
+// ordenar documentos según columna seleccionada
+const sortedDocuments = React.useMemo(() => {
+  if (!sortColumn) return todosDocuments;
+
+  // Mapas de orden para columnas especiales
+  const monthOrder = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  const dayOrder = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+  return [...todosDocuments].sort((a, b) => {
+    const aValor = a[sortColumn];
     const bValor = b[sortColumn];
 
-    // Si son números
+    // meses-
+    if (sortColumn === "month") {
+      const aIndex = monthOrder.indexOf(aValor.toLowerCase());
+      const bIndex = monthOrder.indexOf(bValor.toLowerCase());
+      if (aIndex === -1 || bIndex === -1) return 0; // si no coincide con un mes conocido, no cambia
+      return sortDirection === "asc" ? aIndex - bIndex : bIndex - aIndex;
+    }
+
+    // dias
+    if (sortColumn === "day_of_week") {
+      const aIndex = dayOrder.indexOf(aValor.toLowerCase());
+      const bIndex = dayOrder.indexOf(bValor.toLowerCase());
+      if (aIndex === -1 || bIndex === -1) return 0;
+      return sortDirection === "asc" ? aIndex - bIndex : bIndex - aIndex;
+    }
+
+    // numero
     if (!isNaN(aValor) && !isNaN(bValor)) {
-      return sortDirection === "asc" ? aValor - bValor : bValor - aValor;  //si lo elegido es asc de menor a mayor, sino mayor a menor
+      return sortDirection === "asc" ? aValor - bValor : bValor - aValor;
     }
 
-    // Si son strings
-    if (typeof aValor === "string" && typeof bValor === "string") { 
-      return sortDirection === "asc" 
-        ? aValor.localeCompare(bValor)  //si es asc compara alfabeticamente de menor a mayor
-        : bValor.localeCompare(aValor); //sino, de mayor a menor
+    // alfabetico
+    if (typeof aValor === "string" && typeof bValor === "string") {
+      return sortDirection === "asc"
+        ? aValor.localeCompare(bValor)
+        : bValor.localeCompare(aValor);
     }
 
-    return 0; // si nada funciona
+    return 0;
   });
-}, [todosDocuments, sortColumn, sortDirection]); //sortedDocuments es el nuevo documents segun estos parametros
+}, [todosDocuments, sortColumn, sortDirection]);
 
 
 
