@@ -6,7 +6,13 @@ function Table() {
   const [documents, setDocuments] = useState([]);   // guarda los datos que vienen de mongodb y los actualiza
   const [page, setPage] = useState(1);  //determina la pagina actual y la cambia
   const [totalPages, setTotalPages] = useState(1); //numero de paginas calculada a partir de la cantidad de documentos
+  const [totalDocuments, setTotalDocuments] = useState(1);
   const limit = 100;  //cantidad de filas por pagina
+
+  //ordenamiento
+  const [sortColumn, setSortColumn] = useState(null); // columna a ordenar
+  const [sortDirection, setSortDirection] = useState("asc"); // 'asc' o 'desc'
+  
 
 useEffect(() => {
   // Creamos 50 documentos de prueba
@@ -34,6 +40,7 @@ useEffect(() => {
       "nr.employed": 5191,
       y: "no"
     }));
+    setTotalDocuments(mockDocs.length);
     setTotalPages(Math.ceil(mockDocs.length / limit));
 
   // Mostrar solo los documentos de la página actual
@@ -62,6 +69,55 @@ const fetchDocuments = async (page) => {
   }
 };
 
+
+// ordenar documentos segun columna seleccionada
+const sortedDocuments = React.useMemo(() => {  //recuerda Valorores para no recalcular al cambiar pagina
+  if (!sortColumn) return documents;  //si no hay una columna seleccionada, sigue igual
+
+  return [...documents].sort((a, b) => {   //copia los documents con ... y les hace sort
+    const aValor = a[sortColumn]; //recupera valores de columna seleccionada
+    const bValor = b[sortColumn];
+
+    // Si son números
+    if (!isNaN(aValor) && !isNaN(bValor)) {
+      return sortDirection === "asc" ? aValor - bValor : bValor - aValor;  //si lo elegido es asc de menor a mayor, sino mayor a menor
+    }
+
+    // Si son strings
+    if (typeof aValor === "string" && typeof bValor === "string") { 
+      return sortDirection === "asc" 
+        ? aValor.localeCompare(bValor)  //si es asc compara alfabeticamente de menor a mayor
+        : bValor.localeCompare(aValor); //sino, de mayor a menor
+    }
+
+    return 0; // si nada funciona
+  });
+}, [documents, sortColumn, sortDirection]); //sortedDocuments es el nuevo documents segun estos parametros
+
+
+
+
+//se hace sort cuando se hace click a la columna para ordenar
+const controlSort = (column) => {
+  if (sortColumn === column) {
+    if (sortDirection === "asc") {
+      setSortDirection("desc");   // si ya esta ascendente, y se hace click, cambiar a descendente
+    } else if (sortDirection === "desc") {
+      setSortColumn(null);  // si ya esta descendente, y hace click, se quita el ordenamiento
+      setSortDirection(null);
+    }
+  } else {
+    setSortColumn(column);
+    setSortDirection("asc");  // si no tiene orden y hace click, se pone ascendente
+};}
+
+
+
+
+//mensajito para evitar confusion
+const sortMessage = sortColumn 
+  ? `Tabla ordenada: según columna "${sortColumn}", ${sortDirection === "asc" ? "ascendente" : "descendente"}`
+  : "Tabla sin ordenamiento";
 
 
 //control de cambio de paginas
@@ -133,9 +189,73 @@ return (
         fontWeight: "bold",
         backgroundColor: "#0D4A6B"
       }}>
-        <span style={{fontSize: "1.5rem"}}>{documents.length}</span>
+        <span style={{fontSize: "1.5rem"}}>{totalDocuments}</span>
         <span style={{fontSize: "0.9rem"}}>REGISTROS</span>
       </div>
+    </div>
+
+
+    
+    {/* Botones de cambio de página */}
+    <div style={{
+      display: "flex",
+      justifyContent: "center",   
+      alignItems: "center",
+      gap: "1rem",                
+      marginTop: "1.5rem"
+    }}>
+      {/* Botón anterior */}
+      <button onClick={handlePrev} disabled={page === 1} style={{
+        padding: "0.5rem 1.5rem",
+        fontSize: "1rem",
+        backgroundColor: "#17749fff",
+        color: "white",
+        border: "none",
+        borderRadius: "6px",
+        cursor: "pointer",
+        opacity: page === 1 ? 0.5 : 1   //cuando es 1, 0.5. sino 1
+      }}>
+        Back
+      </button>
+
+      {/* Número de página dentro de un círculo */}
+      <div style={{
+        width: "2.5rem",
+        height: "2.5rem",
+        borderRadius: "50%", // círculo
+        backgroundColor: "#44A1B4",
+        color: "white",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold",
+        fontSize: "1rem"
+      }}>
+        {page}
+      </div>
+
+      {/* Total de páginas */}
+      <span style={{color: "white", fontSize: "1rem"}}>/ {totalPages}</span>
+
+      {/* Botón siguiente */}
+      <button onClick={handleNext} disabled={page === totalPages} style={{
+        padding: "0.5rem 1.5rem",
+        fontSize: "1rem",
+        backgroundColor: "#17749fff",
+        color: "white",
+        border: "none",
+        borderRadius: "6px",
+        cursor: "pointer",
+        opacity: page === totalPages ? 0.5 : 1
+      }}>
+        Next
+      </button>
+    </div>
+
+
+    {/* Mensajito */}
+    <div style={{ margin: "1rem 0", textAlign: "center", color: "#44A1B4", fontStyle: "italic" }}>
+    {sortMessage}
     </div>
 
     {/* La tabla */}
