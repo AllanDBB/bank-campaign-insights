@@ -7,6 +7,7 @@ function Table() {
   const [page, setPage] = useState(1);  //determina la pagina actual y la cambia
   const [totalPages, setTotalPages] = useState(1); //numero de paginas calculada a partir de la cantidad de documentos
   const [totalDocuments, setTotalDocuments] = useState(1);
+  const [todosDocuments, setTodosDocuments] =  useState([]);
   const limit = 100;  //cantidad de filas por pagina
 
   //ordenamiento
@@ -40,12 +41,10 @@ useEffect(() => {
       "nr.employed": 5191,
       y: "no"
     }));
+    setTodosDocuments(mockDocs);
     setTotalDocuments(mockDocs.length);
     setTotalPages(Math.ceil(mockDocs.length / limit));
-
-  // Mostrar solo los documentos de la página actual
-  setDocuments(mockDocs.slice((page - 1) * limit, page * limit));
-}, [page]);
+}, []);
 
 
 
@@ -72,9 +71,9 @@ const fetchDocuments = async (page) => {
 
 // ordenar documentos segun columna seleccionada
 const sortedDocuments = React.useMemo(() => {  //recuerda Valorores para no recalcular al cambiar pagina
-  if (!sortColumn) return documents;  //si no hay una columna seleccionada, sigue igual
+  if (!sortColumn) return todosDocuments;  //si no hay una columna seleccionada, sigue igual
 
-  return [...documents].sort((a, b) => {   //copia los documents con ... y les hace sort
+  return [...todosDocuments].sort((a, b) => {   //copia los documents con ... y les hace sort
     const aValor = a[sortColumn]; //recupera valores de columna seleccionada
     const bValor = b[sortColumn];
 
@@ -92,8 +91,16 @@ const sortedDocuments = React.useMemo(() => {  //recuerda Valorores para no reca
 
     return 0; // si nada funciona
   });
-}, [documents, sortColumn, sortDirection]); //sortedDocuments es el nuevo documents segun estos parametros
+}, [todosDocuments, sortColumn, sortDirection]); //sortedDocuments es el nuevo documents segun estos parametros
 
+
+
+// Paginación sobre el sortedDocuments
+const paginatedDocuments = React.useMemo(() => {
+  const start = (page - 1) * limit;
+  const end = page * limit;
+  return sortedDocuments.slice(start, end);
+}, [sortedDocuments, page]);
 
 
 
@@ -298,7 +305,7 @@ return (
           <tr style={{ backgroundColor: "#2a2a2a"}}> {/* color distinto para títulos */}
             {/* Mientras haya documentos, devuelve un array con los titulos (keys) de las columnas */}
             {/* Por cada columna (key) genera una <th> (columna)*/}
-            {documents[0] && Object.keys(documents[0]).map((key) => (
+            {todosDocuments[0] && Object.keys(todosDocuments[0]).map((key) => (
               <th onClick={() => controlSort(key)} key={key} style={{border: "1px white", padding: "0.75rem 1.5rem", fontWeight: "500", minWidth: "110px", cursor: "pointer"}}>
                 {key}
               </th>
@@ -309,7 +316,7 @@ return (
         {/* Filas */}
         <tbody>
           {/* Recorre los documentos completos obtenidos del backend */}
-          {sortedDocuments.map((doc, index) => (
+          {paginatedDocuments.map((doc, index) => (
             <tr key={doc._id} style={{ backgroundColor: index % 2 === 0 ? "#0c4d63ff" : "#6a6a6aff" }}> {/* filas alternadas */}
               {Object.keys(doc).map((key) => ( 
                 <td key={key} style={{border: "none", padding: "1rem", textAlign: "center", verticalAlign: "middle"}}>  {/* Para cada columna del doc genera <td> (celda) */}
