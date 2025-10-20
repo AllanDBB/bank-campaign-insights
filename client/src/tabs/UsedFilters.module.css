@@ -1,0 +1,207 @@
+.container {
+    background-color: #060606;
+    width: 100%;
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.titleSection {
+    width: 90%;
+    max-width: 1200px;
+    margin-bottom: 2rem;
+}
+
+.historyContainer {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.filterCard {
+    background: linear-gradient(135deg, #2c5f6f 0%, #3a7a8a 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.filterCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(68, 161, 180, 0.4);
+}
+
+.leftSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+}
+
+.dateText {
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.filterNameText {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-top: 0.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.filterInfo {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filterCountBadge {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.filterCountLabel {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+}
+
+.tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.filterTag {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.filterTag:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.rightSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.applyButton {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.applyButton:hover {
+    background-color: #44A1B4;
+    border-color: #44A1B4;
+    transform: scale(1.1);
+}
+
+.applyText {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.emptyState {
+    width: 90%;
+    max-width: 1200px;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #888;
+}
+
+.emptyStateIcon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.emptyStateText {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.emptyStateSubtext {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.loadingContainer {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+}
+
+.errorContainer {
+    width: 90%;
+    max-width: 1200px;
+    padding: 2rem;
+    background-color: rgba(244, 67, 54, 0.1);
+    border: 2px solid rgba(244, 67, 54, 0.3);
+    border-radius: 10px;
+    color: #f44336;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .filterCard {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .rightSection {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .tagsContainer {
+        justify-content: center;
+    }
+}
