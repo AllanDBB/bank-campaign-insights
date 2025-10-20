@@ -3,7 +3,7 @@ import cors from 'cors';
 import config from './src/config/environment.js';
 import connectDatabase from './src/config/database.js';
 import errorHandler from './src/middleware/errorHandler.js';
-import routes from './src/routes/index.js';
+import routes from './src/routes/maincontroller.js';
 
 const app = express();
 
