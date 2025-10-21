@@ -8,9 +8,12 @@ import DashbaordCall from "./dashboardTabs/dashboardCallDetails/DashboardCall";
 import DashboardAdditional from "./dashboardTabs/dashboardAdditional/DashboardAdditional";
 import DashboardKPI from "./dashboardTabs/dashboardKPI/DashboardKPI"
 import { DashboardDataProvider } from "../../context/DashboardDataContext";
+import ExportDashboard from "../../pages/ExportDashboard/ExportDashboard";
 
 function Dashboard() {
     const [page, setPage] = useState(0);
+    const [showExportModal, setShowExportModal] = useState(false);
+    
     const dashboards = [
         { id: 0, title: "Dashboard General", component: () => <DashboardGeneral/> },
         { id: 1, title: "Dashboard de Detalles de Llamadas", component: () => <DashbaordCall/> },
@@ -19,7 +22,11 @@ function Dashboard() {
     ];
 
     const handleExport = () => {
-        //navegación a pantalla de exportar
+        setShowExportModal(true);
+    }
+
+    const handleCloseExportModal = () => {
+        setShowExportModal(false);
     }
 
     const handleNext = () => setPage((prev) => (prev + 1) % dashboards.length);
@@ -39,6 +46,10 @@ function Dashboard() {
                 <div className={styles.contentDiv}>
                     {dashboards[page].component()}
                 </div>
+                
+                {showExportModal && (
+                    <ExportDashboard onClose={handleCloseExportModal} />
+                )}
             </div>
         </DashboardDataProvider>
     );

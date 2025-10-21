@@ -11,6 +11,55 @@
     z-index: 1000;
 }
 
+.loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 3rem;
+    background-color: rgba(26, 26, 26, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 10px 50px rgba(68, 161, 180, 0.3);
+}
+
+.loadingText {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+}
+
+.loadingSubtext {
+    color: #aaa;
+    font-size: 1rem;
+    margin: 0;
+    text-align: center;
+}
+
 .modal {
     background-color: #1a1a1a;
     border-radius: 20px;
@@ -40,6 +89,12 @@
 
 .closeButton:hover {
     background-color: #00a8b0;
+}
+
+.closeButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #666;
 }
 
 .title {
@@ -106,15 +161,24 @@
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 45px;
 }
 
-.downloadButton:hover {
+.downloadButton:hover:not(:disabled) {
     background-color: white;
     transform: scale(1.05);
 }
 
-.downloadButton:active {
+.downloadButton:active:not(:disabled) {
     transform: scale(0.98);
+}
+
+.downloadButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 /* Responsive adjustments */
