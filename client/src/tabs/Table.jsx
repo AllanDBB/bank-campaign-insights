@@ -28,23 +28,21 @@ useEffect(() => {
 //el backend maneja los sorts, y solo trae la cantidad de documentos que se mostraran en la pagina actual
 const fetchAllDocuments = async (currentPage = page, column = sortColumn, direction = sortDirection) => {
   try {
-    const rawFilters = activeFilter?.queryParams || {};
-    const cleanFilters = {};
-    Object.keys(rawFilters).forEach((key) => {
-      const value = rawFilters[key];
-      if (value !== undefined && value !== null && value !== "") {
-        const cleanKey = key.startsWith("filters.") ? key.replace("filters.", "") : key;
-        cleanFilters[cleanKey] = value;
-      }
-    });
+        const filterEntries = activeFilter?.queryParams
+      ? Object.fromEntries(activeFilter.queryParams.entries())
+      : {};
 
     const params = new URLSearchParams({
       page: currentPage,
       limit,
       sortBy: column || "",
       order: direction || "",
-      ...cleanFilters
+      ...filterEntries
     });
+
+    console.log("Active Filter:", activeFilter);
+    console.log("Query Params enviados:", activeFilter?.queryParams);
+    console.log("URL Final:", `${API_URL}/documents?${params.toString()}`);
 
     const res = await fetch(`${API_URL}/documents?${params.toString()}`, {
       headers: { "Content-Type": "application/json", 
