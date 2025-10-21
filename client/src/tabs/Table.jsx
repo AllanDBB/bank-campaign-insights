@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"; //controlan cambios y recarga de tabla
+import { useActiveFilter } from '../context/FilterContext';  //importamos filtros globales
 
 function Table() {
 
@@ -8,32 +9,55 @@ function Table() {
   const [totalDocuments, setTotalDocuments] = useState(1);
   const [todosDocuments, setTodosDocuments] =  useState([]);
   const limit = 100;  //cantidad de filas por pagina
+  const { activeFilter } = useActiveFilter(); //filtro
+  const [loadingCSV, setLoadingCSV] = useState(false);
 
   //ordenamiento
   const [sortColumn, setSortColumn] = useState(null); // columna a ordenar
   const [sortDirection, setSortDirection] = useState("asc"); // 'asc' o 'desc'
   
+  const API_URL = "http://localhost:3001/api";
 
 useEffect(() => {
-  fetchAllDocuments();
-}, []);
-
+  fetchAllDocuments(page, sortColumn, sortDirection);
+}, [page, sortColumn, sortDirection, activeFilter]);
 
 
 
 //se extraen los datos del backend
-const fetchAllDocuments = async () => {
+//el backend maneja los sorts, y solo trae la cantidad de documentos que se mostraran en la pagina actual
+const fetchAllDocuments = async (currentPage = page, column = sortColumn, direction = sortDirection) => {
   try {
-    // Traemos todos los documentos para poder ordenarlos localmente
-    const res = await fetch(`/documents?limit=100000`, { 
-      headers: { "Content-Type": "application/json" } 
+    const rawFilters = activeFilter?.queryParams || {};
+    const cleanFilters = {};
+    Object.keys(rawFilters).forEach((key) => {
+      const value = rawFilters[key];
+      if (value !== undefined && value !== null && value !== "") {
+        const cleanKey = key.startsWith("filters.") ? key.replace("filters.", "") : key;
+        cleanFilters[cleanKey] = value;
+      }
     });
+
+    const params = new URLSearchParams({
+      page: currentPage,
+      limit,
+      sortBy: column || "",
+      order: direction || "",
+      ...cleanFilters
+    });
+
+    const res = await fetch(`${API_URL}/documents?${params.toString()}`, {
+      headers: { "Content-Type": "application/json", 
+                "x-user-id": import.meta.env.VITE_USER_ID
+              }
+    });
+
     const data = await res.json();
 
     if (data.success) {
-      setTodosDocuments(data.data);                       // guardar documentos
-      setTotalDocuments(data.pagination.total);           // total de documentos
-      setTotalPages(Math.ceil(data.pagination.total / limit)); // total páginas
+      setTodosDocuments(data.data);
+      setTotalDocuments(data.pagination.totalCount);
+      setTotalPages(data.pagination.totalPages);
     } else {
       console.error("Error fetching documents:", data.message);
     }
@@ -41,62 +65,6 @@ const fetchAllDocuments = async () => {
     console.error("Fetch error:", error);
   }
 };
-
-
-
-// ordenar documentos segun columna seleccionada
-// ordenar documentos según columna seleccionada
-const sortedDocuments = React.useMemo(() => {
-  if (!sortColumn) return todosDocuments;
-
-  // Mapas de orden para columnas especiales
-  const monthOrder = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-  const dayOrder = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
-
-  return [...todosDocuments].sort((a, b) => {
-    const aValor = a[sortColumn];
-    const bValor = b[sortColumn];
-
-    // meses-
-    if (sortColumn === "month") {
-      const aIndex = monthOrder.indexOf(aValor.toLowerCase());
-      const bIndex = monthOrder.indexOf(bValor.toLowerCase());
-      if (aIndex === -1 || bIndex === -1) return 0; // si no coincide con un mes conocido, no cambia
-      return sortDirection === "asc" ? aIndex - bIndex : bIndex - aIndex;
-    }
-
-    // dias
-    if (sortColumn === "day_of_week") {
-      const aIndex = dayOrder.indexOf(aValor.toLowerCase());
-      const bIndex = dayOrder.indexOf(bValor.toLowerCase());
-      if (aIndex === -1 || bIndex === -1) return 0;
-      return sortDirection === "asc" ? aIndex - bIndex : bIndex - aIndex;
-    }
-
-    // numero
-    if (!isNaN(aValor) && !isNaN(bValor)) {
-      return sortDirection === "asc" ? aValor - bValor : bValor - aValor;
-    }
-
-    // alfabetico
-    if (typeof aValor === "string" && typeof bValor === "string") {
-      return sortDirection === "asc"
-        ? aValor.localeCompare(bValor)
-        : bValor.localeCompare(aValor);
-    }
-
-    return 0;
-  });
-}, [todosDocuments, sortColumn, sortDirection]);
-
-
-
-// Paginación sobre el sortedDocuments
-const paginatedDocuments = React.useMemo(() => {
-  const start = (page - 1) * limit;
-  const end = page * limit;
-  return sortedDocuments.slice(start, end);
-}, [sortedDocuments, page]);
 
 
 
@@ -112,30 +80,85 @@ const controlSort = (column) => {
   } else {
     setSortColumn(column);
     setSortDirection("asc");  // si no tiene orden y hace click, se pone ascendente
-};}
+  }
+  setPage(1); // vuelve a la primera página al cambiar orden
+;}
 
 
 
 //convertir a csv (solo agregar comas y dar formato)
-const exportToCSV = () => {
-  if (!sortedDocuments || sortedDocuments.length === 0) return;
-  const headers = Object.keys(sortedDocuments[0]); // Obtener titulos (columnas)
-  const rows = sortedDocuments.map(doc =>
-    headers.map(header => `"${doc[header]}"`).join(",") // Construir filas, agregando comas entre elementos en el orden de titulos
-  );
-  const csvContent = [headers.join(","), ...rows].join("\n");   // Crear el contenido, primero titulos, cambio de linea, luego filas
+const exportToCSV = async () => {
+  try {
+    setLoadingCSV(true);
 
-  // Crear un enlace para descargar el archivo
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" }); //archivo "virtual" en memoria con Blob en formato csv
-  const url = URL.createObjectURL(blob);  //se genera un link temporal
-  //lo descarga
-  const link = document.createElement("a");
-  link.href = url; //referencia es la nueva url creada del blob
-  link.setAttribute("download", "tabla_ordenada.csv"); //nombre
-  document.body.appendChild(link);  //para evitar errores de navegador
-  link.click(); //simula que el usuario le dio click para simular que lo mando a guardar en el disco
-  document.body.removeChild(link);  //limpia navegador
+    const rawFilters = activeFilter?.queryParams || {};
+    const cleanFilters = {};
+    Object.keys(rawFilters).forEach((key) => {
+      const value = rawFilters[key];
+      if (value !== undefined && value !== null && value !== "") {
+        const cleanKey = key.startsWith("filters.") ? key.replace("filters.", "") : key;
+        cleanFilters[cleanKey] = value;
+      }
+    });
+
+    // 🔹 Traer los mismos documentos que ves en la tabla
+    const params = new URLSearchParams({
+      sortBy: sortColumn || "",
+      order: sortDirection || "",
+      page: 1,
+      limit: 100000, // grande para exportar todo
+      ...cleanFilters
+    });
+
+    const response = await fetch(`${API_URL}/documents?${params.toString()}`, {
+      headers: { 
+        "Content-Type": "application/json",
+        "x-user-id": import.meta.env.VITE_USER_ID
+      }
+    });
+
+    if (!response.ok) throw new Error("Error al obtener datos");
+
+    const data = await response.json();
+    const documentos = data.data;
+
+    if (!documentos.length) {
+      alert("No hay datos para exportar");
+      return;
+    }
+
+    // 🔹 Excluir campos internos
+    const excludeFields = ["_id", "userId", "__v", "createdAt", "updatedAt"];
+    const headers = Object.keys(documentos[0]).filter(key => !excludeFields.includes(key));
+
+    //Construir CSV
+    const csvRows = [
+      headers.join(","), // encabezado
+      ...documentos.map(doc =>
+        headers.map(key => JSON.stringify(doc[key] ?? "")).join(",")
+      )
+    ];
+
+    const csvString = csvRows.join("\n");
+
+    //Crear archivo y descargar
+    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "tabla_ordenada.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (error) {
+    console.error("Error exportando CSV:", error);
+  } finally {
+    setLoadingCSV(false);
+  }
 };
+
 
 
 //control de cambio de paginas
@@ -182,18 +205,21 @@ return (
       padding: "0 4.5rem"
     }}>
       {/* Boton exportar */}
-      <button onClick={exportToCSV} 
-      style={{
-        padding: "0.75rem 1.5rem", 
-        fontSize: "1.1rem",        
-        backgroundColor: "#0D4A6B",
-        color: "white",
-        border: "none",
-        borderRadius: "6px", // redondito
-        cursor: "pointer"
-      }}>
-        Exportar CSV
-      </button>
+      <button 
+          onClick={exportToCSV}
+          disabled={loadingCSV}
+          style={{
+            padding: "0.75rem 1.5rem",
+            fontSize: "1.1rem",
+            backgroundColor: loadingCSV ? "#555" : "#0D4A6B",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: loadingCSV ? "wait" : "pointer"
+          }}
+        >
+          {loadingCSV ? "Procesando..." : "Exportar CSV"}
+        </button>
 
       {/* Cantidad registros */}
       <div style={{
@@ -222,6 +248,7 @@ return (
     justifyContent: "center",    
     alignItems: "center",
     marginTop: "1.5rem",
+    marginBottom: "2.5rem",
     padding: "0 4.5rem"          
     }}>
     {/* Botones de cambio de página */}
@@ -295,43 +322,73 @@ return (
 
 
 
-    {/* La tabla */}
-    <div style={{
-      backgroundColor: "#060606",
-      width: "100%",
-      minHeight: "100%",
-      padding: "2rem",        
-      boxSizing: "border-box",
-      color: "white",
-      overflow: "auto"
-    }}>
+    {/* Contenedor con scroll horizontal siempre visible arriba */}
+    <div
+      style={{
+        position: "sticky",   // se queda fija arriba
+        top: 0,               
+        zIndex: 50,           // por encima del resto
+        backgroundColor: "#060606",
+        overflowX: "auto",    // scroll horizontal
+        whiteSpace: "nowrap", 
+      }}
+    >
       <table style={{
         width: "90%",          
         maxWidth: "1200px",   
-        margin: "0 auto",       
+        margin: "0 auto",
         borderCollapse: "collapse",
-        color: "white"
+        color: "white",
       }}>
         {/* Columnas */}
         <thead>
-          <tr style={{ backgroundColor: "#2a2a2a"}}> {/* color distinto para títulos */}
-            {/* Mientras haya documentos, devuelve un array con los titulos (keys) de las columnas */}
-            {/* Por cada columna (key) genera una <th> (columna)*/}
-            {todosDocuments[0] && Object.keys(todosDocuments[0]).map((key) => (
-              <th onClick={() => controlSort(key)} key={key} style={{border: "1px white", padding: "0.75rem 1.5rem", fontWeight: "500", minWidth: "110px", cursor: "pointer"}}>
-                {key}
-              </th>
-            ))}
+          <tr style={{ backgroundColor: "#2a2a2a" }}>
+            {todosDocuments[0] &&
+              Object.keys(todosDocuments[0])
+                .filter(
+                  (key) => !["_id", "userId", "createdAt", "updatedAt", "__v"].includes(key)
+                )
+                .map((key) => (
+                <th
+                  onClick={() => controlSort(key)}
+                  key={key}
+                  style={{
+                    border: "1px white",
+                    padding: "0.75rem 1.5rem",
+                    fontWeight: "500",
+                    minWidth: "110px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {key}
+                </th>
+              ))}
           </tr>
         </thead>
 
         {/* Filas */}
         <tbody>
-          {/* Recorre los documentos completos obtenidos del backend */}
-          {paginatedDocuments.map((doc, index) => (
-            <tr key={doc._id} style={{ backgroundColor: index % 2 === 0 ? "#0c4d63ff" : "#6a6a6aff" }}> {/* filas alternadas */}
-              {Object.keys(doc).map((key) => ( 
-                <td key={key} style={{border: "none", padding: "1rem", textAlign: "center", verticalAlign: "middle"}}>  {/* Para cada columna del doc genera <td> (celda) */}
+          {todosDocuments.map((doc, index) => (
+            <tr
+              key={doc._id}
+              style={{
+                backgroundColor: index % 2 === 0 ? "#0c4d63ff" : "#6a6a6aff",
+              }}
+            >
+              {Object.keys(doc)
+                .filter(
+                  (key) => !["_id", "userId", "createdAt", "updatedAt", "__v"].includes(key)
+                )
+                .map((key) => (
+                <td
+                  key={key}
+                  style={{
+                    border: "none",
+                    padding: "1rem",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                  }}
+                >
                   {doc[key]}
                 </td>
               ))}
