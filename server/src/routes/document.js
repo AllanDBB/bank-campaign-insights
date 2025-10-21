@@ -9,4 +9,8 @@ router.get('/documents', extractUserId, (req, res, next) => {
   documentController.getDocuments(req, res, next);
 });
 
+router.get('/schema/documents', extractUserId, (req, res, next) => {
+  documentController.getDocumentSchema(req, res, next);
+});
+
 export default router;
