@@ -11,8 +11,11 @@ class ExportController {
     try {
       const userId = req.userId;
       const filters = req.query;
+      const filterName = req.query.filterName || null;
 
       console.log('Exporting dashboard to PDF for user:', userId);
+      console.log('Received filters:', filters);
+      console.log('Filter name:', filterName);
 
       const result = await this.metricsService.calculateDashboardMetrics(userId, filters);
 
@@ -40,6 +43,36 @@ class ExportController {
       doc.moveDown();
       doc.fontSize(12).text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, { align: 'center' });
       doc.moveDown(2);
+
+      // Filtros Aplicados Section
+      const actualFilters = Object.keys(filters).filter(key => key !== 'filterName');
+      
+      if (filterName || actualFilters.length > 0) {
+        doc.fontSize(16).text('Filtros Aplicados', { underline: true });
+        doc.moveDown();
+        
+        if (filterName) {
+          doc.fontSize(12).text(`Nombre del Filtro: ${filterName}`, { bold: true });
+          doc.moveDown(0.5);
+        }
+
+        if (actualFilters.length > 0) {
+          doc.fontSize(11);
+          const filterLabels = this.getFilterLabels();
+          
+          Object.entries(filters).forEach(([key, value]) => {
+            if (key !== 'filterName' && value !== undefined && value !== null && value !== '') {
+              const label = filterLabels[key] || key;
+              const displayValue = Array.isArray(value) ? value.join(', ') : value;
+              doc.text(`${label}: ${displayValue}`);
+            }
+          });
+        } else if (filterName) {
+          doc.fontSize(11).text('Sin filtros específicos aplicados');
+        }
+        
+        doc.moveDown(2);
+      }
 
       // KPIs Section
       doc.fontSize(16).text('KPIs Principales', { underline: true });
@@ -108,8 +141,11 @@ class ExportController {
     try {
       const userId = req.userId;
       const filters = req.query;
+      const filterName = req.query.filterName || null;
 
       console.log('Exporting dashboard to Excel for user:', userId);
+      console.log('Received filters:', filters);
+      console.log('Filter name:', filterName);
 
       const result = await this.metricsService.calculateDashboardMetrics(userId, filters);
 
@@ -126,6 +162,46 @@ class ExportController {
       const workbook = new ExcelJS.Workbook();
       workbook.creator = 'Bank Campaign Insights';
       workbook.created = new Date();
+
+      // Filtros Aplicados Sheet (si hay filtros)
+      const actualFilters = Object.keys(filters).filter(key => key !== 'filterName');
+      
+      if (filterName || actualFilters.length > 0) {
+        const filtersSheet = workbook.addWorksheet('Filtros Aplicados');
+        filtersSheet.columns = [
+          { header: 'Campo', key: 'field', width: 40 },
+          { header: 'Valor', key: 'value', width: 40 }
+        ];
+
+        // Agregar nombre del filtro si existe
+        if (filterName) {
+          filtersSheet.addRow({ field: 'NOMBRE DEL FILTRO', value: filterName });
+          filtersSheet.getRow(2).font = { bold: true, color: { argb: 'FF1976D2' } };
+          filtersSheet.addRow({ field: '', value: '' }); // Fila en blanco
+        }
+
+        if (actualFilters.length > 0) {
+          const filterLabels = this.getFilterLabels();
+          
+          Object.entries(filters).forEach(([key, value]) => {
+            if (key !== 'filterName' && value !== undefined && value !== null && value !== '') {
+              const label = filterLabels[key] || key;
+              const displayValue = Array.isArray(value) ? value.join(', ') : value;
+              filtersSheet.addRow({ field: label, value: displayValue });
+            }
+          });
+        } else if (filterName) {
+          filtersSheet.addRow({ field: 'Sin filtros específicos aplicados', value: '' });
+        }
+
+        // Style header row
+        filtersSheet.getRow(1).font = { bold: true };
+        filtersSheet.getRow(1).fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFFEB3B' }
+        };
+      }
 
       // KPIs Sheet
       const kpisSheet = workbook.addWorksheet('KPIs Principales');
@@ -280,6 +356,45 @@ class ExportController {
       console.error('Error exporting to Excel:', error);
       next(error);
     }
+  }
+
+  getFilterLabels() {
+    return {
+      // Range filters
+      'age_min': 'Edad Mínima',
+      'age_max': 'Edad Máxima',
+      'contactDurationSeconds_min': 'Duración Mínima (seg)',
+      'contactDurationSeconds_max': 'Duración Máxima (seg)',
+      'numberOfContacts_min': 'Número Mínimo de Contactos',
+      'numberOfContacts_max': 'Número Máximo de Contactos',
+      'daysSinceLastContact_min': 'Días Mínimos desde Último Contacto',
+      'daysSinceLastContact_max': 'Días Máximos desde Último Contacto',
+      'previousContactsCount_min': 'Contactos Previos Mínimos',
+      'previousContactsCount_max': 'Contactos Previos Máximos',
+      'employmentVariationRate_min': 'Tasa de Variación de Empleo Mínima',
+      'employmentVariationRate_max': 'Tasa de Variación de Empleo Máxima',
+      'consumerPriceIndex_min': 'IPC Mínimo',
+      'consumerPriceIndex_max': 'IPC Máximo',
+      'consumerConfidenceIndex_min': 'Índice de Confianza del Consumidor Mínimo',
+      'consumerConfidenceIndex_max': 'Índice de Confianza del Consumidor Máximo',
+      'euriborThreeMonthRate_min': 'Euribor 3M Mínimo',
+      'euriborThreeMonthRate_max': 'Euribor 3M Máximo',
+      'numberOfEmployees_min': 'Número Mínimo de Empleados',
+      'numberOfEmployees_max': 'Número Máximo de Empleados',
+
+      // Multiple choice filters
+      'job': 'Profesión',
+      'marital': 'Estado Civil',
+      'education': 'Educación',
+      'hasCreditDefault': 'Tiene Crédito en Default',
+      'hasHousingLoan': 'Tiene Préstamo Hipotecario',
+      'hasPersonalLoan': 'Tiene Préstamo Personal',
+      'contactType': 'Tipo de Contacto',
+      'contactMonth': 'Mes de Contacto',
+      'contactDayOfWeek': 'Día de la Semana',
+      'previousCampaignOutcome': 'Resultado Campaña Anterior',
+      'subscribedTermDeposit': 'Suscribió Depósito a Plazo'
+    };
   }
 }
 

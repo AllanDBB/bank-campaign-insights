@@ -13,6 +13,12 @@ function ExportDashboard({ onClose }) {
 
     const buildFiltersObject = () => {
         const filters = {};
+        
+        // Add filter name if available
+        if (activeFilter.name) {
+            filters.filterName = activeFilter.name;
+        }
+        
         if (activeFilter.queryParams) {
             for (const [key, value] of activeFilter.queryParams.entries()) {
                 if (filters[key]) {
@@ -27,6 +33,8 @@ function ExportDashboard({ onClose }) {
                 }
             }
         }
+        
+        console.log('Filters being sent:', filters);
         return filters;
     };
 
