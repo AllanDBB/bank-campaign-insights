@@ -89,24 +89,22 @@ const exportToCSV = async () => {
   try {
     setLoadingCSV(true);
 
-    const rawFilters = activeFilter?.queryParams || {};
-    const cleanFilters = {};
-    Object.keys(rawFilters).forEach((key) => {
-      const value = rawFilters[key];
-      if (value !== undefined && value !== null && value !== "") {
-        const cleanKey = key.startsWith("filters.") ? key.replace("filters.", "") : key;
-        cleanFilters[cleanKey] = value;
-      }
-    });
+    // Convertir queryParams (que es un URLSearchParams) a objeto plano
+    const filterEntries = activeFilter?.queryParams
+      ? Object.fromEntries(activeFilter.queryParams.entries())
+      : {};
 
-    // 🔹 Traer los mismos documentos que ves en la tabla
+    //Traer los mismos documentos que ves en la tabla
     const params = new URLSearchParams({
       sortBy: sortColumn || "",
       order: sortDirection || "",
       page: 1,
       limit: 100000, // grande para exportar todo
-      ...cleanFilters
+      ...filterEntries
     });
+
+    console.log("Filtros aplicados en export:", filterEntries);
+    console.log("URL CSV:", `${API_URL}/documents?${params.toString()}`);
 
     const response = await fetch(`${API_URL}/documents?${params.toString()}`, {
       headers: { 
@@ -125,7 +123,7 @@ const exportToCSV = async () => {
       return;
     }
 
-    // 🔹 Excluir campos internos
+    //Excluir campos internos
     const excludeFields = ["_id", "userId", "__v", "createdAt", "updatedAt"];
     const headers = Object.keys(documentos[0]).filter(key => !excludeFields.includes(key));
 
