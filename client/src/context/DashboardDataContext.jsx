@@ -1,10 +1,12 @@
-import React, {createContext, useState, useContext} from "react";
+import React, {createContext, useState, useCallback} from "react";
+import metricsService from "../services/metricsService";
+import { useActiveFilter } from "./FilterContext";
 
 const DashboardDataContext = createContext();
 
 export function DashboardDataProvider({children}){
-    const [dashboardData, setDashboardData] = useState(
-{
+    const { activeFilter } = useActiveFilter();
+    const [dashboardData, setDashboardData] = useState({
         // DASHBOARD GENERAL
         unsuccessfulCalls: 0, // poutcome != success
         successfulCalls: 0, // poutcome = success
@@ -170,12 +172,67 @@ export function DashboardDataProvider({children}){
                     { date: "feb", C1: 0.06, C2: 0.035, C3: 0.025, ...},
             */
         ]
-    }
-);
+    });
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const loadDashboardMetrics = useCallback(async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            // Build filters from activeFilter
+            const filters = {};
+            if (activeFilter.queryParams) {
+                for (const [key, value] of activeFilter.queryParams.entries()) {
+                    if (filters[key]) {
+                        // If key already exists, convert to array or append to array
+                        if (Array.isArray(filters[key])) {
+                            filters[key].push(value);
+                        } else {
+                            filters[key] = [filters[key], value];
+                        }
+                    } else {
+                        filters[key] = value;
+                    }
+                }
+            }
+
+            console.log('Loading dashboard metrics with filters:', filters);
+
+            const response = await metricsService.getDashboardMetrics(filters);
+
+            if (response.success && response.data) {
+                console.log('Dashboard metrics loaded successfully');
+                setDashboardData(response.data);
+            } else {
+                throw new Error('Failed to load metrics');
+            }
+        } catch (err) {
+            console.error('Error loading dashboard metrics:', err);
+            setError(err.message || 'Error loading dashboard data');
+        } finally {
+            setLoading(false);
+        }
+    }, [activeFilter]);
+
+    const refreshMetrics = useCallback(() => {
+        loadDashboardMetrics();
+    }, [loadDashboardMetrics]);
+
     return (
-        <DashboardDataContext.Provider value={{ dashboardData, setDashboardData }}>
+        <DashboardDataContext.Provider value={{ 
+            dashboardData, 
+            setDashboardData, 
+            loading, 
+            error,
+            refreshMetrics,
+            loadDashboardMetrics
+        }}>
             {children}
         </DashboardDataContext.Provider>
     );
 }
+
 export {DashboardDataContext};

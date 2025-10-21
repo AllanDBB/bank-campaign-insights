@@ -1,14 +1,36 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import styles from "./DashboardGeneral.module.css"
-import {Typography, Divider} from "@mui/material"
+import {Typography, Divider, CircularProgress, Alert} from "@mui/material"
 import Histogram from "../../../../components/histogram/Histogram"
 import CircularChart from "../../../../components/pieChart/CircularChart";
 import GroupedBarChart from "../../../../components/groupedBarChart/GroupedBarChart";
-import { DashboardDataContext } from "../../../../context/DashboardDataContext"; 
+import { useDashboardData } from "../../../../hooks/useDashboardData";
 
 
 function DashboardGeneral(){
-    const {dashboardData, setDashboardData} = useContext(DashboardDataContext);
+    const { dashboardData, loading, error, loadDashboardMetrics } = useDashboardData();
+
+    // Load metrics when component mounts
+    useEffect(() => {
+        loadDashboardMetrics();
+    }, [loadDashboardMetrics]);
+
+    if (loading) {
+        return (
+            <div className={styles.mainContainer} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+                <CircularProgress size={60} style={{ color: '#44A1B4' }} />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className={styles.mainContainer} style={{ padding: '2rem' }}>
+                <Alert severity="error">{error}</Alert>
+            </div>
+        );
+    }
+
     return (
         <div className={styles.mainContainer}>
             <div className={`${styles.graphContainer} ${styles.cardContainerSuccess}`}>
