@@ -152,24 +152,67 @@ function DataLoad() {
                         </Box>
                     )}
 
-                    <Button
-                        variant="contained"
-                        size="large"
-                        onClick={handleGoToDashboard}
-                        sx={{
-                            mt: 4,
-                            backgroundColor: '#44A1B4',
-                            color: 'white',
-                            padding: '12px 40px',
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            '&:hover': {
-                                backgroundColor: '#62c9dd'
-                            }
-                        }}
-                    >
-                        → Ir al Dashboard
-                    </Button>
+                    {uploadResult && uploadResult.data.successfulInserts === 0 && (
+                        <Alert
+                            severity="warning"
+                            sx={{
+                                mt: 3,
+                                width: '90%',
+                                maxWidth: '500px',
+                                backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                                color: '#ffa726',
+                                border: '1px solid #ffa726'
+                            }}
+                        >
+                            No se insertaron registros válidos. Por favor, verifica el formato del archivo e intenta nuevamente.
+                        </Alert>
+                    )}
+
+                    <Box sx={{ display: 'flex', gap: 2, mt: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
+                        <Button
+                            variant="contained"
+                            size="large"
+                            onClick={handleGoToDashboard}
+                            disabled={uploadResult && uploadResult.data.successfulInserts === 0}
+                            sx={{
+                                backgroundColor: '#44A1B4',
+                                color: 'white',
+                                padding: '12px 40px',
+                                fontSize: '1.1rem',
+                                fontWeight: 'bold',
+                                '&:hover': {
+                                    backgroundColor: '#62c9dd'
+                                },
+                                '&.Mui-disabled': {
+                                    backgroundColor: '#333',
+                                    color: '#666'
+                                }
+                            }}
+                        >
+                            → Ir al Dashboard
+                        </Button>
+
+                        {uploadResult && uploadResult.data.successfulInserts === 0 && (
+                            <Button
+                                variant="outlined"
+                                size="large"
+                                onClick={handleRetry}
+                                sx={{
+                                    borderColor: '#44A1B4',
+                                    color: '#44A1B4',
+                                    padding: '12px 40px',
+                                    fontSize: '1.1rem',
+                                    fontWeight: 'bold',
+                                    '&:hover': {
+                                        borderColor: '#62c9dd',
+                                        backgroundColor: 'rgba(68, 161, 180, 0.1)'
+                                    }
+                                }}
+                            >
+                                Cargar Otro Archivo
+                            </Button>
+                        )}
+                    </Box>
                 </Box>
             );
         }

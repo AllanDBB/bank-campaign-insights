@@ -9,8 +9,22 @@ class StructureValidator extends IDocumentValidator {
       'job',
       'marital',
       'education',
+      'hasCreditDefault',
+      'hasHousingLoan',
+      'hasPersonalLoan',
+      'contactType',
       'contactMonth',
       'contactDayOfWeek',
+      'contactDurationSeconds',
+      'numberOfContacts',
+      'daysSinceLastContact',
+      'previousContactsCount',
+      'previousCampaignOutcome',
+      'employmentVariationRate',
+      'consumerPriceIndex',
+      'consumerConfidenceIndex',
+      'euriborThreeMonthRate',
+      'numberOfEmployees',
       'subscribedTermDeposit'
     ];
 
