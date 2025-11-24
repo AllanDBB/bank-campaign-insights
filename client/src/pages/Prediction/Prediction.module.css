@@ -1,0 +1,400 @@
+.page {
+  background: #060606;
+  color: #eaeaea;
+  min-height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 4px 0;
+  font-size: 28px;
+}
+
+.subtitle {
+  color: #9aa0aa;
+  max-width: 780px;
+  margin: 0;
+}
+
+.kicker {
+  color: #44a1b4;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+}
+
+.managerToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.switchLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #cfd3dc;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.formCard,
+.resultCard,
+.managerCard {
+  background: #0b0b0f;
+  border: 1px solid #1a1b20;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.primary,
+.secondary {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary {
+  background: linear-gradient(135deg, #44a1b4, #5cd1c7);
+  color: #031d24;
+}
+
+.secondary {
+  background: #13141a;
+  color: #cfd3dc;
+  border: 1px solid #2a2c33;
+}
+
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.field span {
+  color: #cfd3dc;
+}
+
+.field input,
+.field select {
+  background: #0f1117;
+  border: 1px solid #1f222b;
+  border-radius: 8px;
+  padding: 10px;
+  color: #eaeaea;
+}
+
+.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.profileBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profileBar select {
+  background: #0f1117;
+  border: 1px solid #1f222b;
+  color: #eaeaea;
+  padding: 8px;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+
+.stepper {
+  display: flex;
+  gap: 8px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: #0f1117;
+  border: 1px solid #1a1c24;
+  min-width: 88px;
+}
+
+.step span {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #2a2c33;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.stepActive {
+  border-color: #44a1b4;
+}
+
+.stepActive span {
+  background: #44a1b4;
+  color: #031d24;
+  border-color: #44a1b4;
+}
+
+.stepDone {
+  border-color: #2e7c70;
+  color: #8ad8cc;
+}
+
+.gaugeRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.gaugeCard {
+  background: #0f1117;
+  border: 1px solid #1a1c24;
+  border-radius: 10px;
+  padding: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.meterLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #9aa0aa;
+  font-weight: 600;
+}
+
+.meterTrack {
+  width: 100%;
+  height: 14px;
+  background: #11131a;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #1a1c24;
+}
+
+.meterFill {
+  height: 100%;
+  background: linear-gradient(90deg, #5cd1c7, #44a1b4);
+  border-radius: 999px;
+}
+
+.interpretationBox,
+.recommendationBox,
+.justificationBox {
+  background: #0f1117;
+  border: 1px solid #1a1c24;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.interpretationBox h3,
+.recommendationBox h3 {
+  margin: 4px 0;
+}
+
+.description {
+  margin: 4px 0 0;
+  color: #c4c8d1;
+}
+
+.chip {
+  margin-top: 6px;
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: rgba(92, 209, 199, 0.1);
+  border: 1px solid rgba(92, 209, 199, 0.3);
+}
+
+.caption {
+  color: #8b92a1;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.recommendationBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.rangeBadge {
+  padding: 8px 12px;
+  background: #13151d;
+  border: 1px solid #1f222b;
+  border-radius: 8px;
+  color: #9aa0aa;
+}
+
+.justificationList {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: #cfd3dc;
+}
+
+.tableWrapper {
+  margin-top: 12px;
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  color: #9aa0aa;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #1a1c24;
+}
+
+.table th {
+  text-align: left;
+  color: #9aa0aa;
+  background: #0f1117;
+}
+
+.positive {
+  color: #34d399;
+}
+
+.negative {
+  color: #f87171;
+}
+
+.placeholder {
+  color: #7f8593;
+  padding: 24px;
+  text-align: center;
+}
+
+.wizardNav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.managerCard {
+  margin-top: 16px;
+}
+
+.managerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.resultCard {
+  min-height: 500px;
+}
+
+.formCard {
+  min-height: 500px;
+}
+
+.managerToggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.scenarioBox {
+  margin-top: 12px;
+  background: #0f1117;
+  border: 1px solid #1a1c24;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.scenarioGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.scenarioResult {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  background: #0b0d12;
+  border: 1px solid #1a1c24;
+  border-radius: 8px;
+}
+
+.scenarioResult strong {
+  font-size: 18px;
+}
+
+.arrow {
+  color: #44a1b4;
+  font-weight: 700;
+}

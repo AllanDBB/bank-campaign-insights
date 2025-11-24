@@ -6,6 +6,7 @@ import filterRouter from './filter.js';
 import documentRouter from './document.js';
 import metricsRouter from './metrics.js';
 import exportRouter from './export.js';
+import predictionRouter from './prediction.js';
 
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.use('/', filterRouter);
 router.use('/', documentRouter);
 router.use('/', metricsRouter);
 router.use('/', exportRouter);
+router.use('/', predictionRouter);
 
 export default router;

@@ -1,0 +1,96 @@
+{
+  "name": "Logistic Regression Prospect Model",
+  "version": "1.1.0-trained",
+  "trainedAt": "2025-11-23T23:32:51.670740+00:00",
+  "metrics": {
+    "AUC": 0.942
+  },
+  "intercept": 0.003752,
+  "numericWeights": {
+    "age": 0.001765,
+    "contactDurationSeconds": 0.006918,
+    "numberOfContacts": -0.017001,
+    "daysSinceLastContact": -0.002089,
+    "previousContactsCount": -0.283118,
+    "employmentVariationRate": -0.612966,
+    "consumerPriceIndex": 0.313034,
+    "consumerConfidenceIndex": 0.014449,
+    "euriborThreeMonthRate": -0.068689,
+    "numberOfEmployees": -0.005697
+  },
+  "categoricalWeights": {
+    "job": {
+      "admin.": 0.0,
+      "blue-collar": -0.301419,
+      "entrepreneur": -0.058406,
+      "housemaid": -0.020075,
+      "management": -0.023197,
+      "retired": 0.217352,
+      "self-employed": -0.023397,
+      "services": -0.135407,
+      "student": 0.150402,
+      "technician": 0.048986,
+      "unemployed": 0.02943,
+      "unknown": 0.025758
+    },
+    "marital": {
+      "divorced": 0.0,
+      "married": 0.016957,
+      "single": 0.102851,
+      "unknown": 0.002681
+    },
+    "education": {
+      "basic.4y": 0.0,
+      "basic.6y": -0.045121,
+      "basic.9y": -0.14184,
+      "high.school": -0.055603,
+      "illiterate": 0.007056,
+      "professional.course": 0.04028,
+      "university.degree": 0.154193,
+      "unknown": 0.078531
+    },
+    "hasCreditDefault": {
+      "no": 0.0,
+      "unknown": -0.344861,
+      "yes": -0.000204
+    },
+    "hasHousingLoan": {
+      "no": 0.0,
+      "unknown": 0.011107,
+      "yes": 0.0278
+    },
+    "hasPersonalLoan": {
+      "no": 0.0,
+      "unknown": 0.011107,
+      "yes": -0.055013
+    },
+    "contactType": {
+      "cellular": 0.0,
+      "telephone": -0.221465
+    },
+    "contactMonth": {
+      "apr": 0.0,
+      "aug": 0.229137,
+      "dec": 0.006339,
+      "jul": 0.169171,
+      "jun": 0.118912,
+      "mar": 0.509276,
+      "may": -1.159221,
+      "nov": -0.157175,
+      "oct": 0.215261,
+      "sep": -0.028643
+    },
+    "contactDayOfWeek": {
+      "fri": 0.0,
+      "mon": -0.050032,
+      "thu": -0.079062,
+      "tue": 0.02206,
+      "wed": 0.120564
+    },
+    "previousCampaignOutcome": {
+      "failure": 0.0,
+      "nonexistent": 0.275374,
+      "success": 0.036822
+    }
+  }
+}

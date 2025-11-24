@@ -3,7 +3,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Table from "./tabs/Table";
 import Dashboard from "./tabs/dashboard/Dashboard";
 import UsedFilters from "./tabs/UsedFilters";
-import AdvancedAnalytics from "./tabs/AdvancedAnalytics";
+import Prediction from "./pages/Prediction/Prediction";
 import { FilterProvider } from "./context/FilterContext";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
             <Route path="table" element={<Table/>}/>
             <Route path="dashboard" element={<Dashboard/>}/>
             <Route path="usedFilters" element={<UsedFilters/>}/>
-            <Route path="advanced" element={<AdvancedAnalytics/>}/>
+            <Route path="prediction" element={<Prediction/>}/>
           </Routes>
         </div>
       </div>

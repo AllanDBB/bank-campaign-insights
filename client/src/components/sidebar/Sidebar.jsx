@@ -41,8 +41,8 @@ export default function Sidebar() {
                         <li>
                             <NavLink 
                                 className={({isActive})=> isActive ? `${styles.tabElement} ${styles.activeTabElement}`: styles.tabElement}
-                                to="/app/advanced">
-                                Analítica Avanzada
+                                to="/app/prediction">
+                                Modelo predictivo
                             </NavLink>
                         </li>
                     </ul>

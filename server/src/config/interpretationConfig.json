@@ -1,0 +1,47 @@
+{
+  "acceptanceThreshold": 0.5,
+  "interpretationRanges": [
+    {
+      "label": "Baja",
+      "min": 0,
+      "max": 0.3,
+      "description": "Probabilidad baja de aceptar el producto",
+      "color": "#ef4444"
+    },
+    {
+      "label": "Media",
+      "min": 0.3,
+      "max": 0.6,
+      "description": "Probabilidad moderada, requiere seguimiento",
+      "color": "#f59e0b"
+    },
+    {
+      "label": "Alta",
+      "min": 0.6,
+      "max": 1,
+      "description": "Probabilidad alta, priorizar contacto",
+      "color": "#22c55e"
+    }
+  ],
+  "actionRanges": [
+    {
+      "label": "No priorizar",
+      "min": 0,
+      "max": 0.3,
+      "action": "No priorizar seguimiento"
+    },
+    {
+      "label": "Seguimiento programado",
+      "min": 0.3,
+      "max": 0.6,
+      "action": "Segundo intento / seguimiento programado"
+    },
+    {
+      "label": "Contacto inmediato",
+      "min": 0.6,
+      "max": 1,
+      "action": "Contacto inmediato / alta prioridad"
+    }
+  ],
+  "lastUpdatedBy": "system"
+}
