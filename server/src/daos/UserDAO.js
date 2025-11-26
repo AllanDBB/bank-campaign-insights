@@ -2,17 +2,20 @@ import User from '../models/User.js';
 import bcrypt from 'bcrypt';
 
 class UserDAO {
+  //create user (register)
   async createUser(userData) {
     try {
-      const existingUser = await User.findOne({ username: userData.username });
+      // Chequear email unico
+      const existingUser = await User.findOne({ email: userData.email });
 
       if (existingUser) {
         return {
           success: false,
-          error: 'Username already exists'
+          error: 'Email already exists'
         };
       }
 
+      // password hasheada
       const hashedPassword = await bcrypt.hash(userData.password, 10);
 
       const user = new User({
@@ -21,10 +24,12 @@ class UserDAO {
       });
 
       const result = await user.save();
+
       return {
         success: true,
         user: result
       };
+
     } catch (error) {
       return {
         success: false,
@@ -33,6 +38,7 @@ class UserDAO {
     }
   }
 
+  // get user by id (obtener perfil)
   async getUserById(userId) {
     try {
       if (!userId) {
@@ -42,7 +48,9 @@ class UserDAO {
         };
       }
 
-      if (typeof userId !== 'string' || userId.length !== 24 || !/^[a-fA-F0-9]{24}$/.test(userId)) {
+      if (typeof userId !== 'string' ||
+          userId.length !== 24 ||
+          !/^[a-fA-F0-9]{24}$/.test(userId)) {
         return {
           success: false,
           error: 'Invalid user ID format'
@@ -56,10 +64,37 @@ class UserDAO {
           error: 'User not found'
         };
       }
+
       return {
         success: true,
-        user: user
+        user
       };
+
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  // find by email (login)
+  async findByEmail(email) {
+    try {
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return {
+          success: false,
+          error: 'User not found'
+        };
+      }
+
+      return {
+        success: true,
+        user
+      };
+
     } catch (error) {
       return {
         success: false,
