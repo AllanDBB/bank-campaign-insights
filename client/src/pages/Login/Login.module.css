@@ -32,13 +32,6 @@
   font-size: 1rem;
   background: #f4f7f7;
 }
-.input:focus {
-  border-color: #0D4A6B;
-  background-color: white;
-  box-shadow: 0 0 0 3px rgba(13, 74, 107, 0.15);
-  outline: none;
-}
-
 
 .card {
   border-radius: 1rem;
