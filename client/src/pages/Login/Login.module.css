@@ -1,0 +1,137 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  background: #000101;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.title {
+  padding: 0.5rem;
+  background: #0D4A6B;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  margin-bottom: 1.8rem;
+  font-size: 3rem;
+  font-weight: 750;
+}
+
+.input {
+  padding: 0.875rem 1rem;
+  border: 2px solid #e5eaeb;
+  border-radius: 1rem;
+  font-size: 1rem;
+  background: #f4f7f7;
+}
+
+.card {
+  border-radius: 1rem;
+  background: white;
+  width: 100%;
+  max-width: 450px;
+  padding: 0.5rem 2rem;
+}
+
+.registerButton {
+  background:#2f6f7c;
+  color: white;
+  border: none;
+  padding: 1.1rem 1rem;
+  border-radius: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.registerButton:hover {
+  background:#0D4A6B;
+}
+
+
+.submitButton {
+  background:#2f6f7c;
+  color: white;
+  border: none;
+  padding: 1.1rem 1rem;
+  border-radius: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitButton:hover {
+  background:#0D4A6B;
+}
+
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.passwordWrapper input {
+  width: 100%;
+  padding-right: 45px !important; /* deja espacio para el ojito */
+}
+
+/* ojito */
+.eyeButton {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.eyeButton:hover {
+  color: #000;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+
+.error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 0.5rem;
+  background: #fef2f2;
+  border-radius: 0.5rem;
+  border: 1px solid #fecaca;
+}
+.register {
+  text-align: center;   /* centra el texto y el link */
+  font-size: 1.1rem;
+}
+
+.irregister {
+  color: #44A1B4;
+  text-align: center;
+  font-weight: 550;
+  font-size: 1.1rem;
+}
+
+.irregister:hover {
+  text-decoration: underline;
+  color: #0D4A6B;
+}
+
