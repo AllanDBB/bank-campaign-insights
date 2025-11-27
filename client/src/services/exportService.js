@@ -1,7 +1,7 @@
 import apiClient from './api';
 
 const getHeaders = () => {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   if (!token) {
     throw new Error("No authentication token found");

@@ -20,6 +20,7 @@ class UserDAO {
 
       const user = new User({
         ...userData,
+        username: userData.email, 
         password: hashedPassword
       });
 

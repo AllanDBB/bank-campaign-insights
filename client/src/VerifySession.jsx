@@ -1,11 +1,11 @@
 import { Navigate } from "react-router-dom";
 
-export default function VerifySession({ pantalla }) {
-  const token = localStorage.getItem("token");
+export default function VerifySession({ children }) {
+  const token = sessionStorage.getItem("token");
 
   if (!token) {
     return <Navigate to="/login" replace />;
   }
 
-  return pantalla;
+  return children;
 }

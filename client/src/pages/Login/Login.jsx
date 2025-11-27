@@ -36,7 +36,7 @@ export default function Login() {
         email,
         password
       });
-      localStorage.setItem("token", res.data.token);
+      sessionStorage.setItem("token", res.data.token);
 
       console.log("Login Successful");
       navigate("/") //Navegación a la pagina del dataload

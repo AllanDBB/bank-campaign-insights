@@ -47,7 +47,7 @@ const fetchAllDocuments = async (currentPage = page, column = sortColumn, direct
     const res = await fetch(`${API_URL}/documents?${params.toString()}`, {
       headers: { 
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`
         }
     });
 
@@ -110,7 +110,7 @@ const exportToCSV = async () => {
     const response = await fetch(`${API_URL}/documents?${params.toString()}`, {
       headers: { 
          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`
       }
     });
 

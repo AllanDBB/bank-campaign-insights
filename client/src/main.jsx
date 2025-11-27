@@ -12,31 +12,33 @@ import VerifySession from "./VerifySession.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      {/* <Route path="/" element={<DataLoad />} />
-      <Route path="/app/*" element={<App />} /> */}
+<Routes>
+  {/* Rutas públicas */}
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
 
+  {/* Rutas protegidas */}
+  <Route
+    path="/"
+    element={
+      <VerifySession>
+        <DataLoad />
+      </VerifySession>
+    }
+  />
 
-      {/* agregar al terminar desarrollo */}
+  <Route
+    path="/app/*"
+    element={
+      <VerifySession>
+        <App />
+      </VerifySession>
+    }
+  />
 
-      <Route 
-        path="/" 
-        element={
-          <VerifySession>
-            <DataLoad />
-          </VerifySession>
-        } 
-      />
-      <Route 
-        path="/app/*" 
-        element={
-          <VerifySession>
-            <App />
-          </VerifySession>
-        } 
-      />
-    </Routes>
+  {/* Rutas inválidas */}
+  <Route path="*" element={<Navigate to="/login" replace />} />
+</Routes>
+
   </BrowserRouter>
 );
