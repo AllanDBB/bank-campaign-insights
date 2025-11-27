@@ -15,13 +15,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/" element={<DataLoad />} />
-      <Route path="/app/*" element={<App />} />
+      {/* <Route path="/" element={<DataLoad />} />
+      <Route path="/app/*" element={<App />} /> */}
 
 
       {/* agregar al terminar desarrollo */}
 
-      {/* <Route 
+      <Route 
         path="/" 
         element={
           <VerifySession>
@@ -36,7 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <App />
           </VerifySession>
         } 
-      /> */}
+      />
     </Routes>
   </BrowserRouter>
 );
