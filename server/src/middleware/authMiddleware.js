@@ -1,8 +1,12 @@
+import jwt from "jsonwebtoken";
+
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
+
   if (!authHeader) {
     return res.status(401).json({ success: false, message: "Missing token" });
   }
+
   const token = authHeader.split(" ")[1];
 
   try {
@@ -13,8 +17,10 @@ const authMiddleware = (req, res, next) => {
       role: decoded.role
     };
 
-    next(); // pasa al controlador real
+    next();
   } catch (err) {
     return res.status(401).json({ success: false, message: "Invalid token" });
   }
 };
+
+export default authMiddleware;
