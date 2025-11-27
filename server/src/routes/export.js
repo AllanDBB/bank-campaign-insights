@@ -1,5 +1,5 @@
 import express from 'express';
-import extractUserId from '../middleware/extractUserId.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 import ExportController from '../controllers/ExportController.js';
 
 const router = express.Router();
