@@ -1,20 +1,27 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import App from "./App.jsx";
 import "./index.css";
+import DataLoad from "./pages/DataLoad/DataLoad.jsx";
 
 import Login from "./pages/Login/Login.jsx";
 import Register from "./pages/Register/Register.jsx";
 import VerifySession from "./VerifySession.jsx";
-import DataLoad from "./pages/DataLoad/DataLoad.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route 
+      <Route path="/" element={<DataLoad />} />
+      <Route path="/app/*" element={<App />} />
+
+
+      {/* agregar al terminar desarrollo */}
+
+      {/* <Route 
         path="/" 
         element={
           <VerifySession>
@@ -29,7 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <App />
           </VerifySession>
         } 
-      />
+      /> */}
     </Routes>
   </BrowserRouter>
 );

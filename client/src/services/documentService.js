@@ -10,21 +10,21 @@ export const uploadDocument = async (file, onProgress) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  // Obtener token del localStorage
   const token = localStorage.getItem("token");
-
   if (!token) {
-    throw new Error("No authentication token found. User must log in.");
+    throw new Error("No authentication token found. Please log in.");
   }
 
   const config = {
     headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`  // JWT
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`
     },
     onUploadProgress: (progressEvent) => {
       if (onProgress && progressEvent.total) {
-        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        const percent = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
         onProgress(percent);
       }
     }

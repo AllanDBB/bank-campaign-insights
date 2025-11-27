@@ -45,9 +45,10 @@ const fetchAllDocuments = async (currentPage = page, column = sortColumn, direct
     console.log("URL Final:", `${API_URL}/documents?${params.toString()}`);
 
     const res = await fetch(`${API_URL}/documents?${params.toString()}`, {
-      headers: { "Content-Type": "application/json", 
-                "x-user-id": import.meta.env.VITE_USER_ID
-              }
+      headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
     });
 
     const data = await res.json();
@@ -108,8 +109,8 @@ const exportToCSV = async () => {
 
     const response = await fetch(`${API_URL}/documents?${params.toString()}`, {
       headers: { 
-        "Content-Type": "application/json",
-        "x-user-id": import.meta.env.VITE_USER_ID
+         "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     });
 

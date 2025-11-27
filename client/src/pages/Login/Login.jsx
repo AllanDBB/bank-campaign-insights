@@ -32,13 +32,13 @@ export default function Login() {
 
     try { //Calling Backend
       setLoading(true)
-      const res = await axios.post("http://localhost:3001/api/users/login", {
+      const res = await axios.post("http://localhost:3001/api/login", {
         email,
         password
       });
       localStorage.setItem("token", res.data.token);
 
-      console.log("Login Successfull:", user)
+      console.log("Login Successful");
       navigate("/") //Navegación a la pagina del dataload
 
     } catch (err) {
