@@ -1,14 +1,14 @@
 import apiClient from './api';
 
 const getHeaders = () => {
-  const userId = import.meta.env.VITE_USER_ID;
+  const token = localStorage.getItem("token");
 
-  if (!userId) {
-    throw new Error('User ID not configured. Please set VITE_USER_ID in your .env file');
+  if (!token) {
+    throw new Error("No authentication token found");
   }
 
   return {
-    'x-user-id': userId
+    Authorization: `Bearer ${token}`
   };
 };
 

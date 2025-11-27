@@ -8,7 +8,7 @@ class ExportController {
 
   async exportToPDF(req, res, next) {
     try {
-      const userId = req.userId;
+      const userId = req.user.id;
       const filters = req.query;
       const filterName = req.query.filterName || null;
 
@@ -39,7 +39,7 @@ class ExportController {
 
   async exportToExcel(req, res, next) {
     try {
-      const userId = req.userId;
+      const userId = req.user.id;
       const filters = req.query;
       const filterName = req.query.filterName || null;
 

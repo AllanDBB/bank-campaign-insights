@@ -25,7 +25,7 @@ class PredictionController {
 
   async updateConfig(req, res, next) {
     try {
-      const user = req.userId || 'manager';
+      const user = req.user.id || 'manager';
       const config = await this.predictionService.updateConfig(req.body, user);
       res.status(200).json({ success: true, data: config });
     } catch (error) {

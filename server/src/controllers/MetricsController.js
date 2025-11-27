@@ -7,7 +7,7 @@ class MetricsController {
 
   async getDashboardMetrics(req, res, next) {
     try {
-      const userId = req.userId;
+      const userId = req.user.id;
       const filters = req.query;
 
       console.log('Calculating dashboard metrics for user:', userId);

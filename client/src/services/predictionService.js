@@ -1,13 +1,15 @@
 import apiClient from './api';
 
-const getUserId = () => import.meta.env.VITE_USER_ID;
-
 const authHeaders = () => {
-  const userId = getUserId();
-  if (!userId) {
-    throw new Error('User ID not configured. Please set VITE_USER_ID in your .env file');
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No authentication token found");
   }
-  return { 'x-user-id': userId };
+
+  return {
+    Authorization: `Bearer ${token}`
+  };
 };
 
 export const scoreProspect = async (payload) => {

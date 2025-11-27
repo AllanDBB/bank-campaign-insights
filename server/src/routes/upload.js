@@ -1,12 +1,12 @@
 import express from 'express';
 import upload from '../middleware/upload.js';
-import extractUserId from '../middleware/extractUserId.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 import UploadController from '../controllers/UploadController.js';
 
 const router = express.Router();
 const uploadController = new UploadController();
 
-router.post('/upload', extractUserId, upload.single('file'), (req, res, next) => {
+router.post('/upload', authMiddleware, upload.single('file'), (req, res, next) => {
   uploadController.uploadFile(req, res, next);
 });
 

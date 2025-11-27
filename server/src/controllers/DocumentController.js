@@ -19,7 +19,7 @@ class DocumentController {
       };
 
       const result = await this.documentDAO.getDocuments(
-        req.userId,
+        req.user.id,
         filters,
         pagination
       );
@@ -44,7 +44,7 @@ class DocumentController {
 
   async getDocumentSchema(req, res, next) {
     try {
-      const result = await this.schemaService.getDocumentSchema(req.userId);
+      const result = await this.schemaService.getDocumentSchema(req.user.id);
 
       if (!result.success) {
         return res.status(500).json({

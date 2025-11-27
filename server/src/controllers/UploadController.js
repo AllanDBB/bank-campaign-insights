@@ -14,7 +14,7 @@ class UploadController {
         });
       }
 
-      const userId = req.userId;
+      const userId = req.user.id;
       const file = req.file;
       console.log(`Received file upload: ${file.originalname}, size: ${file.size} bytes`);
 

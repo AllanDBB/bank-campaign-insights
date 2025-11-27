@@ -9,7 +9,7 @@ class FilterController {
     try {
       const { id, filterName } = req.query;
 
-      const result = await this.filterDAO.getFilters(req.userId, { id, filterName });
+      const result = await this.filterDAO.getFilters(req.user.id, { id, filterName });
 
       if (!result.success) {
         return res.status(404).json({
@@ -40,7 +40,7 @@ class FilterController {
         });
       }
 
-      const result = await this.filterDAO.createFilter(req.userId, {
+      const result = await this.filterDAO.createFilter(req.user.id, {
         filterName,
         filters
       });
@@ -79,7 +79,7 @@ class FilterController {
       if (filterName) updateData.filterName = filterName;
       if (filters) updateData.filters = filters;
 
-      const result = await this.filterDAO.updateFilter(req.userId, id, updateData);
+      const result = await this.filterDAO.updateFilter(req.user.id, id, updateData);
 
       if (!result.success) {
         return res.status(404).json({
@@ -110,7 +110,7 @@ class FilterController {
         });
       }
 
-      const result = await this.filterDAO.deleteFilter(req.userId, id);
+      const result = await this.filterDAO.deleteFilter(req.user.id, id);
 
       if (!result.success) {
         return res.status(404).json({
