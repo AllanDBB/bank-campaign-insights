@@ -65,8 +65,6 @@ class PredictionService {
 
     const result = await template.execute(payload);
     const enrichedResult = await ComparisonService.compareWithStats(result.contributions);
-    console.log("Backend says");
-    console.log(result);
 
     return {
       ...result,
