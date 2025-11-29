@@ -248,11 +248,12 @@ function Prediction() {
   };
   const interpretation = result?.interpretation?.range;
   const recommendation = result?.recommendation;
-
+  console.log("result:");
+  console.log(result);
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div>
+        <div className={styles.cardGroup}>
           <p className={styles.kicker}>Módulo predictivo · Regresión logística</p>
           <h1 className={styles.title}>Calcular probabilidad de aceptación</h1>
           <p className={styles.subtitle}>
@@ -273,215 +274,286 @@ function Prediction() {
       </div>
 
       <div className={styles.layout}>
-        <form className={styles.formCard} onSubmit={handleSubmit}>
-          <div className={styles.cardHeader}>
-            <div>
-              <p className={styles.kicker}>RF-2 Solicitud de datos</p>
-              <h2>Datos del prospecto</h2>
-            </div>
-            <div className={styles.actions}>
-              <button type="button" className={styles.secondary} onClick={handleReset}>Reiniciar</button>
-              <button type="submit" className={styles.primary} disabled={loading}>
-                {loading ? "Calculando..." : step < 3 ? "Siguiente" : "Calcular probabilidad"}
-              </button>
-            </div>
-          </div>
 
-          {error && <div className={styles.error}>{error}</div>}
+        <div className={styles.cardGroup}>
+          <form className={styles.formCard} onSubmit={handleSubmit}>
+            <div className={styles.cardHeader}>
+              <div>
+                <p className={styles.kicker}>RF-2 Solicitud de datos</p>
+                <h2>Datos del prospecto</h2>
+              </div>
+              <div className={styles.actions}>
+                <button type="button" className={styles.secondary} onClick={handleReset}>Reiniciar</button>
+                <button type="submit" className={styles.primary} disabled={loading}>
+                  {loading ? "Calculando..." : step < 3 ? "Siguiente" : "Calcular probabilidad"}
+                </button>
+              </div>
+            </div>
 
-          <div className={styles.profileBar}>
-            <div>
-              <p className={styles.kicker}>Perfiles rápidos</p>
-              <select value={selectedProfile} onChange={(e) => setSelectedProfile(e.target.value)}>
-                {quickProfiles.map((p) => (
-                  <option key={p.label} value={p.label}>{p.label}</option>
+            {error && <div className={styles.error}>{error}</div>}
+
+            <div className={styles.profileBar}>
+              <div>
+                <p className={styles.kicker}>Perfiles rápidos</p>
+                <select value={selectedProfile} onChange={(e) => setSelectedProfile(e.target.value)}>
+                  {quickProfiles.map((p) => (
+                    <option key={p.label} value={p.label}>{p.label}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className={styles.secondary}
+                  onClick={() => {
+                    const profile = quickProfiles.find(p => p.label === selectedProfile);
+                    if (profile) setForm(prev => ({ ...prev, ...profile.values }));
+                  }}
+                >
+                  Aplicar perfil
+                </button>
+              </div>
+              <div className={styles.stepper}>
+                {wizardSteps.map((s, idx) => (
+                  <div key={s} className={`${styles.step} ${step === idx + 1 ? styles.stepActive : ''} ${step > idx + 1 ? styles.stepDone : ''}`}>
+                    <span>{idx + 1}</span>
+                    <small>{s}</small>
+                  </div>
                 ))}
-              </select>
-              <button
-                type="button"
-                className={styles.secondary}
-                onClick={() => {
-                  const profile = quickProfiles.find(p => p.label === selectedProfile);
-                  if (profile) setForm(prev => ({ ...prev, ...profile.values }));
-                }}
-              >
-                Aplicar perfil
-              </button>
+              </div>
             </div>
-            <div className={styles.stepper}>
-              {wizardSteps.map((s, idx) => (
-                <div key={s} className={`${styles.step} ${step === idx + 1 ? styles.stepActive : ''} ${step > idx + 1 ? styles.stepDone : ''}`}>
-                  <span>{idx + 1}</span>
-                  <small>{s}</small>
-                </div>
-              ))}
+
+            <div className={styles.fieldsGrid}>
+              {step === 1 && (
+                <>
+                  <label className={styles.field}>
+                    <span>Edad</span>
+                    <input type="number" name="age" value={form.age} onChange={handleChange} min="18" max="90" />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Profesión</span>
+                    <select name="job" value={form.job} onChange={handleChange}>
+                      <option value="admin.">Admin</option>
+                      <option value="technician">Técnico</option>
+                      <option value="services">Servicios</option>
+                      <option value="management">Gerencia</option>
+                      <option value="blue-collar">Blue collar</option>
+                      <option value="entrepreneur">Emprendedor</option>
+                      <option value="retired">Jubilado</option>
+                      <option value="student">Estudiante</option>
+                      <option value="unemployed">Desempleado</option>
+                      <option value="self-employed">Independiente</option>
+                      <option value="housemaid">Aseo</option>
+                      <option value="unknown">Desconocido</option>
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Estado civil</span>
+                    <select name="marital" value={form.marital} onChange={handleChange}>
+                      <option value="single">Soltero</option>
+                      <option value="married">Casado</option>
+                      <option value="divorced">Divorciado</option>
+                      <option value="unknown">Desconocido</option>
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Educación</span>
+                    <select name="education" value={form.education} onChange={handleChange}>
+                      <option value="basic.4y">Básica 4y</option>
+                      <option value="basic.6y">Básica 6y</option>
+                      <option value="basic.9y">Básica 9y</option>
+                      <option value="high.school">Secundaria</option>
+                      <option value="professional.course">Curso profesional</option>
+                      <option value="university.degree">Universidad</option>
+                      <option value="unknown">Desconocido</option>
+                    </select>
+                  </label>
+                </>
+              )}
+
+              {step === 2 && (
+                <>
+                  <label className={styles.field}>
+                    <span>Default crédito</span>
+                    <select name="hasCreditDefault" value={form.hasCreditDefault} onChange={handleChange}>
+                      <option value="no">No</option>
+                      <option value="yes">Sí</option>
+                      <option value="unknown">Desconocido</option>
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Hipoteca</span>
+                    <select name="hasHousingLoan" value={form.hasHousingLoan} onChange={handleChange}>
+                      <option value="no">No</option>
+                      <option value="yes">Sí</option>
+                      <option value="unknown">Desconocido</option>
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Préstamo personal</span>
+                    <select name="hasPersonalLoan" value={form.hasPersonalLoan} onChange={handleChange}>
+                      <option value="no">No</option>
+                      <option value="yes">Sí</option>
+                      <option value="unknown">Desconocido</option>
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Número de empleados (contexto)</span>
+                    <input type="number" name="numberOfEmployees" value={form.numberOfEmployees} onChange={handleChange} />
+                  </label>
+                </>
+              )}
+
+              {step === 3 && (
+                <>
+                  <label className={styles.field}>
+                    <span>Canal de contacto</span>
+                    <select name="contactType" value={form.contactType} onChange={handleChange}>
+                      <option value="cellular">Celular</option>
+                      <option value="telephone">Teléfono fijo</option>
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Mes de contacto</span>
+                    <select name="contactMonth" value={form.contactMonth} onChange={handleChange}>
+                      {["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"].map((m) => (
+                        <option key={m} value={m}>{m.toUpperCase()}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Día de contacto</span>
+                    <select name="contactDayOfWeek" value={form.contactDayOfWeek} onChange={handleChange}>
+                      {["mon","tue","wed","thu","fri"].map((d) => (
+                        <option key={d} value={d}>{d.toUpperCase()}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Duración último contacto (seg)</span>
+                    <input type="number" name="contactDurationSeconds" value={form.contactDurationSeconds} onChange={handleChange} min="0" />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Número de contactos</span>
+                    <input type="number" name="numberOfContacts" value={form.numberOfContacts} onChange={handleChange} min="0" />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Días desde último contacto</span>
+                    <input type="number" name="daysSinceLastContact" value={form.daysSinceLastContact} onChange={handleChange} min="0" />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Contactos previos</span>
+                    <input type="number" name="previousContactsCount" value={form.previousContactsCount} onChange={handleChange} min="0" />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Resultado campaña anterior</span>
+                    <select name="previousCampaignOutcome" value={form.previousCampaignOutcome} onChange={handleChange}>
+                      <option value="success">Éxito</option>
+                      <option value="failure">Fracaso</option>
+                      <option value="nonexistent">No hubo</option>
+                      <option value="unknown">Desconocido</option>
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Var. empleo</span>
+                    <input type="number" step="0.1" name="employmentVariationRate" value={form.employmentVariationRate} onChange={handleChange} />
+                  </label>
+                  <label className={styles.field}>
+                    <span>IPC</span>
+                    <input type="number" step="0.1" name="consumerPriceIndex" value={form.consumerPriceIndex} onChange={handleChange} />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Confianza consumidor</span>
+                    <input type="number" step="0.1" name="consumerConfidenceIndex" value={form.consumerConfidenceIndex} onChange={handleChange} />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Euribor 3M</span>
+                    <input type="number" step="0.01" name="euriborThreeMonthRate" value={form.euriborThreeMonthRate} onChange={handleChange} />
+                  </label>
+                </>
+              )}
             </div>
-          </div>
+            <div className={styles.wizardNav}>
+              {step > 1 && (
+                <button type="button" className={styles.secondary} onClick={() => setStep(step - 1)}>
+                  Anterior
+                </button>
+              )}
+              {step < 3 && (
+                <button type="submit" className={styles.primary}>
+                  Siguiente
+                </button>
+              )}
+            </div>
+          </form>
+          {result && (
+            <div className={styles.comparisonCard}>
+              <p className={styles.kicker}>RF-2.2 Prospecto según la media</p>
+              <h2>Comparación con el promedio</h2>
+              <div>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Valor</th>
+                      <th>Promedio</th>
+                      <th>Interpretación</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.contributions?.filter(item => item.feature !== "intercept").map((item, idx) => {
+                      const isCategorical = [
+                        "job","marital","education",
+                        "hasCreditDefault","hasHousingLoan","hasPersonalLoan",
+                        "contactType","contactMonth","contactDayOfWeek","previousCampaignOutcome"
+                      ].includes(item.feature);
+                      let avgDisplay = "—";
+                      if (item.averageOrPercentage !== null && typeof item.averageOrPercentage === "number") {
+                        avgDisplay = isCategorical
+                          ? `${item.averageOrPercentage.toFixed(2)}%`
+                          : item.averageOrPercentage.toFixed(2);
+                      }
+                      let valueClass = styles.valueNeutral;
+                      if (!isCategorical && typeof item.value === "number" && typeof item.averageOrPercentage === "number") {
+                        if (item.value > item.averageOrPercentage) {
+                          valueClass = styles.valueHigh;
+                        } else if (item.value < item.averageOrPercentage) {
+                          valueClass = styles.valueLow;
+                        }
+                      }
+                      const avgClass = isCategorical
+                        ? styles.avgPercentage
+                        : styles.avgNumber;
+                      const interp = (item.interpretation || "").toLowerCase();
+                      let interpClass = styles.interpNeutral;
+                      if (interp.includes("arriba") || interp.includes("mayoría") || interp.includes("alto")) {
+                        interpClass = styles.interpHigh;
+                      } else if (interp.includes("debajo") || interp.includes("minoría") || interp.includes("bajo")) {
+                        interpClass = styles.interpLow;
+                      } else if (interp.includes("promedio") || interp.includes("neutral")) {
+                        interpClass = styles.interpMid;
+                      }
+                      return (
+                        <tr key={idx}>
+                          <td>{item.label}</td>
+                          <td className={valueClass}>
+                            {String(item.value)}
+                          </td>
+                          <td className={avgClass}>
+                            {avgDisplay}
+                          </td>
+                          <td className={interpClass}>
+                            {item.interpretation || "Pendiente"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
 
-          <div className={styles.fieldsGrid}>
-            {step === 1 && (
-              <>
-                <label className={styles.field}>
-                  <span>Edad</span>
-                  <input type="number" name="age" value={form.age} onChange={handleChange} min="18" max="90" />
-                </label>
-                <label className={styles.field}>
-                  <span>Profesión</span>
-                  <select name="job" value={form.job} onChange={handleChange}>
-                    <option value="admin.">Admin</option>
-                    <option value="technician">Técnico</option>
-                    <option value="services">Servicios</option>
-                    <option value="management">Gerencia</option>
-                    <option value="blue-collar">Blue collar</option>
-                    <option value="entrepreneur">Emprendedor</option>
-                    <option value="retired">Jubilado</option>
-                    <option value="student">Estudiante</option>
-                    <option value="unemployed">Desempleado</option>
-                    <option value="self-employed">Independiente</option>
-                    <option value="housemaid">Aseo</option>
-                    <option value="unknown">Desconocido</option>
-                  </select>
-                </label>
-                <label className={styles.field}>
-                  <span>Estado civil</span>
-                  <select name="marital" value={form.marital} onChange={handleChange}>
-                    <option value="single">Soltero</option>
-                    <option value="married">Casado</option>
-                    <option value="divorced">Divorciado</option>
-                    <option value="unknown">Desconocido</option>
-                  </select>
-                </label>
-                <label className={styles.field}>
-                  <span>Educación</span>
-                  <select name="education" value={form.education} onChange={handleChange}>
-                    <option value="basic.4y">Básica 4y</option>
-                    <option value="basic.6y">Básica 6y</option>
-                    <option value="basic.9y">Básica 9y</option>
-                    <option value="high.school">Secundaria</option>
-                    <option value="professional.course">Curso profesional</option>
-                    <option value="university.degree">Universidad</option>
-                    <option value="unknown">Desconocido</option>
-                  </select>
-                </label>
-              </>
-            )}
 
-            {step === 2 && (
-              <>
-                <label className={styles.field}>
-                  <span>Default crédito</span>
-                  <select name="hasCreditDefault" value={form.hasCreditDefault} onChange={handleChange}>
-                    <option value="no">No</option>
-                    <option value="yes">Sí</option>
-                    <option value="unknown">Desconocido</option>
-                  </select>
-                </label>
-                <label className={styles.field}>
-                  <span>Hipoteca</span>
-                  <select name="hasHousingLoan" value={form.hasHousingLoan} onChange={handleChange}>
-                    <option value="no">No</option>
-                    <option value="yes">Sí</option>
-                    <option value="unknown">Desconocido</option>
-                  </select>
-                </label>
-                <label className={styles.field}>
-                  <span>Préstamo personal</span>
-                  <select name="hasPersonalLoan" value={form.hasPersonalLoan} onChange={handleChange}>
-                    <option value="no">No</option>
-                    <option value="yes">Sí</option>
-                    <option value="unknown">Desconocido</option>
-                  </select>
-                </label>
-                <label className={styles.field}>
-                  <span>Número de empleados (contexto)</span>
-                  <input type="number" name="numberOfEmployees" value={form.numberOfEmployees} onChange={handleChange} />
-                </label>
-              </>
-            )}
-
-            {step === 3 && (
-              <>
-                <label className={styles.field}>
-                  <span>Canal de contacto</span>
-                  <select name="contactType" value={form.contactType} onChange={handleChange}>
-                    <option value="cellular">Celular</option>
-                    <option value="telephone">Teléfono fijo</option>
-                  </select>
-                </label>
-                <label className={styles.field}>
-                  <span>Mes de contacto</span>
-                  <select name="contactMonth" value={form.contactMonth} onChange={handleChange}>
-                    {["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"].map((m) => (
-                      <option key={m} value={m}>{m.toUpperCase()}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className={styles.field}>
-                  <span>Día de contacto</span>
-                  <select name="contactDayOfWeek" value={form.contactDayOfWeek} onChange={handleChange}>
-                    {["mon","tue","wed","thu","fri"].map((d) => (
-                      <option key={d} value={d}>{d.toUpperCase()}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className={styles.field}>
-                  <span>Duración último contacto (seg)</span>
-                  <input type="number" name="contactDurationSeconds" value={form.contactDurationSeconds} onChange={handleChange} min="0" />
-                </label>
-                <label className={styles.field}>
-                  <span>Número de contactos</span>
-                  <input type="number" name="numberOfContacts" value={form.numberOfContacts} onChange={handleChange} min="0" />
-                </label>
-                <label className={styles.field}>
-                  <span>Días desde último contacto</span>
-                  <input type="number" name="daysSinceLastContact" value={form.daysSinceLastContact} onChange={handleChange} min="0" />
-                </label>
-                <label className={styles.field}>
-                  <span>Contactos previos</span>
-                  <input type="number" name="previousContactsCount" value={form.previousContactsCount} onChange={handleChange} min="0" />
-                </label>
-                <label className={styles.field}>
-                  <span>Resultado campaña anterior</span>
-                  <select name="previousCampaignOutcome" value={form.previousCampaignOutcome} onChange={handleChange}>
-                    <option value="success">Éxito</option>
-                    <option value="failure">Fracaso</option>
-                    <option value="nonexistent">No hubo</option>
-                    <option value="unknown">Desconocido</option>
-                  </select>
-                </label>
-                <label className={styles.field}>
-                  <span>Var. empleo</span>
-                  <input type="number" step="0.1" name="employmentVariationRate" value={form.employmentVariationRate} onChange={handleChange} />
-                </label>
-                <label className={styles.field}>
-                  <span>IPC</span>
-                  <input type="number" step="0.1" name="consumerPriceIndex" value={form.consumerPriceIndex} onChange={handleChange} />
-                </label>
-                <label className={styles.field}>
-                  <span>Confianza consumidor</span>
-                  <input type="number" step="0.1" name="consumerConfidenceIndex" value={form.consumerConfidenceIndex} onChange={handleChange} />
-                </label>
-                <label className={styles.field}>
-                  <span>Euribor 3M</span>
-                  <input type="number" step="0.01" name="euriborThreeMonthRate" value={form.euriborThreeMonthRate} onChange={handleChange} />
-                </label>
-              </>
-            )}
-          </div>
-
-          <div className={styles.wizardNav}>
-            {step > 1 && (
-              <button type="button" className={styles.secondary} onClick={() => setStep(step - 1)}>
-                Anterior
-              </button>
-            )}
-            {step < 3 && (
-              <button type="submit" className={styles.primary}>
-                Siguiente
-              </button>
-            )}
-          </div>
-        </form>
 
         <div className={styles.resultCard}>
           <div className={styles.cardHeader}>
@@ -556,7 +628,7 @@ function Prediction() {
                     </tr>
                   </thead>
                   <tbody>
-                    {result.contributions?.slice(0, 8).map((row, idx) => (
+                    {result.contributions?.filter(row => row.feature !== "intercept").slice(0, 8).map((row, idx) => (
                       <tr key={idx}>
                         <td>{row.label}</td>
                         <td>{row.value}</td>
@@ -569,7 +641,6 @@ function Prediction() {
                   </tbody>
                 </table>
               </div>
-
               <div className={styles.scenarioBox}>
                 <div className={styles.cardHeader}>
                   <div>
@@ -632,6 +703,8 @@ function Prediction() {
           )}
         </div>
       </div>
+
+
 
       {managerMode && (
         <div className={styles.managerCard}>

@@ -64,12 +64,20 @@
 
 .formCard,
 .resultCard,
+.comparisonCard,
+
 .managerCard {
   background: #0b0b0f;
   border: 1px solid #1a1b20;
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.cardGroup{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .actions {
@@ -397,4 +405,34 @@
 .arrow {
   color: #44a1b4;
   font-weight: 700;
+}
+
+.avgPercentage {
+  color: #6c8dd6;   
+  font-weight: 500;
+}
+
+.avgNumber {
+  color: #4eb0c2;   
+  font-weight: 500;
+}
+
+.interpHigh {
+  color: #16a34a;  
+  font-weight: 600;
+}
+
+.interpLow {
+  color: #c7694d;   
+  font-weight: 600;
+}
+
+.interpMid {
+  color: #ca8a04;   
+  font-weight: 600;
+}
+
+.interpNeutral {
+  color: #6b7280;   
+  font-weight: 600;
 }

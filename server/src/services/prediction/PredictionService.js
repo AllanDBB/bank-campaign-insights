@@ -5,6 +5,7 @@ import ActionRecommender from './ActionRecommender.js';
 import InterpretationConfigRepository from './InterpretationConfigRepository.js';
 import JustificationService from './JustificationService.js';
 import LogisticPredictionTemplate from './LogisticPredictionTemplate.js';
+import ComparisonService from "../ComparisonService.js";
 
 class PredictionService {
   constructor() {
@@ -63,9 +64,13 @@ class PredictionService {
     );
 
     const result = await template.execute(payload);
+    const enrichedResult = await ComparisonService.compareWithStats(result.contributions);
+    console.log("Backend says");
+    console.log(result);
 
     return {
       ...result,
+      contributions: enrichedResult,
       configSource: result.interpretation?.source || 'default'
     };
   }
