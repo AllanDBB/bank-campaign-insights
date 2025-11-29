@@ -98,7 +98,11 @@
   background: linear-gradient(135deg, #44a1b4, #5cd1c7);
   color: #031d24;
 }
-
+.primary:hover{
+  transform: scale(1.03);    /* se agranda al pasar el mouse */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  color: white;
+}
 .secondary {
   background: #13141a;
   color: #cfd3dc;
@@ -435,4 +439,59 @@
 .interpNeutral {
   color: #6b7280;   
   font-weight: 600;
+}
+
+
+/*------------------------------------------------------*/
+.scenarioGridVertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.scenarioRow {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  align-items: flex-end;
+}
+
+.scenarioRow > .field {
+  width: 50%;
+}
+
+.addBtn {
+  margin-top: 0.5rem;
+}
+
+.removeBtn{
+  background: linear-gradient(135deg, #44a1b4, #5cd1c7);
+  color: #031d24;
+  border: none;
+  border-radius: 30%;
+  padding: .5rem;
+  cursor: pointer;
+}
+.removeBtn:hover{
+  transform: scale(1.03);    /* se agranda al pasar el mouse */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.addBtn{
+  background: linear-gradient(135deg, #44a1b4, #5cd1c7);
+  color: #031d24;
+  border: none;
+  border-radius: 15px;
+  padding: 1rem;
+  margin: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.addBtn:hover{
+  transform: scale(1.03);    /* se agranda al pasar el mouse */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  color: white;
 }

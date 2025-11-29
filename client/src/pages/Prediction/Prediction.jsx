@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "./Prediction.module.css";
+import { FILTER_FIELDS } from "../../config/filterFields";
 import LogisticProspectTemplate from "./templates/LogisticProspectTemplate";
 import { getInterpretationConfig, updateInterpretationConfig } from "../../services/predictionService";
 
@@ -101,8 +102,29 @@ function Prediction() {
     mediumMax: 0.6,
     acceptanceThreshold: 0.5
   });
-  const [scenarioField, setScenarioField] = useState("contactType");
-  const [scenarioValue, setScenarioValue] = useState("telephone");
+  
+  const [scenarioItems, setScenarioItems] = useState([{ field: "contactType", value: "telephone" }]);
+
+  const addScenarioItem = () => {
+    const firstKey = Object.keys(FILTER_FIELDS)[0];
+    const fieldConfig = FILTER_FIELDS[firstKey];
+
+    setScenarioItems(prev => [
+      ...prev,
+      {
+        field: firstKey,
+        value:
+          fieldConfig.type === "multiple"
+            ? fieldConfig.options?.[0] || ""
+            : 0
+      }
+    ]);
+  };
+
+  const removeScenarioItem = (index) => {
+    setScenarioItems(prev => prev.filter((_, i) => i !== index));
+  };
+
   const [scenarioResult, setScenarioResult] = useState(null);
   const [scenarioLoading, setScenarioLoading] = useState(false);
 
@@ -234,7 +256,10 @@ function Prediction() {
   const handleScenario = async () => {
     setScenarioLoading(true);
     try {
-      const payload = { ...form, [scenarioField]: scenarioValue };
+      const payload = { ...form };
+      scenarioItems.forEach(item => {
+        payload[item.field] = item.value;
+      });
       const response = await template.execute(payload);
       if (response?.success) {
         setScenarioResult(response.data);
@@ -246,6 +271,7 @@ function Prediction() {
       setScenarioLoading(false);
     }
   };
+
   const interpretation = result?.interpretation?.range;
   const recommendation = result?.recommendation;
   console.log("result:");
@@ -492,7 +518,7 @@ function Prediction() {
                 <table className={styles.table}>
                   <thead>
                     <tr>
-                      <th>Variable</th>
+                      <th>Campo</th>
                       <th>Valor</th>
                       <th>Promedio</th>
                       <th>Interpretación</th>
@@ -533,7 +559,7 @@ function Prediction() {
                       }
                       return (
                         <tr key={idx}>
-                          <td>{item.label}</td>
+                          <td>{FILTER_FIELDS[item.feature]?.label || item.label}</td>
                           <td className={valueClass}>
                             {String(item.value)}
                           </td>
@@ -657,30 +683,97 @@ function Prediction() {
                     {scenarioLoading ? "Calculando..." : "Recalcular"}
                   </button>
                 </div>
-                <div className={styles.scenarioGrid}>
-                  <label className={styles.field}>
-                    <span>Variable</span>
-                    <select value={scenarioField} onChange={(e) => {
-                      const nextField = e.target.value;
-                      setScenarioField(nextField);
-                      const first = scenarioOptions[nextField]?.[0];
-                      if (first) setScenarioValue(first);
-                    }}>
-                      <option value="contactType">Canal de contacto</option>
-                      <option value="contactMonth">Mes</option>
-                      <option value="contactDayOfWeek">Día</option>
-                      <option value="job">Profesión</option>
-                    </select>
-                  </label>
-                  <label className={styles.field}>
-                    <span>Valor simulado</span>
-                    <select value={scenarioValue} onChange={(e) => setScenarioValue(e.target.value)}>
-                      {scenarioOptions[scenarioField].map((opt) => (
-                        <option key={opt} value={opt}>{opt.toUpperCase()}</option>
-                      ))}
-                    </select>
-                  </label>
+
+
+                <div className={styles.scenarioGridVertical}>
+                  {scenarioItems.map((item, index) => (
+                    <div key={index} className={styles.scenarioRow}>
+                      <label className={styles.field}>
+                        <span>Variable</span>
+                        <select
+                          value={item.field}
+                          onChange={(e) => {
+                            const newField = e.target.value;
+
+                            setScenarioItems(prev => {
+                              const updated = [...prev];
+                              updated[index].field = newField;
+                              const config = FILTER_FIELDS[newField];
+
+                              updated[index].value =
+                                config.type === "multiple"
+                                  ? config.options?.[0] || ""
+                                  : 0;
+
+                              return updated;
+                            });
+                          }}
+                        >
+                          {Object.keys(FILTER_FIELDS).map((key) => (
+                            <option key={key} value={key}>
+                              {FILTER_FIELDS[key].label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className={styles.field}>
+                        <span>Valor simulado</span>
+
+                        {FILTER_FIELDS[item.field].type === "multiple" ? (
+                          <select
+                            value={item.value}
+                            onChange={(e) => {
+                              const newValue = e.target.value;
+
+                              setScenarioItems(prev => {
+                                const updated = [...prev];
+                                updated[index].value = newValue;
+                                return updated;
+                              });
+                            }}
+                          >
+                            {FILTER_FIELDS[item.field].options.map(opt => (
+                              <option key={opt} value={opt}>
+                                {opt.toUpperCase()}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type="number"
+                            value={item.value}
+                            onChange={(e) => {
+                              const newValue = e.target.value;
+                              setScenarioItems(prev => {
+                                const updated = [...prev];
+                                updated[index].value = Number(newValue);
+                                return updated;
+                              });
+                            }}
+                          />
+                        )}
+                      </label>
+                      {scenarioItems.length > 1 && (
+                        <button
+                          type="button"
+                          className={styles.removeBtn}
+                          onClick={() => removeScenarioItem(index)}
+                        >
+                          −
+                        </button>
+                      )}
+
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className={styles.addBtn}
+                    onClick={addScenarioItem}
+                  >
+                    + Añadir variable
+                  </button>
                 </div>
+
                 {scenarioResult && (
                   <div className={styles.scenarioResult}>
                     <div>
@@ -703,7 +796,6 @@ function Prediction() {
           )}
         </div>
       </div>
-
 
 
       {managerMode && (
