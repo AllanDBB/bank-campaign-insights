@@ -21,6 +21,8 @@
     height: 100%;
     padding-left: 5rem;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
 }
 .exportButton{
     background-color: var(--primaryDark);

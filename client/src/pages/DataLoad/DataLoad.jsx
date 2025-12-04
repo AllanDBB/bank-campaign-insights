@@ -7,11 +7,13 @@ import { CircularProgress, Box, Typography, Alert, LinearProgress, Button } from
 import TitleCard from "../../components/titleCard/TitleCard";
 import InputFileBox from "../../components/fileloadbox/InputFileBox";
 import { useFileUpload } from "../../hooks/useFileUpload";
+import { useAccessControl } from "../../hooks/useAccessControl";
 
 function DataLoad() {
     const [step, setStep] = useState('fileload');
     const [selectedFile, setSelectedFile] = useState(null);
     const navigate = useNavigate();
+    const access = useAccessControl();
     const { upload, isUploading, uploadProgress, uploadResult, error, reset } = useFileUpload();
 
     const handleFileSelect = (file) => {
@@ -41,6 +43,13 @@ function DataLoad() {
 
     const handleGoToDashboard = () => {
         navigate('/app');
+    };
+
+    const handleLogout = () => {
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("permissions");
+        navigate("/login");
     };
 
     const stepContent = () => {
@@ -234,7 +243,46 @@ function DataLoad() {
     };
 
     return (
-        <div className={styles.mainContainer}>
+        <div className={styles.mainContainer} style={{ position: 'relative' }}>
+            {access.userRole && (
+                <div style={{
+                    position: 'absolute',
+                    top: '1rem',
+                    right: '1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    fontSize: '0.9rem'
+                }}>
+                    <span style={{ color: '#999' }}>
+                        {access.isManager ? 'Gerente' : 'Ejecutivo'}
+                    </span>
+                    <button
+                        onClick={handleLogout}
+                        style={{
+                            padding: '0.4rem 0.8rem',
+                            fontSize: '0.8rem',
+                            backgroundColor: 'transparent',
+                            border: '1px solid #666',
+                            color: '#999',
+                            borderRadius: '0.3rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            whiteSpace: 'nowrap'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.borderColor = '#e74c3c';
+                            e.target.style.color = '#e74c3c';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.borderColor = '#666';
+                            e.target.style.color = '#999';
+                        }}
+                    >
+                        Salir
+                    </button>
+                </div>
+            )}
             <TitleCard text={'Archivo de Origen'} width={'90%'} style={{maxWidth: '600px'}}/>
             {stepContent()}
         </div>

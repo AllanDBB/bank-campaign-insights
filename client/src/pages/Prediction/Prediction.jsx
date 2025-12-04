@@ -3,6 +3,7 @@ import styles from "./Prediction.module.css";
 import { FILTER_FIELDS } from "../../config/filterFields";
 import LogisticProspectTemplate from "./templates/LogisticProspectTemplate";
 import { getInterpretationConfig, updateInterpretationConfig } from "../../services/predictionService";
+import { useAccessControl } from "../../hooks/useAccessControl";
 
 const defaultForm = {
   age: 38,
@@ -91,6 +92,7 @@ const quickProfiles = [
 ];
 
 function Prediction() {
+  const access = useAccessControl();
   const [form, setForm] = useState(defaultForm);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -287,16 +289,18 @@ function Prediction() {
             recomendación comercial y justificación.
           </p>
         </div>
-        <div className={styles.managerToggle}>
-          <label className={styles.switchLabel}>
-            <input
-              type="checkbox"
-              checked={managerMode}
-              onChange={(e) => setManagerMode(e.target.checked)}
-            />
-            <span>Modo perfil gerencial (ajustar rangos con Decorator)</span>
-          </label>
-        </div>
+        {access.editConfig && (
+          <div className={styles.managerToggle}>
+            <label className={styles.switchLabel}>
+              <input
+                type="checkbox"
+                checked={managerMode}
+                onChange={(e) => setManagerMode(e.target.checked)}
+              />
+              <span>Modo perfil gerencial (ajustar rangos con Decorator)</span>
+            </label>
+          </div>
+        )}
       </div>
 
       <div className={styles.layout}>
@@ -627,17 +631,19 @@ function Prediction() {
                 </div>
               </div>
 
-              <div className={styles.justificationBox}>
-                <div>
-                  <p className={styles.kicker}>RF-5 Justificación</p>
-                  <h3>Factores más influyentes</h3>
+              {access.viewJustification && (
+                <div className={styles.justificationBox}>
+                  <div>
+                    <p className={styles.kicker}>RF-5 Justificación</p>
+                    <h3>Factores más influyentes</h3>
+                  </div>
+                  <ul className={styles.justificationList}>
+                    {result.justification?.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className={styles.justificationList}>
-                  {result.justification?.map((item, idx) => (
-                    <li key={idx}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              )}
 
               <div className={styles.tableWrapper}>
                 <div className={styles.tableHeader}>
@@ -667,6 +673,7 @@ function Prediction() {
                   </tbody>
                 </table>
               </div>
+              {access.simulateScenarios && (
               <div className={styles.scenarioBox}>
                 <div className={styles.cardHeader}>
                   <div>
@@ -788,6 +795,7 @@ function Prediction() {
                   </div>
                 )}
               </div>
+              )}
             </>
           ) : (
             <div className={styles.placeholder}>
@@ -798,7 +806,7 @@ function Prediction() {
       </div>
 
 
-      {managerMode && (
+      {managerMode && access.editConfig && (
         <div className={styles.managerCard}>
           <div className={styles.cardHeader}>
             <div>

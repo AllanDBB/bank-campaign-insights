@@ -7,10 +7,12 @@ import documentRouter from './document.js';
 import metricsRouter from './metrics.js';
 import exportRouter from './export.js';
 import predictionRouter from './prediction.js';
+import rbacRouter from './rbac.js';
 
 const router = express.Router();
 
 router.use('/health', healthRouter);
+router.use('/rbac', rbacRouter);
 router.use('/documents', uploadRouter);
 router.use('/', userRouter);
 router.use('/', filterRouter);
