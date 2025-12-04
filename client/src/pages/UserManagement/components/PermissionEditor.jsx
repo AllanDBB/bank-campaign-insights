@@ -3,21 +3,21 @@ import { Box, Typography, Button, FormControlLabel, Checkbox } from '@mui/materi
 import s from './PermissionEditor.module.css';
 
 const PERMISSION_LABELS = {
+  // Dashboard & Data
   viewDashboard: 'Ver Dashboard',
   viewTable: 'Ver Tabla de Datos',
-  viewFilters: 'Ver Filtros',
-  createFilters: 'Crear Filtros',
-  uploadData: 'Cargar Datos',
-  exportPDF: 'Exportar a PDF',
-  exportExcel: 'Exportar a Excel',
-  viewPrediction: 'Ver Modelo Predictivo',
-  scorePrediction: 'Calificar Predicciones',
-  viewCommercialAction: 'Ver Acciones Comerciales',
-  compareWithAverage: 'Comparar con Promedio',
-  viewJustification: 'Ver Justificaciones',
-  simulateScenarios: 'Simular Escenarios',
-  editConfig: 'Editar Configuración',
-  manageUsers: 'Gestionar Usuarios',
+  manageFilters: 'Manejar Filtros (CRUD + Historial)',
+
+  // Prediction Module
+  viewProspects: 'Explorador de Prospectos',
+  viewProbability: 'Obtención de Probabilidad',
+  viewInterpretation: 'Interpretación Cualitativa',
+  viewRecommendation: 'Recomendación Comercial',
+
+  // Manager only
+  viewFactorAnalysis: 'Análisis de Factores Influyentes',
+  editPredictionParams: 'Definir Parámetros (Predicción & Acción)',
+  simulateScenarios: 'Simulación de Escenarios',
 };
 
 export default function PermissionEditor({ roleName, permissions, onChange, onSave }) {

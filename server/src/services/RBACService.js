@@ -8,38 +8,38 @@ class RBACService {
   // Default permissions - used as fallback if database doesn't have data
   static DEFAULT_PERMISSIONS = {
     ejecutivo: {
+      // Dashboard & Data
       viewDashboard: true,
       viewTable: true,
-      viewFilters: true,
-      createFilters: true,
-      uploadData: true,
-      exportPDF: true,
-      exportExcel: true,
-      viewPrediction: true,
-      scorePrediction: true,
-      viewCommercialAction: true,
-      compareWithAverage: true,
-      viewJustification: false,
+      manageFilters: true,
+
+      // Prediction Module
+      viewProspects: true,
+      viewProbability: true,
+      viewInterpretation: true,
+      viewRecommendation: true,
+
+      // Manager only
+      viewFactorAnalysis: false,
+      editPredictionParams: false,
       simulateScenarios: false,
-      editConfig: false,
-      manageUsers: false,
     },
     gerente: {
+      // Dashboard & Data
       viewDashboard: true,
       viewTable: true,
-      viewFilters: true,
-      createFilters: true,
-      uploadData: true,
-      exportPDF: true,
-      exportExcel: true,
-      viewPrediction: true,
-      scorePrediction: true,
-      viewCommercialAction: true,
-      compareWithAverage: true,
-      viewJustification: true,
+      manageFilters: true,
+
+      // Prediction Module
+      viewProspects: true,
+      viewProbability: true,
+      viewInterpretation: true,
+      viewRecommendation: true,
+
+      // Manager only
+      viewFactorAnalysis: true,
+      editPredictionParams: true,
       simulateScenarios: true,
-      editConfig: true,
-      manageUsers: true,
     }
   };
 

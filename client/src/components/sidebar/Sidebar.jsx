@@ -125,7 +125,7 @@ export default function Sidebar() {
                                 Modelo predictivo
                             </NavLink>
                         </li>
-                        {access.manageUsers && (
+                        {access.isManager && (
                             <li>
                                 <NavLink
                                     className={({isActive})=> isActive ? `${styles.tabElement} ${styles.activeTabElement}`: styles.tabElement}
