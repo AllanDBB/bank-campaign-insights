@@ -14,7 +14,6 @@ import ContributionTable from "./components/ContributionTable";
 import FactorAnalysisPanel from "./components/FactorAnalysisPanel";
 import ScenarioSimulationPanel from "./components/ScenarioSimulationPanel";
 import PredictionParametersPanel from "./components/PredictionParametersPanel";
-import ActionParametersDisplay from "./components/ActionParametersDisplay";
 
 const defaultForm = {
   age: 38,
