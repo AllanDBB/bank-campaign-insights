@@ -228,15 +228,12 @@ function Prediction() {
 
       {/* PERMISO: editPredictionParams - Panel de parámetros gerencial - SOLO GERENTE */}
       {managerMode && access.can('editPredictionParams') && (
-        <>
-          <PredictionParametersPanel
-            config={config}
-            onSaveRanges={handleSaveRanges}
-            error={error}
-            setError={setError}
-          />
-          <ActionParametersDisplay config={config} />
-        </>
+        <PredictionParametersPanel
+          config={config}
+          onSaveRanges={handleSaveRanges}
+          error={error}
+          setError={setError}
+        />
       )}
     </div>
   );
