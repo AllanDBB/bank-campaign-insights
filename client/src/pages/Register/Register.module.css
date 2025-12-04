@@ -49,9 +49,10 @@
   border-radius: 1rem;
   font-size: 1rem;
   background: #f4f7f7;
+  color: var(--primaryDark);
   cursor: pointer;
   transition: all 0.2s ease;
-  appearance: none;                 
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
