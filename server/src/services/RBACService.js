@@ -1,34 +1,13 @@
+import Role from '../models/Role.js';
+
 /**
  * Role-Based Access Control Service
- * Centralizes all permission definitions for different roles
+ * Manages permissions stored in MongoDB, with fallback to defaults
  */
 class RBACService {
-  static PERMISSIONS = {
+  // Default permissions - used as fallback if database doesn't have data
+  static DEFAULT_PERMISSIONS = {
     ejecutivo: {
-      // Previous stage features - All visible to ejecutivo
-      viewDashboard: true,
-      viewTable: true,
-      viewFilters: true,
-      createFilters: true,
-      uploadData: true,
-      exportPDF: true,
-      exportExcel: true,
-
-      // New stage - Ejecutivo can access basic prediction
-      viewPrediction: true,
-      scorePrediction: true,        // RF-2, RF-3, RF-4
-      viewCommercialAction: true,   // RF-6
-      compareWithAverage: true,     // RF-2.2
-
-      // Manager-only features (ejecutivo CANNOT access)
-      viewJustification: false,     // RF-5: Manager only
-      simulateScenarios: false,     // RF-7: Manager only
-      editConfig: false,            // Config editing: Manager only
-      manageUsers: false,           // User management: Manager only
-    },
-
-    gerente: {
-      // All ejecutivo permissions - Manager has everything
       viewDashboard: true,
       viewTable: true,
       viewFilters: true,
@@ -40,33 +19,80 @@ class RBACService {
       scorePrediction: true,
       viewCommercialAction: true,
       compareWithAverage: true,
-
-      // Manager-only features - All accessible to gerente
-      viewJustification: true,      // RF-5: Influential factors analysis
-      simulateScenarios: true,      // RF-7: What-if simulation
-      editConfig: true,             // Modify prediction thresholds
-      manageUsers: true,            // User CRUD operations
+      viewJustification: false,
+      simulateScenarios: false,
+      editConfig: false,
+      manageUsers: false,
+    },
+    gerente: {
+      viewDashboard: true,
+      viewTable: true,
+      viewFilters: true,
+      createFilters: true,
+      uploadData: true,
+      exportPDF: true,
+      exportExcel: true,
+      viewPrediction: true,
+      scorePrediction: true,
+      viewCommercialAction: true,
+      compareWithAverage: true,
+      viewJustification: true,
+      simulateScenarios: true,
+      editConfig: true,
+      manageUsers: true,
     }
   };
 
   /**
-   * Get all permissions for a specific role
-   * @param {string} role - User role (ejecutivo or gerente)
-   * @returns {object} Permission object with boolean values
+   * Get all permissions for a specific role from database
+   * Falls back to defaults if not found
+   * @param {string} roleName - User role (ejecutivo or gerente)
+   * @returns {Promise<object>} Permission object with boolean values
    */
-  static getPermissions(role) {
-    return this.PERMISSIONS[role] || this.PERMISSIONS.ejecutivo;
+  static async getPermissions(roleName) {
+    try {
+      const role = await Role.findOne({ name: roleName });
+      if (role && role.permissions && role.permissions.size > 0) {
+        return Object.fromEntries(role.permissions);
+      }
+    } catch (error) {
+      console.error('Error fetching permissions from database:', error);
+    }
+    return this.DEFAULT_PERMISSIONS[roleName] || this.DEFAULT_PERMISSIONS.ejecutivo;
   }
 
   /**
    * Check if a role has a specific permission
-   * @param {string} role - User role
+   * @param {string} roleName - User role
    * @param {string} permission - Permission name to check
-   * @returns {boolean} True if role has permission
+   * @returns {Promise<boolean>} True if role has permission
    */
-  static hasPermission(role, permission) {
-    const permissions = this.getPermissions(role);
+  static async hasPermission(roleName, permission) {
+    const permissions = await this.getPermissions(roleName);
     return permissions[permission] === true;
+  }
+
+  /**
+   * Update permissions for a role in database
+   * @param {string} roleName - User role name
+   * @param {object} permissions - Permission object with boolean values
+   * @returns {Promise<object>} Updated role document
+   */
+  static async updateRolePermissions(roleName, permissions) {
+    try {
+      const updated = await Role.findOneAndUpdate(
+        { name: roleName },
+        {
+          name: roleName,
+          permissions: new Map(Object.entries(permissions))
+        },
+        { upsert: true, new: true }
+      );
+      return updated;
+    } catch (error) {
+      console.error('Error updating role permissions:', error);
+      throw error;
+    }
   }
 
   /**
@@ -74,7 +100,16 @@ class RBACService {
    * @returns {array} Array of role names
    */
   static getRoles() {
-    return Object.keys(this.PERMISSIONS);
+    return Object.keys(this.DEFAULT_PERMISSIONS);
+  }
+
+  /**
+   * Get default permissions for a role
+   * @param {string} roleName - User role name
+   * @returns {object} Default permissions for the role
+   */
+  static getDefaultPermissions(roleName) {
+    return this.DEFAULT_PERMISSIONS[roleName] || this.DEFAULT_PERMISSIONS.ejecutivo;
   }
 }
 

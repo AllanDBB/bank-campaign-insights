@@ -1,0 +1,46 @@
+.editor {
+  background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+  color: #44a1b4;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+.permissionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  max-height: 450px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.permissionsContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.permissionsContainer::-webkit-scrollbar-track {
+  background: #0d0d0d;
+  border-radius: 3px;
+}
+
+.permissionsContainer::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 3px;
+}
+
+.permissionsContainer::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

@@ -1,0 +1,106 @@
+.container {
+  width: 100%;
+  height: 100%;
+  padding: 1.5rem;
+  background-color: var(--blackBackground, #000101);
+  color: white;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-sizing: border-box;
+}
+
+.section {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sectionTitle {
+  margin-bottom: 1.5rem;
+  color: #44a1b4;
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.tableHeader {
+  background-color: #0d0d0d !important;
+}
+
+.tableHeader th {
+  border-color: #333 !important;
+  color: #44a1b4 !important;
+  font-weight: 700 !important;
+  padding: 1rem !important;
+  font-size: 0.95rem;
+}
+
+.tableRow {
+  border-bottom: 1px solid #333;
+}
+
+.tableRow:hover {
+  background-color: rgba(68, 161, 180, 0.05);
+}
+
+.tableRow td {
+  color: #ccc;
+  border-color: #333 !important;
+  padding: 0.75rem !important;
+  font-size: 0.9rem;
+}
+
+.tableScroll {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.tableScroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tableScroll::-webkit-scrollbar-track {
+  background: #0d0d0d;
+  border-radius: 4px;
+}
+
+.tableScroll::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+.tableScroll::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.permissionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1280px) {
+  .permissionsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .section {
+    padding: 1rem;
+  }
+}

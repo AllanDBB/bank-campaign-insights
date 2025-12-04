@@ -119,12 +119,21 @@ export default function Sidebar() {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink 
+                            <NavLink
                                 className={({isActive})=> isActive ? `${styles.tabElement} ${styles.activeTabElement}`: styles.tabElement}
                                 to="/app/prediction">
                                 Modelo predictivo
                             </NavLink>
                         </li>
+                        {access.manageUsers && (
+                            <li>
+                                <NavLink
+                                    className={({isActive})=> isActive ? `${styles.tabElement} ${styles.activeTabElement}`: styles.tabElement}
+                                    to="/app/users">
+                                    Gestión de Usuarios
+                                </NavLink>
+                            </li>
+                        )}
                     </ul>
                 </nav>
 

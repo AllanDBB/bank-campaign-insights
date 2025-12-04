@@ -5,7 +5,7 @@
       "label": "Baja",
       "min": 0,
       "max": 0.3,
-      "description": "Probabilidad baja de aceptar el producto",
+      "description": "Probabilidad baja de aceptación",
       "color": "#ef4444"
     },
     {
@@ -43,5 +43,5 @@
       "action": "Contacto inmediato / alta prioridad"
     }
   ],
-  "lastUpdatedBy": "system"
+  "lastUpdatedBy": "6930d9ee6604f958ae23b742"
 }

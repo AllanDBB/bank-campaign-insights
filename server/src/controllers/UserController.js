@@ -171,6 +171,160 @@ class UserController {
       next(error);
     }
   }
+
+  // Get all users (manager only)
+  async getAllUsers(req, res, next) {
+    try {
+      const result = await this.userDAO.getAllUsers();
+
+      if (!result.success) {
+        return res.status(500).json({
+          success: false,
+          message: result.error
+        });
+      }
+
+      const users = result.users.map(user => ({
+        id: user._id,
+        name: user.name,
+        lastname: user.lastname,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt
+      }));
+
+      return res.status(200).json({
+        success: true,
+        data: users
+      });
+
+    } catch (error) {
+      console.error("Error in getAllUsers:", error);
+      next(error);
+    }
+  }
+
+  // Create user (manager only)
+  async createUser(req, res, next) {
+    try {
+      const { name, lastname, email, password, role } = req.body;
+
+      if (!name || !lastname || !email || !password || !role) {
+        return res.status(400).json({
+          success: false,
+          message: "All fields are required: name, lastname, email, password, role"
+        });
+      }
+
+      if (name.trim().length < 1) {
+        return res.status(400).json({
+          success: false,
+          message: "Name must be at least 1 character long"
+        });
+      }
+
+      if (lastname.trim().length < 1) {
+        return res.status(400).json({
+          success: false,
+          message: "Last name must be at least 1 character long"
+        });
+      }
+
+      if (!email.includes("@")) {
+        return res.status(400).json({
+          success: false,
+          message: "A valid email is required"
+        });
+      }
+
+      if (password.length < 5) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 5 characters long"
+        });
+      }
+
+      if (!['ejecutivo', 'gerente'].includes(role)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid role. Must be ejecutivo or gerente"
+        });
+      }
+
+      const result = await this.userDAO.createUser({
+        name: name.trim(),
+        lastname: lastname.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+        role
+      });
+
+      if (!result.success) {
+        return res.status(400).json({
+          success: false,
+          message: result.error
+        });
+      }
+
+      return res.status(201).json({
+        success: true,
+        message: "User created successfully",
+        data: {
+          id: result.user._id,
+          name: result.user.name,
+          lastname: result.user.lastname,
+          email: result.user.email,
+          role: result.user.role,
+          createdAt: result.user.createdAt
+        }
+      });
+
+    } catch (error) {
+      console.error("Error in createUser:", error);
+      next(error);
+    }
+  }
+
+  // Update user role (manager only)
+  async updateUserRole(req, res, next) {
+    try {
+      const { userId } = req.params;
+      const { role } = req.body;
+
+      if (!userId || !role) {
+        return res.status(400).json({
+          success: false,
+          message: "User ID and role are required"
+        });
+      }
+
+      const result = await this.userDAO.updateUserRole(userId, role);
+
+      if (!result.success) {
+        return res.status(400).json({
+          success: false,
+          message: result.error
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "User role updated successfully",
+        data: {
+          id: result.user._id,
+          name: result.user.name,
+          lastname: result.user.lastname,
+          email: result.user.email,
+          role: result.user.role,
+          createdAt: result.user.createdAt
+        }
+      });
+
+    } catch (error) {
+      console.error("Error in updateUserRole:", error);
+      next(error);
+    }
+  }
 }
 
 export default UserController;

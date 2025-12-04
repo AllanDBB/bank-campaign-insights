@@ -1,6 +1,7 @@
 import express from 'express';
 import authMiddleware from '../middleware/authMiddleware.js';
-import RBACService from '../services/RBACService.js';
+import { requireManager } from '../middleware/roleMiddleware.js';
+import RBACController from '../controllers/RBACController.js';
 
 const router = express.Router();
 
@@ -9,28 +10,24 @@ const router = express.Router();
  * Returns the permissions for the current user's role
  * Requires authentication via JWT token
  */
-router.get('/permissions', authMiddleware, (req, res) => {
-  try {
-    const userRole = req.user.role; // From JWT token (extractedby authMiddleware)
+router.get('/permissions', authMiddleware, (req, res, next) => {
+  RBACController.getPermissions(req, res, next);
+});
 
-    if (!userRole) {
-      return res.status(400).json({
-        message: 'User role not found in token'
-      });
-    }
+/**
+ * GET /api/rbac/roles/:roleName/permissions
+ * Get permissions for a specific role (manager only)
+ */
+router.get('/roles/:roleName/permissions', authMiddleware, requireManager, (req, res, next) => {
+  RBACController.getRolePermissions(req, res, next);
+});
 
-    const permissions = RBACService.getPermissions(userRole);
-
-    res.json({
-      role: userRole,
-      permissions
-    });
-  } catch (error) {
-    console.error('Error fetching permissions:', error);
-    res.status(500).json({
-      message: 'Error fetching permissions'
-    });
-  }
+/**
+ * PUT /api/rbac/roles/:roleName/permissions
+ * Update permissions for a specific role (manager only)
+ */
+router.put('/roles/:roleName/permissions', authMiddleware, requireManager, (req, res, next) => {
+  RBACController.updateRolePermissions(req, res, next);
 });
 
 export default router;

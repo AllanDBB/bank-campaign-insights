@@ -103,6 +103,64 @@ class UserDAO {
       };
     }
   }
+
+  // Get all users (exclude password)
+  async getAllUsers() {
+    try {
+      const users = await User.find({}).select('-password');
+      return {
+        success: true,
+        users
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  // Update user role
+  async updateUserRole(userId, role) {
+    try {
+      if (!userId || !role) {
+        return {
+          success: false,
+          error: 'User ID and role are required'
+        };
+      }
+
+      if (!['ejecutivo', 'gerente'].includes(role)) {
+        return {
+          success: false,
+          error: 'Invalid role. Must be ejecutivo or gerente'
+        };
+      }
+
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { role },
+        { new: true }
+      ).select('-password');
+
+      if (!user) {
+        return {
+          success: false,
+          error: 'User not found'
+        };
+      }
+
+      return {
+        success: true,
+        user
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
 }
 
 export default UserDAO;

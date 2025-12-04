@@ -9,6 +9,20 @@ const apiClient = axios.create({
   },
 });
 
+// Add token to all requests
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {

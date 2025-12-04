@@ -7,7 +7,6 @@ import "./index.css";
 import DataLoad from "./pages/DataLoad/DataLoad.jsx";
 
 import Login from "./pages/Login/Login.jsx";
-import Register from "./pages/Register/Register.jsx";
 import VerifySession from "./VerifySession.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -15,7 +14,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 <Routes>
   {/* Rutas públicas */}
   <Route path="/login" element={<Login />} />
-  <Route path="/register" element={<Register />} />
 
   {/* Rutas protegidas */}
   <Route

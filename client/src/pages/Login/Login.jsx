@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import s from "./Login.module.css";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { getDocuments } from "../../services/documentService";
 
@@ -131,12 +130,6 @@ return (
             Log In
           </button>
         </form>
-          <p className={s.register}>
-            First time here?{" "}
-            <Link to="/register" className={s.irregister}>
-              Register
-            </Link>
-          </p>
       </div>
     </div>
   )
