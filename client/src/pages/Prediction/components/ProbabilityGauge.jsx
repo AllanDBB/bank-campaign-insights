@@ -1,12 +1,8 @@
 import React from 'react';
 import styles from '../Prediction.module.css';
 
-/**
- * Componente para mostrar el medidor de probabilidad (RF-3)
- * Permiso: viewProbability
- */
 export default function ProbabilityGauge({ result }) {
-  if (!result) return null;
+  if (!result?.probability) return null;
 
   const probabilityPercent = Math.round(result.probability * 100);
 

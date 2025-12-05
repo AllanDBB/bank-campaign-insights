@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import styles from '../Prediction.module.css';
 import { FILTER_FIELDS } from '../../../config/filterFields';
 
-/**
- * Componente para simulación de escenarios (RF-7)
- * Permiso: simulateScenarios (SOLO GERENTE)
- */
 export default function ScenarioSimulationPanel({ form, onSimulate, result, scenarioResult, loading }) {
   const [scenarioItems, setScenarioItems] = useState([{ field: "contactType", value: "telephone" }]);
 

@@ -42,6 +42,36 @@ class DocumentController {
     }
   }
 
+  async hasDocuments(req, res, next) {
+    try {
+      const result = await this.documentDAO.getDocuments(
+        req.user.id,
+        {},
+        { page: 1, limit: 1, sortBy: 'createdAt', order: 'desc' }
+      );
+
+      if (!result.success) {
+        return res.status(200).json({
+          success: true,
+          hasDocuments: false
+        });
+      }
+
+      const hasDocuments = result.documents && result.documents.length > 0;
+
+      return res.status(200).json({
+        success: true,
+        hasDocuments
+      });
+    } catch (error) {
+      console.error('Error in hasDocuments:', error);
+      return res.status(200).json({
+        success: true,
+        hasDocuments: false
+      });
+    }
+  }
+
   async getDocumentSchema(req, res, next) {
     try {
       const result = await this.schemaService.getDocumentSchema(req.user.id);

@@ -27,7 +27,7 @@ async function seed() {
       }).save();
     }
 
-    const hashedPassword = await bcrypt.hash('admin', 10);
+    const hashedPassword = await bcrypt.hash('admin123', 10);
     await new User({
       name: 'Admin',
       lastname: 'User',
@@ -37,7 +37,18 @@ async function seed() {
       role: 'gerente'
     }).save();
 
-    console.log('Seed complete - Admin: admin@admin.com / admin');
+    const hashedPassword2 = await bcrypt.hash('user123', 10);
+    await new User({
+      name: 'User',
+      lastname: 'User',
+      email: 'user@user.com',
+      username: 'user',
+      password: hashedPassword2,
+      role: 'ejecutivo'
+    }).save();
+
+    console.log('Seed complete - Admin: admin@admin.com / admin123, User: user@user.com / user123');
+    
     await mongoose.connection.close();
   } catch (error) {
     console.error('✗ Error:', error.message);

@@ -176,11 +176,13 @@ export function DashboardDataProvider({children}){
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [permissionError, setPermissionError] = useState(false);
 
     const loadDashboardMetrics = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
+            setPermissionError(false);
 
             // Build filters from activeFilter
             const filters = {};
@@ -211,7 +213,11 @@ export function DashboardDataProvider({children}){
             }
         } catch (err) {
             console.error('Error loading dashboard metrics:', err);
-            setError(err.message || 'Error loading dashboard data');
+            if (err.status === 403) {
+                setPermissionError(true);
+            } else {
+                setError(err.message || 'Error loading dashboard data');
+            }
         } finally {
             setLoading(false);
         }
@@ -222,11 +228,12 @@ export function DashboardDataProvider({children}){
     }, [loadDashboardMetrics]);
 
     return (
-        <DashboardDataContext.Provider value={{ 
-            dashboardData, 
-            setDashboardData, 
-            loading, 
+        <DashboardDataContext.Provider value={{
+            dashboardData,
+            setDashboardData,
+            loading,
             error,
+            permissionError,
             refreshMetrics,
             loadDashboardMetrics
         }}>

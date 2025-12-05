@@ -1,11 +1,6 @@
 import React from 'react';
 import styles from '../Prediction.module.css';
 
-/**
- * Componente para mostrar tabla de contribuciones del modelo
- * Permiso: Todos (sin restricción específica)
- * Muestra el peso y contribución de cada variable en la predicción
- */
 export default function ContributionTable({ result }) {
   if (!result) return null;
 

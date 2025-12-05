@@ -3,7 +3,7 @@ import styles from '../Prediction.module.css';
 import { FILTER_FIELDS } from '../../../config/filterFields';
 
 export default function ComparisonWithAverage({ result }) {
-  if (!result) return null;
+  if (!result?.contributions) return null;
 
   return (
     <div className={styles.comparisonCard}>

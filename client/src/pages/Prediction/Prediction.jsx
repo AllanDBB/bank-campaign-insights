@@ -3,8 +3,8 @@ import styles from "./Prediction.module.css";
 import LogisticProspectTemplate from "./templates/LogisticProspectTemplate";
 import { getInterpretationConfig, updateInterpretationConfig } from "../../services/predictionService";
 import { useAccessControl } from "../../hooks/useAccessControl";
+import { useToastContext } from "../../context/ToastContext";
 
-// Componentes separados por permiso
 import ProspectForm from "./components/ProspectForm";
 import ProbabilityGauge from "./components/ProbabilityGauge";
 import InterpretationDisplay from "./components/InterpretationDisplay";
@@ -40,6 +40,7 @@ const defaultForm = {
 
 function Prediction() {
   const access = useAccessControl();
+  const { error: showError, success: showSuccess } = useToastContext();
   const [form, setForm] = useState(defaultForm);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -78,11 +79,15 @@ function Prediction() {
       const response = await template.execute(form);
       if (response?.success) {
         setResult(response.data);
+        showSuccess('Probabilidad calculada correctamente.');
       } else {
-        setError(response?.message || "No se pudo calcular la probabilidad");
+        const errorMsg = response?.message || "No se pudo calcular la probabilidad";
+        setError(errorMsg);
+        showError(errorMsg);
       }
     } catch (err) {
       setError(err.message);
+      showError(err.message);
     } finally {
       setLoading(false);
     }
@@ -94,10 +99,12 @@ function Prediction() {
       const response = await template.execute(payload);
       if (response?.success) {
         setScenarioResult(response.data);
+        showSuccess('Escenario simulado correctamente.');
       }
     } catch (err) {
       setScenarioResult(null);
       setError(err.message);
+      showError(err.message);
     } finally {
       setScenarioLoading(false);
     }
@@ -109,9 +116,11 @@ function Prediction() {
       if (response?.data) {
         setConfig(response.data);
         setError("");
+        showSuccess('Configuración guardada correctamente.');
       }
     } catch (err) {
       setError(err.message);
+      showError(err.message);
     }
   };
 
@@ -127,7 +136,6 @@ function Prediction() {
           </p>
         </div>
 
-        {/* PERMISO: editPredictionParams - Solo Gerente */}
         {access.can('editPredictionParams') && (
           <div className={styles.managerToggle}>
             <label className={styles.switchLabel}>
@@ -144,7 +152,6 @@ function Prediction() {
 
       <div className={styles.layout}>
         <div className={styles.cardGroup}>
-          {/* PERMISO: viewProspects - Todos */}
           {access.can('viewProspects') ? (
             <ProspectForm
               form={form}
@@ -159,7 +166,6 @@ function Prediction() {
             <div className={styles.error}>No tienes permisos para acceder al explorador de prospectos</div>
           )}
 
-          {/* PERMISO: viewProspects - Comparación con promedio (RF-2.2) */}
           {access.can('viewProspects') && (
             <ComparisonWithAverage result={result} />
           )}
@@ -175,40 +181,29 @@ function Prediction() {
 
           {result ? (
             <>
-              {/* CONTENEDOR GRID PARA PERMISOS viewProbability, viewInterpretation, viewRecommendation */}
               <div className={styles.summaryGrid}>
-                {/* PERMISO: viewProbability - Medidor RF-3 */}
-                {access.can('viewProbability') ? (
+                {result?.probability && (
                   <ProbabilityGauge result={result} />
-                ) : (
-                  <div className={styles.accessDenied}>No autorizado</div>
                 )}
 
-                {/* PERMISO: viewInterpretation - Interpretación RF-4 */}
-                {access.can('viewInterpretation') ? (
+                {result?.interpretation && (
                   <InterpretationDisplay result={result} />
-                ) : (
-                  <div className={styles.accessDenied}>No autorizado</div>
                 )}
 
-                {/* PERMISO: viewRecommendation - Recomendación RF-6 */}
-                {access.can('viewRecommendation') ? (
+                {result?.recommendation && (
                   <RecommendationDisplay result={result} />
-                ) : (
-                  <div className={styles.accessDenied}>No autorizado</div>
                 )}
               </div>
 
-              {/* PERMISO: viewFactorAnalysis - Análisis de Factores RF-5 - SOLO GERENTE */}
-              {access.can('viewFactorAnalysis') && (
+              {result?.justification && (
                 <FactorAnalysisPanel result={result} />
               )}
 
-              {/* TABLA DE CONTRIBUCIONES - Sin restricción específica */}
-              <ContributionTable result={result} />
+              {result?.contributions && (
+                <ContributionTable result={result} />
+              )}
 
-              {/* PERMISO: simulateScenarios - Simulación RF-7 - SOLO GERENTE */}
-              {access.can('simulateScenarios') && (
+              {result?.scenarioCapabilities && (
                 <ScenarioSimulationPanel
                   form={form}
                   onSimulate={handleScenario}
@@ -226,7 +221,6 @@ function Prediction() {
         </div>
       </div>
 
-      {/* PERMISO: editPredictionParams - Panel de parámetros gerencial - SOLO GERENTE */}
       {managerMode && access.can('editPredictionParams') && (
         <PredictionParametersPanel
           config={config}

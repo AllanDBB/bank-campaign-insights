@@ -4,13 +4,16 @@ import TitleCard from "../components/titleCard/TitleCard";
 import filterService from "../services/filterService";
 import { translateField } from "../config/fieldTranslations";
 import { useActiveFilter } from "../context/FilterContext";
+import { useToastContext } from "../context/ToastContext";
 import { CircularProgress } from "@mui/material";
 
 function UsedFilters() {
     const [filters, setFilters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [permissionError, setPermissionError] = useState(false);
     const { applyFilter } = useActiveFilter();
+    const { error: showError } = useToastContext();
 
     useEffect(() => {
         loadFilters();
@@ -19,17 +22,24 @@ function UsedFilters() {
     const loadFilters = async () => {
         try {
             setLoading(true);
+            setPermissionError(false);
             const response = await filterService.getAllFilters();
             if (response.success && response.data) {
                 // Sort by createdAt descending (most recent first)
-                const sortedFilters = response.data.sort((a, b) => 
+                const sortedFilters = response.data.sort((a, b) =>
                     new Date(b.createdAt) - new Date(a.createdAt)
                 );
                 setFilters(sortedFilters);
             }
         } catch (err) {
             console.error("Error loading filters:", err);
-            setError("Error al cargar el historial de filtros");
+            if (err.status === 403) {
+                setPermissionError(true);
+                showError('No tienes permiso para realizar esta acción. Contacta a tu administrador si necesitas acceso.');
+            } else {
+                setError(err.message || 'Error al cargar el historial de filtros.');
+                showError(err.message || 'Error al cargar el historial de filtros.');
+            }
         } finally {
             setLoading(false);
         }
@@ -147,6 +157,28 @@ function UsedFilters() {
                 <TitleCard text="Historial de Consultas" width="100%" />
             </div>
 
+            {permissionError && (
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flex: 1,
+                    minHeight: "500px"
+                }}>
+                    <div style={{
+                        textAlign: "center"
+                    }}>
+                        <h2 style={{ color: "#e74c3c", marginBottom: "1rem", fontSize: "2rem" }}>Acceso Denegado</h2>
+                        <p style={{ color: "#ccc", fontSize: "1.1rem" }}>No tienes permisos para acceder a esta sección.</p>
+                        <p style={{ fontSize: "0.9rem", color: "#999", marginTop: "1rem" }}>
+                            Contacta con un administrador si crees que esto es un error.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {!permissionError && (
+            <>
             {filters.length === 0 ? (
                 <div className={styles.emptyState}>
                     <div className={styles.emptyStateIcon}>📋</div>
@@ -208,6 +240,8 @@ function UsedFilters() {
                         );
                     })}
                 </div>
+            )}
+            </>
             )}
         </div>
     );

@@ -137,28 +137,26 @@ export default function Sidebar() {
                     </ul>
                 </nav>
 
-                {access.can('manageFilters') && (
-                    <div className={styles.filterSection}>
-                        <h4 className={styles.filterTitle}>Filtro Activo</h4>
-                        <div className={styles.filterName}>
-                            {activeFilter.name || "Ninguno"}
-                        </div>
-                        {activeFilter.name && (
-                            <button
-                                className={styles.clearButton}
-                                onClick={clearFilter}
-                            >
-                                Limpiar Filtro
-                            </button>
-                        )}
-                        <button
-                            className={styles.configButton}
-                            onClick={() => setShowConfigureFilters(true)}
-                        >
-                            Configurar Filtros
-                        </button>
+                <div className={styles.filterSection}>
+                    <h4 className={styles.filterTitle}>Filtro Activo</h4>
+                    <div className={styles.filterName}>
+                        {activeFilter.name || "Ninguno"}
                     </div>
-                )}
+                    {activeFilter.name && (
+                        <button
+                            className={styles.clearButton}
+                            onClick={clearFilter}
+                        >
+                            Limpiar Filtro
+                        </button>
+                    )}
+                    <button
+                        className={styles.configButton}
+                        onClick={() => setShowConfigureFilters(true)}
+                    >
+                        Configurar Filtros
+                    </button>
+                </div>
             </div>
 
             {showConfigureFilters && (

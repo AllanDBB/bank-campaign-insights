@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"; //controlan cambios y recarga de tabla
 import { useActiveFilter } from '../context/FilterContext';  //importamos filtros globales
+import { useToastContext } from '../context/ToastContext';
 
 function Table() {
 
@@ -11,6 +12,8 @@ function Table() {
   const limit = 100;  //cantidad de filas por pagina
   const { activeFilter } = useActiveFilter(); //filtro
   const [loadingCSV, setLoadingCSV] = useState(false);
+  const { error: showError } = useToastContext();
+  const [permissionDenied, setPermissionDenied] = useState(false);
 
   //ordenamiento
   const [sortColumn, setSortColumn] = useState(null); // columna a ordenar
@@ -28,7 +31,8 @@ useEffect(() => {
 //el backend maneja los sorts, y solo trae la cantidad de documentos que se mostraran en la pagina actual
 const fetchAllDocuments = async (currentPage = page, column = sortColumn, direction = sortDirection) => {
   try {
-        const filterEntries = activeFilter?.queryParams
+    setPermissionDenied(false);
+    const filterEntries = activeFilter?.queryParams
       ? Object.fromEntries(activeFilter.queryParams.entries())
       : {};
 
@@ -45,7 +49,7 @@ const fetchAllDocuments = async (currentPage = page, column = sortColumn, direct
     console.log("URL Final:", `${API_URL}/documents?${params.toString()}`);
 
     const res = await fetch(`${API_URL}/documents?${params.toString()}`, {
-      headers: { 
+      headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("token")}`
         }
@@ -59,9 +63,16 @@ const fetchAllDocuments = async (currentPage = page, column = sortColumn, direct
       setTotalPages(data.pagination.totalPages);
     } else {
       console.error("Error fetching documents:", data.message);
+      if (res.status === 403) {
+        setPermissionDenied(true);
+        showError('No tienes permiso para realizar esta acción. Contacta a tu administrador si necesitas acceso.');
+      } else {
+        showError(data.message || 'Error al cargar los documentos.');
+      }
     }
   } catch (error) {
     console.error("Fetch error:", error);
+    showError('Error al cargar los documentos. Intenta nuevamente.');
   }
 };
 
@@ -108,19 +119,25 @@ const exportToCSV = async () => {
     console.log("URL CSV:", `${API_URL}/documents?${params.toString()}`);
 
     const response = await fetch(`${API_URL}/documents?${params.toString()}`, {
-      headers: { 
+      headers: {
          "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("token")}`
       }
     });
 
-    if (!response.ok) throw new Error("Error al obtener datos");
+    if (!response.ok) {
+      if (response.status === 403) {
+        showError('No tienes permiso para realizar esta acción. Contacta a tu administrador si necesitas acceso.');
+        return;
+      }
+      throw new Error("Error al obtener datos");
+    }
 
     const data = await response.json();
     const documentos = data.data;
 
     if (!documentos.length) {
-      alert("No hay datos para exportar");
+      showError('No hay datos para exportar');
       return;
     }
 
@@ -151,6 +168,7 @@ const exportToCSV = async () => {
 
   } catch (error) {
     console.error("Error exportando CSV:", error);
+    showError('Error al exportar los datos. Intenta nuevamente.');
   } finally {
     setLoadingCSV(false);
   }
@@ -174,25 +192,49 @@ return (
     padding: "2rem",
     boxSizing: "border-box",
     color: "white",
-    overflow: "auto"
+    overflow: "auto",
+    display: "flex",
+    flexDirection: "column"
   }}>
 
     {/* Titulo */}
     <div style={{
-      backgroundColor: "#1f1f1f",   
-      borderRadius: "12px",      
-      padding: "1rem 3rem",  
-      margin: "1rem 0",          
-      maxWidth: "85%",         
-      marginLeft: "auto",     
+      backgroundColor: "#1f1f1f",
+      borderRadius: "12px",
+      padding: "1rem 3rem",
+      margin: "1rem 0",
+      maxWidth: "85%",
+      marginLeft: "auto",
       marginRight: "auto",
-      textAlign: "center"      
+      textAlign: "center"
     }}>
       <h1 style={{ color: "white", margin: 0 }}>
         Datos en Tabla
       </h1>
     </div>
 
+    {permissionDenied && (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+        minHeight: "500px"
+      }}>
+        <div style={{
+          textAlign: "center"
+        }}>
+          <h2 style={{ color: "#e74c3c", marginBottom: "1rem", fontSize: "2rem" }}>Acceso Denegado</h2>
+          <p style={{ color: "#ccc", fontSize: "1.1rem" }}>No tienes permisos para acceder a esta sección.</p>
+          <p style={{ fontSize: "0.9rem", color: "#999", marginTop: "1rem" }}>
+            Contacta con un administrador si crees que esto es un error.
+          </p>
+        </div>
+      </div>
+    )}
+
+    {!permissionDenied && (
+    <>
     {/* Contenedor del botón y label */}
     <div style={{
       display: "flex",
@@ -450,6 +492,8 @@ return (
         Next
       </button>
     </div>
+    </>
+    )}
   </div>
 );
 

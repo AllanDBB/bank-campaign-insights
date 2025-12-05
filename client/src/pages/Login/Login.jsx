@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import s from "./Login.module.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { getDocuments } from "../../services/documentService";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -60,14 +59,22 @@ export default function Login() {
       sessionStorage.setItem("permissions", JSON.stringify(permissionsRes.data.permissions));
 
       // Step 5: Check if user has documents
-      const documents = await getDocuments();
+      const hasDataRes = await axios.get(
+        "http://localhost:3001/api/documents/has-data",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const hasDocuments = hasDataRes.data.hasDocuments;
 
       console.log("Login Successful");
-      console.log("Documents found:", documents);
-      console.log("Documents length:", documents ? documents.length : 0);
+      console.log("Has documents:", hasDocuments);
 
       // Redirect to dashboard if documents exist, otherwise to data load
-      if (documents && documents.length > 0) {
+      if (hasDocuments) {
         console.log("Redirecting to dashboard - documents found");
         navigate("/app/dashboard");
       } else {

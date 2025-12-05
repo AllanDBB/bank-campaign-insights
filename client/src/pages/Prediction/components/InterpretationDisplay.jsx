@@ -1,12 +1,8 @@
 import React from 'react';
 import styles from '../Prediction.module.css';
 
-/**
- * Componente para mostrar la interpretación cualitativa (RF-4)
- * Permiso: viewInterpretation
- */
 export default function InterpretationDisplay({ result }) {
-  if (!result) return null;
+  if (!result?.interpretation) return null;
 
   const interpretation = result?.interpretation?.range;
 

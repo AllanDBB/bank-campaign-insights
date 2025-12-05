@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../Prediction.module.css';
 
-/**
- * Componente para editar parámetros de predicción (RF-4 Decorator)
- * Permiso: editPredictionParams (SOLO GERENTE)
- *
- * Permite definir los valores paramétricos para determinar:
- * - Límite Baja -> Media
- * - Límite Media -> Alta
- * - Umbral decisión Sí/No
- */
 export default function PredictionParametersPanel({ config, onSaveRanges, error, setError }) {
   const [rangeState, setRangeState] = useState({
     lowMax: 0.3,

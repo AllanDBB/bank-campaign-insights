@@ -6,8 +6,10 @@ import UsedFilters from "./tabs/UsedFilters";
 import Prediction from "./pages/Prediction/Prediction";
 import UserManagement from "./pages/UserManagement/UserManagement";
 import { FilterProvider } from "./context/FilterContext";
+import { ToastProvider, useToastContext } from "./context/ToastContext";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { useAccessControl } from "./hooks/useAccessControl";
+import ToastContainer from "./components/toast/ToastContainer";
 
 function AppRoutes() {
   const access = useAccessControl();
@@ -25,16 +27,29 @@ function AppRoutes() {
   );
 }
 
-function App() {
+function AppContent() {
+  const { toasts, removeToast } = useToastContext();
+
   return (
-    <FilterProvider>
+    <>
       <div style={{ display: "flex", height: '100vh', width: '100vw', overflow: 'hidden'}}>
         <Sidebar />
         <div style={{ flex: 1, padding: 0, backgroundColor: '#060606', overflow: 'auto'}}>
           <AppRoutes />
         </div>
       </div>
-    </FilterProvider>
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
+    </>
+  );
+}
+
+function App() {
+  return (
+    <ToastProvider>
+      <FilterProvider>
+        <AppContent />
+      </FilterProvider>
+    </ToastProvider>
   );
 }
 

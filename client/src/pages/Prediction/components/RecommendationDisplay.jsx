@@ -1,12 +1,8 @@
 import React from 'react';
 import styles from '../Prediction.module.css';
 
-/**
- * Componente para mostrar la recomendación comercial (RF-6)
- * Permiso: viewRecommendation
- */
 export default function RecommendationDisplay({ result }) {
-  if (!result) return null;
+  if (!result?.recommendation) return null;
 
   const recommendation = result?.recommendation;
 
