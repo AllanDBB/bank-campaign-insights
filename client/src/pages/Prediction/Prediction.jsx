@@ -136,18 +136,15 @@ function Prediction() {
           </p>
         </div>
 
-        {access.can('editPredictionParams') && (
-          <div className={styles.managerToggle}>
-            <label className={styles.switchLabel}>
-              <input
-                type="checkbox"
-                checked={managerMode}
-                onChange={(e) => setManagerMode(e.target.checked)}
-              />
-              <span>Modo perfil gerencial</span>
-            </label>
-          </div>
-        )}
+        <div className={styles.managerToggle}>
+          <label className={styles.switchLabel}>
+            <input
+              type="checkbox"
+              onChange={(e) => setManagerMode(e.target.checked)}
+            />
+            <span>Definir parametros</span>
+          </label>
+        </div>
       </div>
 
       <div className={styles.layout}>
@@ -221,7 +218,7 @@ function Prediction() {
         </div>
       </div>
 
-      {managerMode && access.can('editPredictionParams') && (
+      {managerMode && (
         <PredictionParametersPanel
           config={config}
           onSaveRanges={handleSaveRanges}
