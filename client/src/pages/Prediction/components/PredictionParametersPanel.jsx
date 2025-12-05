@@ -113,11 +113,6 @@ export default function PredictionParametersPanel({ config, onSaveRanges, error,
         </label>
       </div>
 
-      {config && (
-        <div className={styles.caption}>
-          Última actualización: {config.lastUpdatedBy}
-        </div>
-      )}
     </div>
   );
 }
