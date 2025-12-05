@@ -29,10 +29,10 @@ export default function Login() {
       return
     }
 
-    try { //Calling Backend
-      setLoading(true)
+    try {
+      setLoading(true);
 
-      // Step 1: Login
+      // Step 1: Authenticate
       const res = await axios.post("http://localhost:3001/api/login", {
         email,
         password
@@ -45,20 +45,7 @@ export default function Login() {
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("user", JSON.stringify(user));
 
-      // Step 3: Fetch permissions from backend
-      const permissionsRes = await axios.get(
-        "http://localhost:3001/api/rbac/permissions",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      // Step 4: Store permissions
-      sessionStorage.setItem("permissions", JSON.stringify(permissionsRes.data.permissions));
-
-      // Step 5: Check if user has documents
+      // Step 3: Check if user has documents
       const hasDataRes = await axios.get(
         "http://localhost:3001/api/documents/has-data",
         {
@@ -70,20 +57,12 @@ export default function Login() {
 
       const hasDocuments = hasDataRes.data.hasDocuments;
 
-      console.log("Login Successful");
-      console.log("Has documents:", hasDocuments);
-
-      // Redirect to dashboard if documents exist, otherwise to data load
       if (hasDocuments) {
-        console.log("Redirecting to dashboard - documents found");
         navigate("/app/dashboard");
       } else {
-        console.log("Redirecting to dataload - no documents found");
         navigate("/");
       }
-
     } catch (err) {
-      console.error("Login error:", err)
       setError(err.response?.data?.message || err.message || "Invalid email or password")
     } finally {
       setLoading(false)

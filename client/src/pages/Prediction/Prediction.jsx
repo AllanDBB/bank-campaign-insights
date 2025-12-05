@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "./Prediction.module.css";
 import LogisticProspectTemplate from "./templates/LogisticProspectTemplate";
 import { getInterpretationConfig, updateInterpretationConfig } from "../../services/predictionService";
-import { useAccessControl } from "../../hooks/useAccessControl";
 import { useToastContext } from "../../context/ToastContext";
 
 import ProspectForm from "./components/ProspectForm";
@@ -39,7 +38,6 @@ const defaultForm = {
 };
 
 function Prediction() {
-  const access = useAccessControl();
   const { error: showError, success: showSuccess } = useToastContext();
   const [form, setForm] = useState(defaultForm);
   const [result, setResult] = useState(null);
@@ -149,23 +147,17 @@ function Prediction() {
 
       <div className={styles.layout}>
         <div className={styles.cardGroup}>
-          {access.can('viewProspects') ? (
-            <ProspectForm
-              form={form}
-              onFormChange={setForm}
-              onSubmit={handleSubmit}
-              loading={loading}
-              error={error}
-              step={step}
-              onStepChange={setStep}
-            />
-          ) : (
-            <div className={styles.error}>No tienes permisos para acceder al explorador de prospectos</div>
-          )}
+          <ProspectForm
+            form={form}
+            onFormChange={setForm}
+            onSubmit={handleSubmit}
+            loading={loading}
+            error={error}
+            step={step}
+            onStepChange={setStep}
+          />
 
-          {access.can('viewProspects') && (
-            <ComparisonWithAverage result={result} />
-          )}
+          <ComparisonWithAverage result={result} />
         </div>
 
         <div className={styles.resultCard}>
