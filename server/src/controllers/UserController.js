@@ -325,6 +325,38 @@ class UserController {
       next(error);
     }
   }
+
+  // Delete user (manager only)
+  async deleteUser(req, res, next) {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          message: "User ID is required"
+        });
+      }
+
+      const result = await this.userDAO.deleteUser(userId);
+
+      if (!result.success) {
+        return res.status(404).json({
+          success: false,
+          message: result.error
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "User deleted successfully"
+      });
+
+    } catch (error) {
+      console.error("Error in deleteUser:", error);
+      next(error);
+    }
+  }
 }
 
 export default UserController;

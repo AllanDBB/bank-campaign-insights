@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Select, MenuItem, Button, Alert } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Select, MenuItem, Button, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import apiClient from '../../services/api';
 import s from './UserManagement.module.css';
 import PermissionEditor from './components/PermissionEditor';
@@ -13,6 +13,8 @@ export default function UserManagement() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -100,6 +102,35 @@ export default function UserManagement() {
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err.response?.data?.message || 'Error updating permissions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openDeleteConfirm = (user) => {
+    setUserToDelete(user);
+    setDeleteConfirmOpen(true);
+  };
+
+  const closeDeleteConfirm = () => {
+    setUserToDelete(null);
+    setDeleteConfirmOpen(false);
+  };
+
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
+    try {
+      setLoading(true);
+      setError('');
+      const response = await apiClient.delete(`/users/${userToDelete.id}`);
+      setSuccess(`User ${userToDelete.name} deleted successfully`);
+      fetchUsers();
+      closeDeleteConfirm();
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || 'Error deleting user';
+      setError(errorMsg);
+      console.error('Delete error:', err);
     } finally {
       setLoading(false);
     }
@@ -423,6 +454,7 @@ export default function UserManagement() {
                 <TableCell>Email</TableCell>
                 <TableCell>Rol</TableCell>
                 <TableCell>Creado</TableCell>
+                <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -526,6 +558,28 @@ export default function UserManagement() {
                     </Select>
                   </TableCell>
                   <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => openDeleteConfirm(user)}
+                      disabled={loading}
+                      sx={{
+                        backgroundColor: '#e74c3c',
+                        color: 'white',
+                        fontWeight: '600',
+                        '&:hover': {
+                          backgroundColor: '#c0392b',
+                        },
+                        '&.Mui-disabled': {
+                          backgroundColor: '#555',
+                          color: '#999',
+                        },
+                      }}
+                    >
+                      Eliminar
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -551,6 +605,86 @@ export default function UserManagement() {
           />
         </Box>
       </Box>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteConfirmOpen}
+        onClose={closeDeleteConfirm}
+        PaperProps={{
+          sx: {
+            backgroundColor: '#0b0b0f',
+            border: '1px solid #1a1b20',
+            borderRadius: '12px',
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            color: '#eaeaea',
+            fontWeight: '600',
+            borderBottom: '1px solid #1a1b20',
+            paddingBottom: '1rem',
+          }}
+        >
+          Confirmar eliminación
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            paddingTop: '1.5rem',
+            color: '#cfd3dc',
+          }}
+        >
+          <Typography sx={{ marginBottom: '0.5rem' }}>
+            ¿Estás seguro de que deseas eliminar al usuario <strong>{userToDelete?.name} {userToDelete?.lastname}</strong>?
+          </Typography>
+          <Typography sx={{ color: '#8b92a1', fontSize: '0.9rem' }}>
+            Esta acción no se puede deshacer.
+          </Typography>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            padding: '1rem',
+            gap: '0.5rem',
+            borderTop: '1px solid #1a1b20',
+          }}
+        >
+          <Button
+            onClick={closeDeleteConfirm}
+            disabled={loading}
+            sx={{
+              color: '#cfd3dc',
+              backgroundColor: '#13141a',
+              border: '1px solid #2a2c33',
+              '&:hover': {
+                backgroundColor: '#1a1d26',
+              },
+              '&.Mui-disabled': {
+                color: '#555',
+              },
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleDeleteUser}
+            disabled={loading}
+            sx={{
+              backgroundColor: '#e74c3c',
+              color: 'white',
+              fontWeight: '600',
+              '&:hover': {
+                backgroundColor: '#c0392b',
+              },
+              '&.Mui-disabled': {
+                backgroundColor: '#555',
+                color: '#999',
+              },
+            }}
+          >
+            {loading ? 'Eliminando...' : 'Eliminar'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

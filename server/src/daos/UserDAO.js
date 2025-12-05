@@ -161,6 +161,47 @@ class UserDAO {
       };
     }
   }
+
+  // Delete user
+  async deleteUser(userId) {
+    try {
+      if (!userId) {
+        return {
+          success: false,
+          error: 'User ID is required'
+        };
+      }
+
+      if (typeof userId !== 'string' ||
+          userId.length !== 24 ||
+          !/^[a-fA-F0-9]{24}$/.test(userId)) {
+        return {
+          success: false,
+          error: 'Invalid user ID format'
+        };
+      }
+
+      const user = await User.findByIdAndDelete(userId);
+
+      if (!user) {
+        return {
+          success: false,
+          error: 'User not found'
+        };
+      }
+
+      return {
+        success: true,
+        message: 'User deleted successfully',
+        user
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
 }
 
 export default UserDAO;

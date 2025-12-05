@@ -28,4 +28,9 @@ router.patch('/users/:userId/role', authMiddleware, requireManager, (req, res, n
   userController.updateUserRole(req, res, next);
 });
 
+// Delete user
+router.delete('/users/:userId', authMiddleware, requireManager, (req, res, next) => {
+  userController.deleteUser(req, res, next);
+});
+
 export default router;
